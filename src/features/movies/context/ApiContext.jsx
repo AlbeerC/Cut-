@@ -39,10 +39,20 @@ export default function ApiProvider({ children }) {
       }));
 
       // Devolvemos el objeto completo (manteniendo paginación y metadata)
-      setMovies({
-        ...esData,
-        results: combinedResults,
-      });
+      setMovies((prev) =>
+        page === 1
+          ? {
+              ...esData,
+              results: combinedResults, // si es la primera página, reemplazás
+            }
+          : {
+              ...esData,
+              results: [
+                ...(prev?.results || []), // acumulás las anteriores
+                ...combinedResults, // agregás las nuevas
+              ],
+            }
+      );
     } catch (error) {
       setError(error.message || "Unknown error");
     } finally {
@@ -52,7 +62,7 @@ export default function ApiProvider({ children }) {
 
   const value = {
     fetchMovies,
-    movies,
+    movies, setMovies,
     error,
     loading,
   };
