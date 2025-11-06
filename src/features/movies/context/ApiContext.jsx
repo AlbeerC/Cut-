@@ -1,52 +1,71 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react";
 
-const ApiContext = createContext()
+const ApiContext = createContext();
 
-export default function ApiProvider ( {children} ) {
-    const apiKey = import.meta.env.VITE_TMDB_API_KEY
+export default function ApiProvider({ children }) {
+  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
 
-    const [movies, setMovies] = useState([])
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(false)
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    const fetchMovies = async (endpoint, page) => {
-        setLoading(true)
-        setError(null)
+  const fetchMovies = async (endpoint, page) => {
+    setLoading(true);
+    setError(null);
 
-        try {
-            const response = await fetch(`https://api.themoviedb.org/3/movie/${endpoint}?language=en-US&api_key=${apiKey}&page=${page}`)
+    try {
+      // Pedimos ambas versiones en paralelo
+      const [esRes, enRes] = await Promise.all([
+        fetch(
+          `https://api.themoviedb.org/3/movie/${endpoint}?api_key=${apiKey}&language=es-MX&page=${page}`
+        ),
+        fetch(
+          `https://api.themoviedb.org/3/movie/${endpoint}?api_key=${apiKey}&language=en-US&page=${page}`
+        ),
+      ]);
 
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`)
-            }
+      if (!esRes.ok || !enRes.ok)
+        throw new Error(`HTTP Error: ${esRes.status} / ${enRes.status}`);
 
-            const result = await response.json()
-            setMovies(result)
-        } catch (error) {
-            setError(error.message || "Uknkown error")
-        } finally {
-            setLoading(false)
-        }
+      const [esData, enData] = await Promise.all([esRes.json(), enRes.json()]);
+
+      // Mezclamos los resultados: mismos índices en results[]
+      const combinedResults = esData.results.map((movie, i) => ({
+        ...movie,
+        title: enData.results[i]?.title || movie.title,
+        original_title:
+          enData.results[i]?.original_title || movie.original_title,
+        poster_path: enData.results[i]?.poster_path || movie.poster_path,
+      }));
+
+      // Devolvemos el objeto completo (manteniendo paginación y metadata)
+      setMovies({
+        ...esData,
+        results: combinedResults,
+      });
+    } catch (error) {
+      setError(error.message || "Unknown error");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const value = {
-        fetchMovies,
-        movies, error, loading
-    }
+  const value = {
+    fetchMovies,
+    movies,
+    error,
+    loading,
+  };
 
-    return (
-        <ApiContext.Provider value={value}>
-            {children}
-        </ApiContext.Provider>
-    )
+  return <ApiContext.Provider value={value}>{children}</ApiContext.Provider>;
 }
 
-export function useApi () {
-    const context = useContext(ApiContext)
+export function useApi() {
+  const context = useContext(ApiContext);
 
-    if (!context) {
-        throw new Error ('UseTheme must be used inside <ApiProvider>')
-    }
+  if (!context) {
+    throw new Error("UseTheme must be used inside <ApiProvider>");
+  }
 
-    return context
+  return context;
 }
