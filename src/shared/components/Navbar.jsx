@@ -21,10 +21,10 @@ export default function Navbar() {
             Juegos
           </Link>
           <Link
-            to="#ranking"
+            to="/movies"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
-            Ranking
+            Explorar
           </Link>
           <Link
             to="#torneos"

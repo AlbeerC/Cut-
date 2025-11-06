@@ -3,7 +3,6 @@ import Navbar from "./Navbar";
 import { Footer } from "./Footer";
 
 export default function Layout() {
-  console.log("hi")
   return (
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />

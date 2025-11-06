@@ -1,10 +1,11 @@
-// src/routes/index.js
 import { createBrowserRouter } from "react-router-dom"
 import Layout from "../shared/components/Layout"
 import ErrorPage from "../shared/pages/ErrorPage"
 
 import landingRoutes from "../features/landing/routes"
+import moviesRoutes from "../features/movies/routes"
 /* import moviesRoutes from "../features/movies/routes"
+
 import gamesRoutes from "../features/games/routes"
 import usersRoutes from "../features/users/routes" */
 
@@ -15,6 +16,7 @@ export const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       ...landingRoutes,
+      ...moviesRoutes,
 /*       ...moviesRoutes,
       ...gamesRoutes,
       ...usersRoutes, */
