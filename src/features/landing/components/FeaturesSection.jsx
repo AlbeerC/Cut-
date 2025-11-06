@@ -5,7 +5,7 @@ const features = [
   {
     icon: Swords,
     title: "Versus de Películas",
-    description: "Elige entre dos películas y compite contra otros fanáticos. ¿Cuál es mejor? Tú decides.",
+    description: "Dos películas se enfrentan… y vos tenés la última palabra. Votá, descubrí joyas ocultas y compará tus gustos con otros fans",
     color: "text-primary",
     bgColor: "bg-primary/10",
   },
@@ -19,7 +19,7 @@ const features = [
   {
     icon: Trophy,
     title: "Ranking de Fans",
-    description: "Sube en el ranking global y conviértete en el fanático número uno del cine.",
+    description: "Sumá puntos, subí de nivel y ganá tu lugar entre los fans más cinéfilos. ¡Cada partida cuenta!",
     color: "text-chart-3",
     bgColor: "bg-chart-3/10",
   },
@@ -32,9 +32,9 @@ export default function FeaturesSection() {
         {/* Section header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold text-balance">
-            Tres formas de{" "}
+            Tres maneras de vivir{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-              dominar el cine
+              tu pasión por el cine
             </span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">

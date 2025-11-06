@@ -1,6 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Users, TrendingUp, Award, ArrowRight } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Users, TrendingUp, Award, ArrowRight } from "lucide-react";
 
 const rankings = [
   { rank: 1, name: "CineManiac", points: 15420, avatar: "🎬" },
@@ -8,7 +8,7 @@ const rankings = [
   { rank: 3, name: "MovieMaster", points: 13750, avatar: "🍿" },
   { rank: 4, name: "ReelExpert", points: 12980, avatar: "🎞️" },
   { rank: 5, name: "CinemaKing", points: 11560, avatar: "👑" },
-]
+];
 
 export default function CommunitySection() {
   return (
@@ -19,12 +19,14 @@ export default function CommunitySection() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold text-balance">
-                Únete a la{" "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">comunidad</span>
+                Sumate a la{" "}
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+                  comunidad cinéfila
+                </span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-                Compite en torneos semanales, sube en el ranking global y conecta con otros fanáticos del cine de todo
-                el mundo.
+                Participá en desafíos, ganá puntos y conectá con otros fans del
+                cine. Cada partida te acerca a los primeros lugares del ranking.
               </p>
             </div>
 
@@ -33,21 +35,28 @@ export default function CommunitySection() {
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <Users className="w-8 h-8 text-primary" />
-                  <div className="text-3xl font-bold">50K+</div>
-                  <div className="text-sm text-muted-foreground">Miembros activos</div>
+                  <div className="text-3xl font-bold">+100</div>
+                  <div className="text-sm text-muted-foreground">
+                    Jugadores registrados
+                  </div>
                 </CardContent>
               </Card>
 
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <TrendingUp className="w-8 h-8 text-accent" />
-                  <div className="text-3xl font-bold">500+</div>
-                  <div className="text-sm text-muted-foreground">Torneos mensuales</div>
+                  <div className="text-3xl font-bold">Desafíos semanales</div>
+                  <div className="text-sm text-muted-foreground">
+                    Competí y sumá puntos cada semana
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold group">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold group"
+            >
               Unirse Ahora
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
@@ -61,7 +70,9 @@ export default function CommunitySection() {
                   <Award className="w-6 h-6 text-primary" />
                   Top Jugadores
                 </h3>
-                <span className="text-sm text-muted-foreground">Esta semana</span>
+                <span className="text-sm text-muted-foreground">
+                  Esta semana
+                </span>
               </div>
 
               <div className="space-y-3">
@@ -75,10 +86,10 @@ export default function CommunitySection() {
                         player.rank === 1
                           ? "bg-primary text-primary-foreground"
                           : player.rank === 2
-                            ? "bg-accent text-accent-foreground"
-                            : player.rank === 3
-                              ? "bg-chart-3 text-foreground"
-                              : "bg-muted text-muted-foreground"
+                          ? "bg-accent text-accent-foreground"
+                          : player.rank === 3
+                          ? "bg-chart-3 text-foreground"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {player.rank}
@@ -88,13 +99,19 @@ export default function CommunitySection() {
 
                     <div className="flex-1">
                       <div className="font-semibold">{player.name}</div>
-                      <div className="text-sm text-muted-foreground">{player.points.toLocaleString()} puntos</div>
+                      <div className="text-sm text-muted-foreground">
+                        {player.points.toLocaleString()} puntos
+                      </div>
                     </div>
 
                     {player.rank <= 3 && (
                       <Award
                         className={`w-5 h-5 ${
-                          player.rank === 1 ? "text-primary" : player.rank === 2 ? "text-accent" : "text-chart-3"
+                          player.rank === 1
+                            ? "text-primary"
+                            : player.rank === 2
+                            ? "text-accent"
+                            : "text-chart-3"
                         }`}
                       />
                     )}
@@ -110,5 +127,5 @@ export default function CommunitySection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
