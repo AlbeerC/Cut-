@@ -8,10 +8,14 @@ export default function ApiProvider({ children }) {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [currentEndpoint, setCurrentEndpoint] = useState("top_rated");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchMovies = async (endpoint, page) => {
     setLoading(true);
     setError(null);
+    setCurrentEndpoint(endpoint);
+    setCurrentPage(page);
 
     try {
       // Pedimos ambas versiones en paralelo
@@ -38,21 +42,29 @@ export default function ApiProvider({ children }) {
         poster_path: enData.results[i]?.poster_path || movie.poster_path,
       }));
 
-      // Devolvemos el objeto completo (manteniendo paginación y metadata)
-      setMovies((prev) =>
-        page === 1
-          ? {
-              ...esData,
-              results: combinedResults, // si es la primera página, reemplazás
-            }
-          : {
-              ...esData,
-              results: [
-                ...(prev?.results || []), // acumulás las anteriores
-                ...combinedResults, // agregás las nuevas
-              ],
-            }
-      );
+      setMovies((prev) => {
+        // Si es página 1 o no hay datos previos, reemplazar
+        if (page === 1) {
+          return {
+            ...esData,
+            results: combinedResults,
+          };
+        }
+
+        // Si ya tenemos esa página cargada, no duplicar
+        const prevResultsCount = prev?.results?.length || 0;
+        const expectedCount = (page - 1) * 20; // TMDB devuelve 20 por página
+
+        // Si ya tenemos suficientes resultados para esta página, no agregar
+        if (prevResultsCount >= page * 20) {
+          return prev;
+        }
+
+        return {
+          ...esData,
+          results: [...(prev?.results || []), ...combinedResults],
+        };
+      });
     } catch (error) {
       setError(error.message || "Unknown error");
     } finally {
@@ -62,9 +74,12 @@ export default function ApiProvider({ children }) {
 
   const value = {
     fetchMovies,
-    movies, setMovies,
+    movies,
+    setMovies,
     error,
     loading,
+    currentEndpoint, setCurrentEndpoint,
+    currentPage, setCurrentPage,
   };
 
   return <ApiContext.Provider value={value}>{children}</ApiContext.Provider>;

@@ -16,14 +16,15 @@ export default function MovieDetailPage() {
 
     const fetchMovie = async () => {
       try {
-        // Pedimos versión en español (detalles, géneros, créditos, etc.)
-        // y versión en inglés (para título y póster originales)
+        setLoading(true);
+        setError(null);
+
         const [esRes, enRes] = await Promise.all([
           fetch(
-            `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&append_to_response=credits,videos,images&language=es-MX`
+            `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&append_to_response=credits,images&language=es-MX`
           ),
           fetch(
-            `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&language=en-US`
+            `https://api.themoviedb.org/3/movie/${id}?api_key=${apiKey}&append_to_response=videos&language=en-US`
           ),
         ]);
 
@@ -35,12 +36,13 @@ export default function MovieDetailPage() {
           enRes.json(),
         ]);
 
-        // Combinamos datos
+        // Combinamos: datos generales en español, pero título, póster y videos en inglés
         setMovie({
           ...esData,
           title: enData.title,
           original_title: enData.original_title,
           poster_path: enData.poster_path,
+          videos: enData.videos, // 👈 videos en inglés
         });
       } catch (error) {
         setError(error.message || "Unknown error");

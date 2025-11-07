@@ -14,8 +14,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatRuntime } from "../utils/formatRuntime";
+import { useNavigate } from "react-router";
 
 export default function MovieDetail({ movie }) {
+
+  const navigate = useNavigate()
+
   // Filtrar directores del crew
   const directors =
     movie.credits?.crew?.filter((person) => person.job === "Director") || [];
@@ -39,6 +43,11 @@ export default function MovieDetail({ movie }) {
       return 0;
     })
     .slice(0, 6); // Mostrar máximo 6 videos
+
+  const mainTrailer = sortedVideos.find(
+    (video) =>
+      video.type === "Trailer" || video.name.toLowerCase().includes("trailer")
+  );
 
   return (
     <div className="min-h-screen bg-background pt-15">
@@ -120,9 +129,24 @@ export default function MovieDetail({ movie }) {
                 <Button
                   size="lg"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105"
+                  asChild={mainTrailer}
+                  disabled={!mainTrailer}
                 >
-                  <Play className="w-5 h-5 fill-current" />
-                  Ver Trailer
+                  {mainTrailer ? (
+                    <a
+                      href={`https://www.youtube.com/watch?v=${mainTrailer.key}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Play className="w-5 h-5 fill-current" />
+                      Ver Trailer
+                    </a>
+                  ) : (
+                    <>
+                      <Play className="w-5 h-5 fill-current" />
+                      Sin Trailer Disponible
+                    </>
+                  )}
                 </Button>
               </div>
             </div>
@@ -169,6 +193,7 @@ export default function MovieDetail({ movie }) {
                 <Card
                   key={director.credit_id}
                   className="w-40 md:w-48 p-4 bg-gradient-to-br from-card to-card/60 border border-border/50 hover:border-primary/60 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group flex flex-col items-center justify-center text-center"
+                  onClick={() => navigate(`/movies/person/director/${director.id}/${encodeURIComponent(director.name)}`)}
                 >
                   <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-primary/30 group-hover:border-primary/60 transition-all duration-300">
                     {director.profile_path ? (
@@ -208,6 +233,7 @@ export default function MovieDetail({ movie }) {
                 <Card
                   key={actor.cast_id}
                   className="overflow-hidden bg-gradient-to-br from-card to-card/50 border-border/50 hover:border-primary/40 transition-all group cursor-pointer"
+                  onClick={() => navigate(`/movies/person/actor/${actor.id}/${encodeURIComponent(actor.name)}`)}
                 >
                   {/* Actor Photo */}
                   <div className="relative w-full h-48 sm:h-56 md:h-64 overflow-hidden bg-muted/10">
