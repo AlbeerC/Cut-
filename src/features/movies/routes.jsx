@@ -2,6 +2,7 @@ import MoviesListPage from "./pages/MoviesListPage"
 import MoviesLayout from "./components/MoviesLayout"
 import MovieDetailPage from "./pages/MovieDetailPage"
 import MoviePersonListPage from "./pages/MoviePersonListPage"
+import MoviesSearchListPage from "./pages/MoviesSearchListPage"
 
 export default [
   {
@@ -11,6 +12,7 @@ export default [
       { index: true, element: <MoviesListPage /> },
       { path: ":id", element: <MovieDetailPage /> },
       { path: "person/:role/:personId/:name", element: <MoviePersonListPage /> },
+      { path: "search/:query", element: <MoviesSearchListPage /> },
     ],
   },
 ]

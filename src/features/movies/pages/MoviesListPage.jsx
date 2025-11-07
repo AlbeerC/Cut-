@@ -3,6 +3,7 @@ import MoviesList from "../components/MoviesList";
 import { useApi } from "../context/ApiContext";
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import SearchMovieInput from "../components/SearchMovieInput";
 
 export default function MoviesListPage() {
   const {
@@ -54,8 +55,11 @@ export default function MoviesListPage() {
 
   return (
     <div className="space-y-6 pt-20">
+      {/* Search bar */}
+      <SearchMovieInput />
+
       {/* Filtros */}
-      <div className="flex gap-4 justify-center py-10">
+      <div className="flex gap-4 justify-center pb-10">
         {["popular", "top_rated", "upcoming"].map((f) => (
           <Button
             key={f}
@@ -77,7 +81,7 @@ export default function MoviesListPage() {
         <div className="flex justify-center">
           <button
             onClick={handleLoadMore}
-            className="px-6 py-2 bg-primary rounded hover:bg-primary/80"
+            className="px-6 py-2 bg-primary rounded hover:bg-primary/80 cursor-pointer"
           >
             Cargar más
           </button>

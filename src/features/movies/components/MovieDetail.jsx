@@ -15,10 +15,18 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatRuntime } from "../utils/formatRuntime";
 import { useNavigate } from "react-router";
+import { useState, useEffect } from "react";
 
 export default function MovieDetail({ movie }) {
+  const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(false);
 
-  const navigate = useNavigate()
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Filtrar directores del crew
   const directors =
@@ -50,110 +58,169 @@ export default function MovieDetail({ movie }) {
   );
 
   return (
-    <div className="min-h-screen bg-background pt-15">
-      {/* Backdrop Header */}
-      <div className="relative h-[75vh] overflow-hidden max-md:h-[90vh]">
-        <img
-          src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-          alt={movie.title}
-          className="w-full h-full object-cover object-center"
-        />
-
-        {/* Gradient Overlays - Mejorados */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/40 to-background/80" />
-
-        {/* Content Over Backdrop */}
-        <div className="absolute inset-0 flex items-end max-md:items-center">
-          <div className="container mx-auto px-4 pb-4">
-            <div className="flex flex-col md:flex-row gap-8 items-end">
-              {/* Poster - Mejorado */}
-              <div className="flex-shrink-0 relative group max-md:hidden">
-                <Card className="overflow-hidden border-2 border-primary/40 shadow-2xl shadow-primary/25 w-64 transition-all duration-500 group-hover:border-primary/60 group-hover:shadow-primary/35">
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                    alt={movie.title}
-                    className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
-                  />
-                </Card>
-                {/* Resplandor decorativo */}
-                <div className="absolute -inset-4 bg-primary/20 blur-3xl -z-10 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
+    <div className="min-h-screen bg-background pt-20">
+      {/* HEADER */}
+      {isMobile ? (
+        // 🔹 MOBILE VERSION
+        <div className="relative bg-background pt-8 pb-6">
+          <div className="flex flex-col gap-4 px-4">
+            {/* Poster + Info */}
+            <div className="flex items-start gap-4">
+              {/* Poster */}
+              <div className="w-28 flex-shrink-0 rounded-lg overflow-hidden border border-border/50">
+                <img
+                  src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                  alt={movie.title}
+                  className="w-full h-auto object-cover"
+                />
               </div>
 
-              {/* Title and Quick Info */}
-              <div className="flex-1 space-y-5 pb-4">
-                <div className="space-y-3">
-                  <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-balance drop-shadow-lg max-md:text-3xl">
-                    {movie.title}
-                  </h1>
-                  {movie.tagline && (
-                    <p className="text-xl text-accent italic font-light max-md:text-lg">
-                      "{movie.tagline}"
-                    </p>
-                  )}
+              {/* Info */}
+              <div className="flex-1 space-y-1">
+                <h1 className="text-2xl font-bold leading-tight text-foreground">
+                  {movie.title}
+                </h1>
+                {movie.tagline && (
+                  <p className="text-sm italic text-accent/80">
+                    “{movie.tagline}”
+                  </p>
+                )}
+
+                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground mt-2">
+                  <span className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-md">
+                    <Star className="w-3 h-3 fill-primary text-primary" />
+                    {movie.vote_average.toFixed(1)}
+                  </span>
+                  <span className="flex items-center gap-1 bg-card/50 px-2 py-1 rounded-md">
+                    <Calendar className="w-3 h-3 text-accent" />
+                    {new Date(movie.release_date).getFullYear()}
+                  </span>
+                  <span className="flex items-center gap-1 bg-card/50 px-2 py-1 rounded-md">
+                    <Clock className="w-3 h-3 text-accent" />
+                    {formatRuntime(movie.runtime)}
+                  </span>
                 </div>
+              </div>
+            </div>
 
-                <div className="flex flex-wrap items-center gap-3 text-foreground">
-                  <div className="flex items-center gap-2.5 bg-primary/20 backdrop-blur-md px-5 py-2.5 rounded-xl border border-primary/50 shadow-lg hover:bg-primary/25 transition-colors">
-                    <Star className="w-5 h-5 fill-primary text-primary" />
-                    <span className="text-xl font-bold">
-                      {movie.vote_average.toFixed(1)}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      ({movie.vote_count.toLocaleString()} votos)
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 bg-card/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
-                    <Calendar className="w-4 h-4 text-accent" />
-                    <span className="text-sm">
-                      {new Date(movie.release_date).toLocaleDateString(
-                        "es-ES",
-                        {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }
-                      )}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 bg-card/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
-                    <Clock className="w-4 h-4 text-accent" />
-                    <span className="text-sm">
-                      {formatRuntime(movie.runtime)}
-                    </span>
-                  </div>
-                </div>
-
-                <Button
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105"
-                  asChild={mainTrailer}
-                  disabled={!mainTrailer}
+            {/* Backdrop Preview */}
+            <div className="relative w-full h-48 rounded-lg overflow-hidden mt-2">
+              <img
+                src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                alt={movie.title}
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+              {mainTrailer && (
+                <a
+                  href={`https://www.youtube.com/watch?v=${mainTrailer.key}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 flex items-center justify-center"
                 >
-                  {mainTrailer ? (
-                    <a
-                      href={`https://www.youtube.com/watch?v=${mainTrailer.key}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Play className="w-5 h-5 fill-current" />
-                      Ver Trailer
-                    </a>
-                  ) : (
-                    <>
-                      <Play className="w-5 h-5 fill-current" />
-                      Sin Trailer Disponible
-                    </>
-                  )}
-                </Button>
+                  <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center shadow-lg">
+                    <Play className="w-6 h-6 text-primary-foreground fill-current ml-1" />
+                  </div>
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : (
+        // 💻 DESKTOP VERSION (tu diseño original)
+        <div className="relative h-[75vh] overflow-hidden max-md:h-[90vh]">
+          <img
+            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+            alt={movie.title}
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/90 to-background/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/40 to-background/80" />
+          <div className="absolute inset-0 flex items-end max-md:items-center">
+            <div className="container mx-auto px-4 pb-4">
+              <div className="flex flex-col md:flex-row gap-8 items-end">
+                {/* Poster */}
+                <div className="flex-shrink-0 relative group">
+                  <Card className="overflow-hidden border-2 border-primary/40 shadow-2xl shadow-primary/25 w-64 transition-all duration-500 group-hover:border-primary/60 group-hover:shadow-primary/35">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                      alt={movie.title}
+                      className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </Card>
+                  <div className="absolute -inset-4 bg-primary/20 blur-3xl -z-10 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
+                </div>
+
+                {/* Title and Quick Info */}
+                <div className="flex-1 space-y-5 pb-4">
+                  <div className="space-y-3">
+                    <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-balance drop-shadow-lg max-md:text-3xl">
+                      {movie.title}
+                    </h1>
+                    {movie.tagline && (
+                      <p className="text-xl text-accent italic font-light max-md:text-lg">
+                        "{movie.tagline}"
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3 text-foreground">
+                    <div className="flex items-center gap-2.5 bg-primary/20 backdrop-blur-md px-5 py-2.5 rounded-xl border border-primary/50 shadow-lg hover:bg-primary/25 transition-colors">
+                      <Star className="w-5 h-5 fill-primary text-primary" />
+                      <span className="text-xl font-bold">
+                        {movie.vote_average.toFixed(1)}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        ({movie.vote_count.toLocaleString()} votos)
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-card/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                      <Calendar className="w-4 h-4 text-accent" />
+                      <span className="text-sm">
+                        {new Date(movie.release_date).toLocaleDateString(
+                          "es-ES",
+                          { year: "numeric", month: "long", day: "numeric" }
+                        )}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 bg-card/90 backdrop-blur-md px-4 py-2.5 rounded-xl border border-border/50 hover:border-primary/30 transition-colors">
+                      <Clock className="w-4 h-4 text-accent" />
+                      <span className="text-sm">
+                        {formatRuntime(movie.runtime)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105"
+                    asChild={mainTrailer}
+                    disabled={!mainTrailer}
+                  >
+                    {mainTrailer ? (
+                      <a
+                        href={`https://www.youtube.com/watch?v=${mainTrailer.key}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Play className="w-5 h-5 fill-current" />
+                        Ver Trailer
+                      </a>
+                    ) : (
+                      <>
+                        <Play className="w-5 h-5 fill-current" />
+                        Sin Trailer Disponible
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
+      )}
       {/* Main Content */}
       <div className="container mx-auto px-4 py-12 space-y-12">
         {/* Genres */}
@@ -193,7 +260,13 @@ export default function MovieDetail({ movie }) {
                 <Card
                   key={director.credit_id}
                   className="w-40 md:w-48 p-4 bg-gradient-to-br from-card to-card/60 border border-border/50 hover:border-primary/60 hover:shadow-lg hover:shadow-primary/10 transition-all duration-300 group flex flex-col items-center justify-center text-center"
-                  onClick={() => navigate(`/movies/person/director/${director.id}/${encodeURIComponent(director.name)}`)}
+                  onClick={() =>
+                    navigate(
+                      `/movies/person/director/${
+                        director.id
+                      }/${encodeURIComponent(director.name)}`
+                    )
+                  }
                 >
                   <div className="relative w-40 h-40 rounded-full overflow-hidden border-2 border-primary/30 group-hover:border-primary/60 transition-all duration-300">
                     {director.profile_path ? (
@@ -233,7 +306,13 @@ export default function MovieDetail({ movie }) {
                 <Card
                   key={actor.cast_id}
                   className="overflow-hidden bg-gradient-to-br from-card to-card/50 border-border/50 hover:border-primary/40 transition-all group cursor-pointer"
-                  onClick={() => navigate(`/movies/person/actor/${actor.id}/${encodeURIComponent(actor.name)}`)}
+                  onClick={() =>
+                    navigate(
+                      `/movies/person/actor/${actor.id}/${encodeURIComponent(
+                        actor.name
+                      )}`
+                    )
+                  }
                 >
                   {/* Actor Photo */}
                   <div className="relative w-full h-48 sm:h-56 md:h-64 overflow-hidden bg-muted/10">
