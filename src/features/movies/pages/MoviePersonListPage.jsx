@@ -63,13 +63,11 @@ export default function MoviePersonListPage() {
     fetchMovies();
   }, [personId]);
 
-  console.log(movies);
-
   if (error) return <p>{error}</p>;
 
   return (
     <div className="space-y-6 pt-20">
-      <h2 className="text-3xl font-bold flex items-center justify-center gap-2 py-5">
+      <h2 className="text-3xl font-bold flex items-center justify-center gap-2 py-5 max-md:flex-col">
         <Award className="w-7 h-7 text-primary" />
         Películas de{" "}
         <span className="text-primary">{name}</span>

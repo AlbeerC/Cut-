@@ -52,7 +52,7 @@ export default function MovieDetail({ movie }) {
   return (
     <div className="min-h-screen bg-background pt-15">
       {/* Backdrop Header */}
-      <div className="relative h-[75vh] overflow-hidden max-md:h-[100vh]">
+      <div className="relative h-[75vh] overflow-hidden max-md:h-[90vh]">
         <img
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
           alt={movie.title}
@@ -64,11 +64,11 @@ export default function MovieDetail({ movie }) {
         <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/40 to-background/80" />
 
         {/* Content Over Backdrop */}
-        <div className="absolute inset-0 flex items-end">
+        <div className="absolute inset-0 flex items-end max-md:items-center">
           <div className="container mx-auto px-4 pb-4">
             <div className="flex flex-col md:flex-row gap-8 items-end">
               {/* Poster - Mejorado */}
-              <div className="flex-shrink-0 relative group">
+              <div className="flex-shrink-0 relative group max-md:hidden">
                 <Card className="overflow-hidden border-2 border-primary/40 shadow-2xl shadow-primary/25 w-64 transition-all duration-500 group-hover:border-primary/60 group-hover:shadow-primary/35">
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -83,11 +83,11 @@ export default function MovieDetail({ movie }) {
               {/* Title and Quick Info */}
               <div className="flex-1 space-y-5 pb-4">
                 <div className="space-y-3">
-                  <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-balance drop-shadow-lg">
+                  <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-2 text-balance drop-shadow-lg max-md:text-3xl">
                     {movie.title}
                   </h1>
                   {movie.tagline && (
-                    <p className="text-xl text-accent italic font-light">
+                    <p className="text-xl text-accent italic font-light max-md:text-lg">
                       "{movie.tagline}"
                     </p>
                   )}

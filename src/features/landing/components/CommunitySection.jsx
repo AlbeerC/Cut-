@@ -31,7 +31,7 @@ export default function CommunitySection() {
             </div>
 
             {/* Stats cards */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <Users className="w-8 h-8 text-primary" />
