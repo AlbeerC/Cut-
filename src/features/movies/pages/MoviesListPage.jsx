@@ -1,54 +1,73 @@
 import { Button } from "@/components/ui/button";
 import MoviesList from "../components/MoviesList";
-import { useApi } from "../context/ApiContext";
 import { useEffect, useState, useRef } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import SearchMovieInput from "../components/SearchMovieInput";
+import { useFetch } from "../hooks/useFetch";
+import { getMovies } from "../api/movies";
+import { useMoviesContext } from "../context/MoviesContext";
 
 export default function MoviesListPage() {
-  const {
-    fetchMovies,
-    movies,
-    setMovies,
-    error,
-    loading,
-    currentEndpoint,
-    currentPage,
-  } = useApi();
+  const { moviesState, setMoviesState } = useMoviesContext();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const endpoint = searchParams.get("endpoint") || currentEndpoint;
-  const page = Number(searchParams.get("page")) || currentPage;
+  const navigate = useNavigate();
+  
+  const endpoint = searchParams.get("endpoint") || moviesState.endpoint;
+  const page = Number(searchParams.get("page")) || moviesState.page;
+  
+  useEffect(() => {
+    window.scrollTo(0, moviesState.scrollY || 0)
+  }, [])
 
   useEffect(() => {
-    if (!searchParams.get("endpoint") && currentEndpoint) {
-      setSearchParams(
-        { endpoint: currentEndpoint, page: currentPage },
-        { replace: true }
-      );
-    }
-  }, []);
+    if (!endpoint || !page)
+      navigate(`/movies?endpoint=${moviesState.endpoint}&page=${moviesState.page}`, { replace: true })
+  }, [endpoint, page, navigate])
 
-  const [prevEndpoint, setPrevEndpoint] = useState(endpoint);
+  const { data: newData, error, loading } = useFetch(() => getMovies(endpoint, page), [endpoint, page]);
 
   useEffect(() => {
-    if (prevEndpoint !== endpoint) {
-      setMovies({ results: [], page: 0, total_pages: 0 });
-      fetchMovies(endpoint, 1);
-    }
-    setPrevEndpoint(endpoint);
-  }, [endpoint]);
+    if (!newData) return
+    setMoviesState(prev => {
+      const prevMovies = prev.movies || { results: [] }
 
-  useEffect(() => {
-    fetchMovies(endpoint, page);
-  }, [endpoint, page]);
+      if (page === 1) {
+        return { ...prev, movies: newData, page }
+      }
+
+      const prevCount = prevMovies.results.length
+      const expectedCount = (page - 1) * 20
+      if (prevCount >= expectedCount) return prev
+
+      return {
+        ...prev,
+        movies: {
+          ...newData,
+          results: [...prevMovies.results, ...newData.results],
+        },
+        page
+      }
+    })
+  }, [newData, page, endpoint])
 
   const handleFilterChange = (newEndpoint) => {
     setSearchParams({ endpoint: newEndpoint, page: 1 });
   };
 
-  const handleLoadMore = () => {
-    setSearchParams({ endpoint, page: page + 1 });
+  const handleLoadMore = async() => {
+    const nextPage = page + 1
+    const newData = await getMovies(endpoint, nextPage)
+    
+    setMoviesState(prev => ({
+      ...prev,
+      movies: {
+        ...newData,
+        results: [...(prev.movies?.results || []), ...newData.results],
+      },
+      page: nextPage,
+    }))
+
+    setSearchParams({ endpoint, page: nextPage })
   };
 
   if (error) return <p>{error}</p>;
@@ -74,11 +93,11 @@ export default function MoviesListPage() {
       </div>
 
       {/* Lista de películas */}
-      <MoviesList movies={movies.results} loading={loading} />
+      <MoviesList movies={moviesState.movies.results || []} loading={loading} />
 
       {/* Botón Load more */}
       {!loading && (
-        <div className="flex justify-center">
+        <div className="flex justify-center pb-5">
           <button
             onClick={handleLoadMore}
             className="px-6 py-2 bg-primary rounded hover:bg-primary/80 cursor-pointer"

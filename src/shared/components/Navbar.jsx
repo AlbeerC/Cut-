@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
-import { Film, Menu, X } from "lucide-react"
+import { Menu, X } from "lucide-react"
 import logo from "../assets/logo.png"
 
 export default function Navbar() {
@@ -24,7 +24,7 @@ export default function Navbar() {
             Juegos
           </Link>
           <Link
-            to="/movies"
+            to="/movies?endpoint=top_rated&page=1"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Explorar
@@ -74,7 +74,7 @@ export default function Navbar() {
               Juegos
             </Link>
             <Link
-              to="/movies"
+              to="/movies?endpoint=top_rated&page=1"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >

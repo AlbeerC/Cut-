@@ -7,7 +7,7 @@ export default function Layout() {
     <div className="min-h-screen bg-gray-900 text-white">
       <Navbar />
       <main>
-        <Outlet /> {/* Acá se renderizan las páginas hijas */}
+        <Outlet />
       </main>
       <Footer />
     </div>

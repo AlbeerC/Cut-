@@ -1,14 +1,21 @@
 import { Card } from "@/components/ui/card";
 import { Clock, Calendar, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useMoviesContext } from "../context/MoviesContext";
 
 export default function MovieCard({ movie }) {
 
     const navigate = useNavigate()
+    const { setMoviesState } = useMoviesContext()
+
+    const goToDetail = () => {
+      setMoviesState(prev => ({ ...prev, scrollY: window.scrollY }))
+      navigate(`/movies/${movie.id}`)
+    }
 
   return (
     <Card
-      onClick={() => navigate(`/movies/${movie.id}`)}
+      onClick={goToDetail}
       className="group relative overflow-hidden bg-gradient-to-br from-card to-card/80 border border-border/50 hover:border-primary/60 transition-all duration-500 cursor-pointer hover:scale-[1.02] hover:shadow-xl hover:shadow-primary/10 py-0"
     >
       {/* Poster Image */}
