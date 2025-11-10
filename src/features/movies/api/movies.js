@@ -28,5 +28,31 @@ export const getMovies = async (endpoint, page = 1) => {
   return {
     ...esData,
     results: combinedResults,
+  };
+};
+
+export const getMovieByid = async (id) => {
+  const [esRes, enRes] = await Promise.all([
+    fetch(
+      `${BASE_URL}/movie/${id}?api_key=${API_KEY}&append_to_response=credits,images&language=es-MX`
+    ),
+    fetch(
+      `${BASE_URL}/movie/${id}?api_key=${API_KEY}&append_to_response=videos&language=en-US`
+    ),
+  ]);
+
+  if (!esRes.ok || !enRes.ok) {
+    console.error("Movie fetch failed:", esRes.status, enRes.status)
+    throw new Error(`HTTP Error: ${esRes.status} / ${enRes.status}`);
+  }
+
+  const [esData, enData] = await Promise.all([esRes.json(), enRes.json()]);
+
+  return {
+    ...esData,
+    title: enData.title,
+    original_title: enData.original_title,
+    poster_path: enData.poster_path,
+    videos: enData.videos,
   }
 };

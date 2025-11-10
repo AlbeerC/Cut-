@@ -28,18 +28,18 @@ export default function MovieDetail({ movie }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Filtrar directores del crew
+  // Filter directors
   const directors =
     movie.credits?.crew?.filter((person) => person.job === "Director") || [];
 
-  // Obtener los primeros 8 actores del cast
+  // Get first 8 actors from cast
   const cast = movie.credits?.cast?.slice(0, 12) || [];
 
-  // Obtener videos de YouTube (priorizando trailers)
+  // Get videos from YouTube (prioritizing trailers)
   const videos =
     movie.videos?.results?.filter((video) => video.site === "YouTube") || [];
 
-  // Ordenar: trailers primero, luego el resto
+  // Sort videos: trailers first, then the rest
   const sortedVideos = [...videos]
     .sort((a, b) => {
       const aIsTrailer =
@@ -50,7 +50,7 @@ export default function MovieDetail({ movie }) {
       if (!aIsTrailer && bIsTrailer) return 1;
       return 0;
     })
-    .slice(0, 6); // Mostrar máximo 6 videos
+    .slice(0, 6);
 
   const mainTrailer = sortedVideos.find(
     (video) =>
@@ -127,7 +127,7 @@ export default function MovieDetail({ movie }) {
           </div>
         </div>
       ) : (
-        // 💻 DESKTOP VERSION (tu diseño original)
+        // 💻 DESKTOP VERSION
         <div className="relative h-[75vh] overflow-hidden max-md:h-[90vh]">
           <img
             src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
