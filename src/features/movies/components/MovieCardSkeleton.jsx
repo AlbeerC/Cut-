@@ -28,10 +28,6 @@ export default function MovieCardSkeleton() {
             <Calendar className="w-3.5 h-3.5" />
             <span className="font-medium"></span>
           </div>
-
-          <div className="flex items-center gap-1.5 group/time hover:text-primary transition-colors">
-            <Clock className="w-3.5 h-3.5" />
-          </div>
         </div>
 
         {/* Barra de progreso del rating */}

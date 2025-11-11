@@ -37,3 +37,16 @@ export const getPersonMoviesById = async (id, role) => {
 
     return filtered;
 }
+
+
+export const getPersonInfoById = async (id) => {
+    const res = await fetch(`${BASE_URL}/person/${id}?api_key=${API_KEY}&language=es-ES`);
+
+    if (!res.ok) {
+        throw new Error(`HTTP Error: ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    return data;
+}

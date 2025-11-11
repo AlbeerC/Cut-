@@ -17,6 +17,14 @@ export default function MoviesSearchListPage() {
       </h1>
 
       <MoviesList movies={results} loading={loading} />
+
+      {!loading && results?.length === 0 && (
+        <div className="max-w-6xl mx-auto px-4 pt-20 min-h-[50vh]">
+          <h1 className="text-3xl font-bold mb-6 text-center pt-8">
+            No se encontraron resultados para: <span className="text-primary">“{query}”</span>
+          </h1>
+        </div>
+      )}
     </div>
   )
 }

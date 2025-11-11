@@ -9,6 +9,7 @@ import {
   Award,
   Users,
   Film,
+  Eye
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,10 +17,12 @@ import { Badge } from "@/components/ui/badge";
 import { formatRuntime } from "../utils/formatRuntime";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
+import MovieReviews from "./MovieReviews";
 
-export default function MovieDetail({ movie }) {
+export default function MovieDetail({ movie, reviews, reviewsLoading, reviewsError }) {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
+  const [openReviews, setOpenReviews] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -57,12 +60,13 @@ export default function MovieDetail({ movie }) {
       video.type === "Trailer" || video.name.toLowerCase().includes("trailer")
   );
 
+
   return (
     <div className="min-h-screen bg-background pt-20">
       {/* HEADER */}
       {isMobile ? (
         // 🔹 MOBILE VERSION
-        <div className="relative bg-background pt-8 pb-6">
+        <div className="relative bg-background pt-8 pb-2">
           <div className="flex flex-col gap-4 px-4">
             {/* Poster + Info */}
             <div className="flex items-start gap-4">
@@ -124,6 +128,15 @@ export default function MovieDetail({ movie }) {
                 </a>
               )}
             </div>
+            {/* Open review button */}
+            <Button
+              size="md"
+              className="bg-primary/90 px-4 py-2 text-primary-foreground shadow-lg hover:bg-primary/80 transition-all max-w-md"
+              onClick={() => setOpenReviews(true)}
+            >
+              <Eye className="w-5 h-5" />
+              Ver reviews
+            </Button>
           </div>
         </div>
       ) : (
@@ -214,6 +227,11 @@ export default function MovieDetail({ movie }) {
                         Sin Trailer Disponible
                       </>
                     )}
+                  </Button>
+                  <Button onClick={() => setOpenReviews(true)} size="lg"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2 shadow-lg hover:shadow-xl hover:shadow-primary/30 transition-all hover:scale-105 ml-4 cursor-pointer">
+                    <Eye className="w-5 h-5" />
+                    Ver reviews
                   </Button>
                 </div>
               </div>
@@ -501,6 +519,17 @@ export default function MovieDetail({ movie }) {
           </Card>
         </div>
       </div>
+
+      {/* Reviews */}
+      { openReviews && (
+        <MovieReviews 
+          reviews={reviews.results} 
+          isOpen={openReviews}
+          onClose={() => setOpenReviews(false)}
+          loading={reviewsLoading}
+          error={reviewsError}
+        />
+      )}
     </div>
   );
 }
