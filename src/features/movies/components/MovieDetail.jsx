@@ -18,8 +18,9 @@ import { formatRuntime } from "../utils/formatRuntime";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import MovieReviews from "./MovieReviews";
+import MovieCard from "./MovieCard";
 
-export default function MovieDetail({ movie, reviews, reviewsLoading, reviewsError }) {
+export default function MovieDetail({ movie, reviews, reviewsLoading, reviewsError, recommendations }) {
   const navigate = useNavigate();
   const [isMobile, setIsMobile] = useState(false);
   const [openReviews, setOpenReviews] = useState(false);
@@ -30,6 +31,10 @@ export default function MovieDetail({ movie, reviews, reviewsLoading, reviewsErr
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [movie])
 
   // Filter directors
   const directors =
@@ -518,12 +523,25 @@ export default function MovieDetail({ movie, reviews, reviewsLoading, reviewsErr
             </div>
           </Card>
         </div>
+
+        {/* Recommendations */}
+        <div className="space-y-6">
+          <h2 className="text-3xl font-bold text-foreground flex items-center gap-3 mb-4">
+            <Star className="w-6 h-6 text-primary" />
+            Recomendaciones
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {recommendations?.map((movie) => (
+              <MovieCard key={movie.id} movie={movie} />
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Reviews */}
       { openReviews && (
         <MovieReviews 
-          reviews={reviews.results} 
+          reviews={reviews?.results} 
           isOpen={openReviews}
           onClose={() => setOpenReviews(false)}
           loading={reviewsLoading}
