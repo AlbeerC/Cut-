@@ -13,7 +13,7 @@ export default function MovieDetailPage() {
 
   const { data: reviews, error: reviewsError, loading: reviewsLoading } = useFetch(() => getReviewsById(id), [id]);
 
-  const {  data: recommendations, error: recommendationsError, loading: recommendationsLoading } = useFetch(() => getMoviesByRecommendation(id), [id]);
+  const {  data: recommendations } = useFetch(() => getMoviesByRecommendation(id), [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0)

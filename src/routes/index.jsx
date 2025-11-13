@@ -3,6 +3,7 @@ import Layout from "../shared/components/Layout"
 import ErrorPage from "../shared/pages/ErrorPage"
 import landingRoutes from "../features/landing/routes"
 import moviesRoutes from "../features/movies/routes"
+import gamesRoutes from "../features/games/routes"
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,7 @@ export const router = createBrowserRouter([
     children: [
       ...landingRoutes,
       ...moviesRoutes,
+      ...gamesRoutes,
     ],
   },
 ])

@@ -18,7 +18,7 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
           <Link
-            to="#juegos"
+            to="/games"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             Juegos
@@ -67,7 +67,7 @@ export default function Navbar() {
         <div className="md:hidden bg-background/90 backdrop-blur-lg border-t border-border/40">
           <div className="flex flex-col gap-4 p-4">
             <Link
-              to="#juegos"
+              to="/games"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
             >

@@ -13,7 +13,7 @@ export const useFetch = (fetchFunction, dependencies = []) => {
 
     setLoading(true)
     setError(null)
-
+    
     const fetchData = async () => {
       try {
         const result = await fetchFunction(signal)
@@ -26,7 +26,6 @@ export const useFetch = (fetchFunction, dependencies = []) => {
         setLoading(false)
       }
     }
-
     fetchData()
 
     return () => controller.abort()
