@@ -2,17 +2,20 @@ import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import MovieBattleCard from "./MovieBattleCard"
 import { useFetch } from "@/features/movies/hooks/useFetch"
-import { getTopRatedMovies } from "../api/rated"
 import { useVersusBattle } from "../hooks/useVersusBattle"
 import VersusWinner from "./Winner"
+import { useConfigContext } from "../context/ConfigContext"
+import { getMoviesForVersus } from "../api/versus"
 
 export default function VersusBattle() {
-  const { data: moviesPool, loading, error } = useFetch(() => getTopRatedMovies(), [])
+  const { size, category, decade, genre } = useConfigContext()
+
+  const { data: moviesPool, loading, error } = useFetch(() => getMoviesForVersus(category.value, size, genre, decade))
   
   const { currentPair, winner, finalWinner, handleChoice, availableMovies } = useVersusBattle(moviesPool)
 
   // Estado de carga
-  if (loading) return <p>Loading...</p>
+  if (loading) return <p className="min-h-[60vh]">...</p>
   
   // Error o sin datos
   if (error || !moviesPool || moviesPool.length < 2) {
@@ -37,9 +40,12 @@ export default function VersusBattle() {
       </div>
 
       {/* VS Title */}
-      <h2 className="text-2xl md:text-5xl font-bold text-center mb-6 md:mb-8 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+      <h2 className="text-2xl md:text-5xl font-bold text-center bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent mb-2">
         ¿Cuál gana?
       </h2>
+      <p className="mb-6 md:mb-8 text-lg font-bold text-center">
+        {availableMovies.length} películas restantes
+      </p>
 
       {/* Battle Cards */}
       <div className="w-full max-w-xl grid grid-cols-[1fr_auto_1fr] md:grid-cols-2 gap-3 md:gap-24 items-center relative">

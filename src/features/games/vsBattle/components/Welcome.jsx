@@ -1,14 +1,42 @@
-import { Link } from "react-router"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Swords, Calendar, Film, User } from "lucide-react"
-import { useEffect } from "react"
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Swords, Calendar, Film, User, Theater, Drama } from "lucide-react";
+import { useEffect } from "react";
+import { useConfigContext } from "../context/ConfigContext";
+import { DECADES } from "../config/decades";
+import { GENRES } from "../config/genres";
+import { VERSUS_CATEGORIES, VERSUS_SIZES } from "../config/options";
 
 export default function VersusWelcome() {
-
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+
+    return () => {
+      resetConfig();
+    };
+  }, []);
+
+  const {
+    category,
+    setCategory,
+    size,
+    setSize,
+    decade,
+    setDecade,
+    genre,
+    setGenre,
+    resetConfig,
+  } = useConfigContext();
+
+  const isValidConfig = () => {
+    if (!size || !category) return false;
+
+    if (category.value === "decade" && !decade) return false;
+    if (category.value === "genre" && !genre) return false;
+
+    return true;
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-30">
@@ -36,12 +64,17 @@ export default function VersusWelcome() {
 
             {/* Tournament Size */}
             <div className="space-y-2">
-              <label className="text-sm text-muted-foreground">Número de películas</label>
+              <label className="text-sm text-muted-foreground">
+                Número de películas
+              </label>
               <div className="grid grid-cols-3 gap-3">
-                {[10, 20, 30].map((num) => (
+                {VERSUS_SIZES.map((num) => (
                   <button
                     key={num}
-                    className="px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium"
+                    className={`px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium ${
+                      size === num ? "bg-primary" : ""
+                    }`}
+                    onClick={() => setSize(num)}
                   >
                     {num}
                   </button>
@@ -51,29 +84,74 @@ export default function VersusWelcome() {
 
             {/* Category Selector */}
             <div className="space-y-2">
-              <label className="text-sm text-muted-foreground">Categoría (opcional)</label>
+              <label className="text-sm text-muted-foreground">Categoría</label>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <button className="px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium flex items-center justify-center gap-2">
-                  <Film className="w-4 h-4" />
-                  Más valoradas
-                </button>
-                <button className="px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium flex items-center justify-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Década
-                </button>
-                <button className="px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium flex items-center justify-center gap-2">
-                  <User className="w-4 h-4" />
-                  Actor/Director
-                </button>
+                {VERSUS_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat.value}
+                    className={`px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium flex items-center justify-center gap-2 ${
+                      category?.value === cat.value ? "bg-primary" : ""
+                    }`}
+                    onClick={() => setCategory(cat)}
+                  >
+                    <Film className="w-4 h-4" />
+                    {cat.label}
+                  </button>
+                ))}
               </div>
+            </div>
+
+            {/* Details config */}
+            <div className="mt-5">
+              {category?.value === "decade" && (
+                <div className="flex flex-wrap gap-2 items-center">
+                  {DECADES.map((dec) => (
+                    <button
+                      key={dec.label}
+                      className={`px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium ${
+                        decade?.label === dec.label ? "bg-primary" : ""
+                      }`}
+                      onClick={() => setDecade(dec)}
+                    >
+                      {dec.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {category?.value === "genre" && (
+                <div className="flex flex-wrap gap-2 items-center">
+                  {GENRES.map((gen) => {
+                    const Icon = gen.icon;
+                    return (
+                      <button
+                        key={gen.value}
+                        className={`px-4 py-3 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium flex items-center gap-2 ${
+                          genre?.value === gen.value ? "bg-primary" : ""
+                        }`}
+                        onClick={() => setGenre(gen)}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {gen.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </Card>
 
         {/* Start Button */}
-        <Link className="text-black cursor-pointer" to='/games/versus/play'>
+        <Link
+          className={`text-black cursor-pointer ${
+            !isValidConfig() ? "pointer-events-none opacity-70" : ""
+          }`}
+          to="/games/versus/play"
+        >
           <Button
             size="lg"
+            disabled={!isValidConfig()}
             className="w-full text-lg py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/20"
           >
             Comenzar
@@ -81,11 +159,14 @@ export default function VersusWelcome() {
         </Link>
         {/* Back Link */}
         <div className="text-center mt-6">
-          <Link to="/games" className="text-muted-foreground hover:text-primary transition-colors duration-300">
+          <Link
+            to="/games"
+            className="text-muted-foreground hover:text-primary transition-colors duration-300"
+          >
             ← Volver a juegos
           </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

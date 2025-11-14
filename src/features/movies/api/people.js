@@ -15,7 +15,7 @@ const filterOfficialMovies = (movies) => {
           movie.vote_count > 50 &&
           movie.release_date &&
           new Date(movie.release_date) < new Date()
-      );
+      ).sort((a, b) => b.vote_average - a.vote_average);
 }
 
 
