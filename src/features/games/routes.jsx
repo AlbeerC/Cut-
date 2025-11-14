@@ -1,7 +1,7 @@
 import GamesCenterPage from "./pages/GamesCenterPage";
 import GamesLayout from "./components/GamesLayout";
-import StartGamePage from "./vsBattle/pages/StartGamePage";
-import VersusBattle from "./vsBattle/components/Battle";
+import versusRoutes from "./vsBattle/routes"
+import timelineRoutes from "./timeline/routes"
 
 export default [
   {
@@ -9,8 +9,8 @@ export default [
     element: <GamesLayout />,
     children: [
       { index: true, element: <GamesCenterPage /> },
-      {  path: "versus", element: <StartGamePage /> },
-      { path: "versus/play", element: <VersusBattle /> },
+      ...versusRoutes,
+      ...timelineRoutes,
     ],
   },
 ]

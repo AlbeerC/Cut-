@@ -12,7 +12,7 @@ export default function GamesCenterPage() {
       icon: Trophy,
       color: "from-primary to-accent",
       href: "/games/versus",
-      features: ["8-16 películas", "Torneos por categoría", "Comparte resultados"],
+      features: ["10-30 películas", "Torneos por categoría", "Comparte resultados"],
     },
     {
       id: 2,

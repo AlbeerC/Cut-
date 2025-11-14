@@ -5,8 +5,6 @@ import VersusWinner from "../components/Winner";
 export default function StartGamePage() {
     
     return (
-        <>
-            <VersusWelcome />
-        </>
+        <VersusWelcome />
     )
 }
