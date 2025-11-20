@@ -3,7 +3,7 @@ import { generateDirectorRounds } from "../utils/generateDirectorRounds";
 
 const DirectorContext = createContext();
 
-export function DirectorProvider({ children }) {
+export default function DirectorProvider({ children }) {
   const [rounds, setRounds] = useState(5);
   const [currentRound, setCurrentRound] = useState(1);
   const [moviePool, setMoviePool] = useState([]);
