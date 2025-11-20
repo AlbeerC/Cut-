@@ -1,10 +1,10 @@
 import { Outlet } from "react-router-dom"
-import { ConfigProvider } from "../context/ConfigTimelineContext"
+import TimelineProvider from "../context/TimelineContext"
 
 export default function TimelineLayout() {
   return (
-    <ConfigProvider>
+    <TimelineProvider>
       <Outlet />
-    </ConfigProvider>
+    </TimelineProvider>
   )
 }

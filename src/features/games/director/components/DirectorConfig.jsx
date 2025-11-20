@@ -1,17 +1,16 @@
 import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Calendar, Film } from "lucide-react"
+import { Calendar, Clapperboard, Film } from "lucide-react"
 import { useEffect, useState } from "react"
+import { getMoviesWithDirectors } from "../api/getMoviesPool"
 import { useFetch } from "@/features/movies/hooks/useFetch"
-import { getPoolMovies } from "../api/getPoolMovies"
-import { useTimelineContext } from "../context/TimelineContext"
 
-export default function TimelineConfig() {
+export default function DirectorConfig() {
   const navigate = useNavigate()
-  const { data: movies, loading, error } = useFetch(() => getPoolMovies(), [])
 
-  const { setRounds, setMoviesPool, resetGame } = useTimelineContext()
+  const { data: movies, loading, error } = useFetch(() => getMoviesWithDirectors(), [])
+
   const [localRounds, setLocalRounds] = useState(5)
 
   useEffect(() => {
@@ -19,10 +18,7 @@ export default function TimelineConfig() {
   }, [])
 
   const handleStart = () => {
-    resetGame()
-    setRounds(localRounds)
-    setMoviesPool(movies)
-    navigate("/games/timeline/play")
+    navigate("/games/director/play")
   }
 
   return (
@@ -30,12 +26,12 @@ export default function TimelineConfig() {
       <div className="max-w-xl w-full">
         <div className="text-center mb-8 space-y-3">
           <div className="inline-block">
-            <Calendar className="w-12 h-12 text-primary mx-auto mb-3" />
+            <Clapperboard className="w-12 h-12 text-primary mx-auto mb-3" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Timeline Challenge
+            Director Challenge
           </h1>
-          <p className="text-base text-muted-foreground max-w-md mx-auto">Ordena 4 películas según su año de estreno</p>
+          <p className="text-base text-muted-foreground max-w-md mx-auto">Adivina quién dirigió cada película</p>
         </div>
 
         <Card className="bg-card/50 backdrop-blur-sm border-border/50 p-5 mb-6 space-y-4">
@@ -64,7 +60,7 @@ export default function TimelineConfig() {
 
             <div className="pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground text-center">
-                10 pts por posición correcta • 20 pts bonus por ronda perfecta • Combos dan pts extra
+                10 pts por ronda correcta
               </p>
             </div>
           </div>

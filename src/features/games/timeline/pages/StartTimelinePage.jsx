@@ -8,9 +8,6 @@ export default function StartTimelinePage () {
     return (
         <>
             <TimelineConfig />
-            <TimelineRound />
-            <TimelineResult />
-            <TimelineFinal />
         </>
     )
 }
