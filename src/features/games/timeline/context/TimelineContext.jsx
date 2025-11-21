@@ -4,7 +4,7 @@ const TimelineContext = createContext()
 
 export default function TimelineProvider({ children }) {
   const [moviesPool, setMoviesPool] = useState([])
-  const [rounds, setRounds] = useState(1)
+  const [rounds, setRounds] = useState(5)
   const [currentRound, setCurrentRound] = useState(1)
   const [options, setOptions] = useState([])
   const [correctOrder, setCorrectOrder] = useState([])

@@ -1,60 +1,90 @@
-import { createContext, useContext, useState } from "react";
-import { generateDirectorRounds } from "../utils/generateDirectorRounds";
+import { createContext, useContext, useState } from "react"
+import { generateDirectorRounds } from "../utils/generateDirectorRounds"
 
-const DirectorContext = createContext();
+const DirectorContext = createContext()
 
 export default function DirectorProvider({ children }) {
-  const [rounds, setRounds] = useState(5);
-  const [currentRound, setCurrentRound] = useState(1);
-  const [moviePool, setMoviePool] = useState([]);
-  const [roundData, setRoundData] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
+  const [rounds, setRounds] = useState(5)
+  const [currentRound, setCurrentRound] = useState(1)
+  const [moviePool, setMoviePool] = useState([])
+  const [roundData, setRoundData] = useState([])
+  const [selectedOption, setSelectedOption] = useState(null)
+  const [score, setScore] = useState(0)
+  const [showResult, setShowResult] = useState(false)
 
-  const setConfig = (value) => setRounds(value);
+  const setConfig = (value) => setRounds(value)
 
-  const loadPool = (movies) => setMoviePool(movies);
+  const loadPool = (movies) => {
+    setMoviePool(movies)
+  }
 
-  const generateRounds = async () => {
-    const generated = await generateDirectorRounds(moviePool, rounds);
-    setRoundData(generated);
-  };
+  const generateRounds = async (movies, numRounds) => {
+    console.log("[v0] Generando rondas con", movies.length, "películas y", numRounds, "rondas")
+
+    if (!movies || movies.length === 0) {
+      console.error("[v0] No hay películas en el pool")
+      return false
+    }
+
+    const generated = generateDirectorRounds(movies, numRounds)
+
+    if (generated.length < numRounds) {
+      console.warn(`[v0] Se generaron ${generated.length} rondas de ${numRounds} solicitadas`)
+    }
+
+    if (generated.length === 0) {
+      console.error("[v0] No se pudieron generar rondas")
+      return false
+    }
+
+    console.log("[v0] Rondas generadas exitosamente:", generated.length)
+    setRoundData(generated)
+    setRounds(generated.length)
+    return true
+  }
 
   const selectOption = (option) => {
-    setSelectedOption(option);
-  };
+    if (showResult) return
+    setSelectedOption(option)
+  }
 
   const confirmAnswer = () => {
-    const current = roundData[currentRound - 1];
-    if (selectedOption === current.correctDirector) {
-      setScore((prev) => prev + 1);
+    if (!selectedOption) return
+
+    const current = roundData[currentRound - 1]
+    if (selectedOption === current.correctDirector.name) {
+      setScore((prev) => prev + 1)
     }
-    setShowResult(true);
-  };
+    setShowResult(true)
+  }
 
   const nextRound = () => {
-    setShowResult(false);
-    setSelectedOption(null);
+    setShowResult(false)
+    setSelectedOption(null)
 
-    if (currentRound < rounds) {
-      setCurrentRound((prev) => prev + 1);
+    if (currentRound < roundData.length) {
+      setCurrentRound((prev) => prev + 1)
     }
-  };
+  }
 
   const resetGame = () => {
-    setCurrentRound(1);
-    setScore(0);
-    setShowResult(false);
-    setSelectedOption(null);
-    setRoundData([]);
-  };
+    setCurrentRound(1)
+    setScore(0)
+    setShowResult(false)
+    setSelectedOption(null)
+    setRoundData([])
+    setMoviePool([])
+  }
+
+  const currentRoundData = roundData[currentRound - 1] || null
 
   const value = {
     rounds,
+    setRounds,
     currentRound,
     moviePool,
     roundData,
+    currentRoundData,
     selectedOption,
     score,
     showResult,
@@ -66,13 +96,9 @@ export default function DirectorProvider({ children }) {
     confirmAnswer,
     nextRound,
     resetGame,
-  };
+  }
 
-  return (
-    <DirectorContext.Provider value={value}>
-      {children}
-      </DirectorContext.Provider>
-  );
+  return <DirectorContext.Provider value={value}>{children}</DirectorContext.Provider>
 }
 
-export const useDirectorContext = () => useContext(DirectorContext);
+export const useDirectorContext = () => useContext(DirectorContext)

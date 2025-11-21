@@ -12,7 +12,7 @@ export default function TimelineConfig() {
   const { data: movies, loading, error } = useFetch(() => getPoolMovies(), [])
 
   const { setRounds, setMoviesPool, resetGame } = useTimelineContext()
-  const [localRounds, setLocalRounds] = useState(5)
+  const [localRounds, setLocalRounds] = useState(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)

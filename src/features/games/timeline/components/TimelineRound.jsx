@@ -25,7 +25,7 @@ export default function TimelineRound() {
     navigate("/games/timeline/result");
   };
 
-  if (isLoading) return <p>Loading</p>;
+  console.log(rounds)
 
   return (
     <div className="min-h-screen bg-background pt-30 px-4 pb-6">

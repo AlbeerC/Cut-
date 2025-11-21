@@ -1,24 +1,50 @@
 import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Calendar, Clapperboard, Film } from "lucide-react"
+import { Clapperboard, Film } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getMoviesWithDirectors } from "../api/getMoviesPool"
 import { useFetch } from "@/features/movies/hooks/useFetch"
+import { useDirectorContext } from "../context/DirectorContext"
 
 export default function DirectorConfig() {
   const navigate = useNavigate()
 
   const { data: movies, loading, error } = useFetch(() => getMoviesWithDirectors(), [])
 
+  const { generateRounds, resetGame } = useDirectorContext()
+
   const [localRounds, setLocalRounds] = useState(5)
+  const [isStarting, setIsStarting] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0)
+    resetGame()
   }, [])
 
-  const handleStart = () => {
-    navigate("/games/director/play")
+  const handleStart = async () => {
+    if (!movies || movies.length === 0) {
+      alert("No se pudieron cargar las películas. Intenta de nuevo.")
+      return
+    }
+
+    if (movies.length < localRounds) {
+      alert(`Solo hay ${movies.length} películas disponibles. Selecciona menos rondas.`)
+      return
+    }
+
+    setIsStarting(true)
+    console.log("[v0] Iniciando juego con", movies.length, "películas y", localRounds, "rondas")
+
+    const success = await generateRounds(movies, localRounds)
+
+    if (success) {
+      console.log("[v0] Rondas generadas exitosamente, navegando a juego")
+      navigate("/games/director/play")
+    } else {
+      alert("Error al generar las rondas. Intenta de nuevo.")
+      setIsStarting(false)
+    }
   }
 
   return (
@@ -47,8 +73,9 @@ export default function DirectorConfig() {
                 {[5, 10, 20].map((num) => (
                   <button
                     key={num}
-                    className={`px-3 py-2 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium ${
-                      localRounds === num ? "bg-primary border-primary" : ""
+                    disabled={isStarting}
+                    className={`px-3 py-2 rounded-lg bg-muted/50 border border-border hover:border-primary hover:bg-primary/10 transition-all duration-300 text-foreground font-medium disabled:opacity-50 ${
+                      localRounds === num ? "bg-primary text-black border-primary" : ""
                     }`}
                     onClick={() => setLocalRounds(num)}
                   >
@@ -59,23 +86,22 @@ export default function DirectorConfig() {
             </div>
 
             <div className="pt-2 border-t border-border">
-              <p className="text-xs text-muted-foreground text-center">
-                10 pts por ronda correcta
-              </p>
+              <p className="text-xs text-muted-foreground text-center">10 pts por ronda correcta</p>
             </div>
           </div>
         </Card>
 
         <Button
           size="lg"
-          disabled={!localRounds}
-          className="w-full text-base py-5 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/20"
+          disabled={!localRounds || loading || !movies || isStarting}
+          className="w-full text-base py-5 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/20 text-black font-semibold disabled:opacity-50"
           onClick={handleStart}
         >
-          Comenzar
+          {loading ? "Cargando películas..." : isStarting ? "Preparando juego..." : "Comenzar"}
         </Button>
 
-        {/* Back Link */}
+        {error && <p className="text-sm text-red-500 text-center mt-2">Error al cargar películas. Intenta de nuevo.</p>}
+
         <div className="text-center mt-4">
           <Link to="/games" className="text-sm text-muted-foreground hover:text-primary transition-colors duration-300">
             ← Volver a juegos

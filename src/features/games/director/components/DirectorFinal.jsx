@@ -2,13 +2,17 @@ import { motion } from "framer-motion"
 import { Trophy, Star, Target, TrendingUp, Home, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import Confetti from "react-confetti"
 import { useEffect, useState } from "react"
+import { useDirectorContext } from "../context/DirectorContext"
 
 export default function DirectorFinal() {
+  const navigate = useNavigate()
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
   const [showConfetti, setShowConfetti] = useState(true)
+
+  const { score, rounds, resetGame } = useDirectorContext()
 
   useEffect(() => {
     setWindowSize({ width: window.innerWidth, height: window.innerHeight })
@@ -16,13 +20,11 @@ export default function DirectorFinal() {
     return () => clearTimeout(timer)
   }, [])
 
-  // Datos de ejemplo
-  const score = 8
-  const totalRounds = 10
+  const totalRounds = rounds
   const accuracy = (score / totalRounds) * 100
-  const correctAnswers = 8
-  const wrongAnswers = 2
-  const perfectRounds = 0
+  const correctAnswers = score
+  const wrongAnswers = totalRounds - score
+  const totalPoints = score * 10
 
   const getPerformanceMessage = () => {
     if (accuracy >= 80) return "¡Experto en directores! 🎬"
@@ -36,6 +38,11 @@ export default function DirectorFinal() {
     if (accuracy >= 60) return "from-primary to-accent"
     if (accuracy >= 40) return "from-yellow-500 to-orange-500"
     return "from-red-500 to-orange-500"
+  }
+
+  const handlePlayAgain = () => {
+    resetGame()
+    navigate("/games/director")
   }
 
   return (
@@ -56,22 +63,22 @@ export default function DirectorFinal() {
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: "spring", delay: 0.2 }}
-          className="text-center mb-8"
+          className="text-center mb-3"
         >
           <div
-            className={`inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent mb-4 shadow-2xl shadow-primary/50`}
+            className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${getPerformanceColor()} mb-2 shadow-2xl shadow-primary/50`}
           >
-            <Trophy className="w-12 h-12 text-white" />
+            <Trophy className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">¡Juego Terminado!</h1>
-          <p className="text-xl text-muted-foreground">{getPerformanceMessage()}</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-1">¡Juego Terminado!</h1>
+          <p className="text-lg text-muted-foreground">{getPerformanceMessage()}</p>
         </motion.div>
 
         {/* Score Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-8 mb-6">
-            <div className="text-center mb-6">
-              <div className="text-6xl font-bold mb-2">
+          <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-6 mb-5">
+            <div className="text-center mb-5 flex items-center gap-5 justify-center">
+              <div className="text-4xl font-bold mb-2">
                 <span className="text-primary">{score}</span>
                 <span className="text-muted-foreground">/{totalRounds}</span>
               </div>
@@ -79,10 +86,10 @@ export default function DirectorFinal() {
             </div>
 
             {/* Accuracy Bar */}
-            <div className="mb-6">
+            <div className="mb-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">Precisión</span>
-                <span className="text-sm font-bold text-primary">{accuracy}%</span>
+                <span className="text-sm font-bold text-primary">{accuracy.toFixed(0)}%</span>
               </div>
               <div className="h-4 bg-muted rounded-full overflow-hidden">
                 <motion.div
@@ -95,15 +102,15 @@ export default function DirectorFinal() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-3">
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 }}
               >
-                <Card className="bg-green-500/10 border-green-500/30 p-4 text-center">
-                  <Target className="w-6 h-6 text-green-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-green-500">{correctAnswers}</div>
+                <Card className="bg-green-500/10 border-green-500/30 p-3 text-center gap-2">
+                  <Target className="w-5 h-5 text-green-500 mx-auto mb-1" />
+                  <div className="text-xl font-bold text-green-500">{correctAnswers}</div>
                   <div className="text-xs text-muted-foreground">Correctas</div>
                 </Card>
               </motion.div>
@@ -113,9 +120,9 @@ export default function DirectorFinal() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7 }}
               >
-                <Card className="bg-red-500/10 border-red-500/30 p-4 text-center">
-                  <TrendingUp className="w-6 h-6 text-red-500 mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-red-500">{wrongAnswers}</div>
+                <Card className="bg-red-500/10 border-red-500/30 p-3 text-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-red-500 mx-auto mb-1" />
+                  <div className="text-xl font-bold text-red-500">{wrongAnswers}</div>
                   <div className="text-xs text-muted-foreground">Incorrectas</div>
                 </Card>
               </motion.div>
@@ -124,12 +131,11 @@ export default function DirectorFinal() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8 }}
-                className="col-span-2 md:col-span-1"
               >
-                <Card className="bg-primary/10 border-primary/30 p-4 text-center">
-                  <Star className="w-6 h-6 text-primary mx-auto mb-2" />
-                  <div className="text-2xl font-bold text-primary">{score * 10}</div>
-                  <div className="text-xs text-muted-foreground">Puntos Totales</div>
+                <Card className="bg-primary/10 border-primary/30 p-3 text-center gap-2">
+                  <Star className="w-5 h-5 text-primary mx-auto mb-1" />
+                  <div className="text-xl font-bold text-primary">{totalPoints}</div>
+                  <div className="text-xs text-muted-foreground">Puntos</div>
                 </Card>
               </motion.div>
             </div>
@@ -146,7 +152,8 @@ export default function DirectorFinal() {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button
               size="lg"
-              className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-black font-bold h-14 shadow-[0_0_30px_rgba(251,146,60,0.4)]"
+              onClick={handlePlayAgain}
+              className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-black font-bold h-12 shadow-[0_0_30px_rgba(251,146,60,0.4)]"
             >
               <RotateCcw className="w-5 h-5 mr-2" />
               Jugar de Nuevo
@@ -158,7 +165,7 @@ export default function DirectorFinal() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full border-primary/50 hover:bg-primary/10 font-bold h-14 bg-transparent"
+                className="w-full border-primary/50 hover:bg-primary/10 font-bold h-12 bg-transparent"
               >
                 <Home className="w-5 h-5 mr-2" />
                 Volver al Menú
