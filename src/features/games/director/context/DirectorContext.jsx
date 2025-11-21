@@ -19,25 +19,17 @@ export default function DirectorProvider({ children }) {
   }
 
   const generateRounds = async (movies, numRounds) => {
-    console.log("[v0] Generando rondas con", movies.length, "películas y", numRounds, "rondas")
 
     if (!movies || movies.length === 0) {
-      console.error("[v0] No hay películas en el pool")
       return false
     }
 
     const generated = generateDirectorRounds(movies, numRounds)
 
-    if (generated.length < numRounds) {
-      console.warn(`[v0] Se generaron ${generated.length} rondas de ${numRounds} solicitadas`)
-    }
-
     if (generated.length === 0) {
-      console.error("[v0] No se pudieron generar rondas")
       return false
     }
-
-    console.log("[v0] Rondas generadas exitosamente:", generated.length)
+    
     setRoundData(generated)
     setRounds(generated.length)
     return true

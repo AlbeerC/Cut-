@@ -34,12 +34,10 @@ export default function DirectorConfig() {
     }
 
     setIsStarting(true)
-    console.log("[v0] Iniciando juego con", movies.length, "películas y", localRounds, "rondas")
 
     const success = await generateRounds(movies, localRounds)
 
     if (success) {
-      console.log("[v0] Rondas generadas exitosamente, navegando a juego")
       navigate("/games/director/play")
     } else {
       alert("Error al generar las rondas. Intenta de nuevo.")

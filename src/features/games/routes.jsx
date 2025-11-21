@@ -3,6 +3,7 @@ import GamesLayout from "./components/GamesLayout";
 import versusRoutes from "./vsBattle/routes"
 import timelineRoutes from "./timeline/routes"
 import directorRoutes from "./director/routes"
+import sixDegreesRoutes from "./sixdegrees/routes"
 
 export default [
   {
@@ -13,6 +14,7 @@ export default [
       ...versusRoutes,
       ...timelineRoutes,
       ...directorRoutes,
+      ...sixDegreesRoutes
     ],
   },
 ]

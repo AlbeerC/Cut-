@@ -2,8 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Play, Sparkles } from "lucide-react";
 import heroImage from "@/shared/assets/cinema-movie-popcorn-film-camera.png";
 import bgImage from "@/shared/assets/cinema-film-reels-pattern.png";
+import { useNavigate } from "react-router";
 
 export default function HeroSection() {
+
+  const navigate = useNavigate()
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-10">
       {/* Background decoration */}
@@ -40,6 +44,7 @@ export default function HeroSection() {
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg h-14 px-8 group"
+                onClick={() => navigate("/games")}
               >
                 <Play className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 Explorar juegos

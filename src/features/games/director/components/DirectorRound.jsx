@@ -24,17 +24,7 @@ export default function DirectorRound() {
   } = useDirectorContext()
 
   useEffect(() => {
-    console.log(
-      "[v0] DirectorRound - currentRound:",
-      currentRound,
-      "roundData.length:",
-      roundData.length,
-      "currentRoundData:",
-      !!currentRoundData,
-    )
-
     if (roundData.length === 0) {
-      console.error("[v0] No hay datos de rondas, redirigiendo a configuración")
       navigate("/games/director")
     }
   }, [roundData, currentRound, navigate])
@@ -56,10 +46,8 @@ export default function DirectorRound() {
 
   const handleNext = () => {
     if (currentRound >= roundData.length) {
-      console.log("[v0] Juego terminado, navegando a resultados")
       navigate("/games/director/finish")
     } else {
-      console.log("[v0] Siguiente ronda")
       nextRound()
     }
   }
