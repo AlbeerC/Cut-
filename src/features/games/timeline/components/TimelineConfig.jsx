@@ -72,11 +72,11 @@ export default function TimelineConfig() {
 
         <Button
           size="lg"
-          disabled={!localRounds}
+          disabled={!localRounds || loading}
           className="w-full text-base py-5 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 shadow-lg shadow-primary/20"
           onClick={handleStart}
         >
-          Comenzar
+          {loading ? "Cargando películas..." : "Comenzar"}
         </Button>
 
         {/* Back Link */}

@@ -53,7 +53,7 @@ export default function GamesCenterPage() {
         "Pon a prueba tu conocimiento cinematográfico. Identifica películas a partir de pistas, citas o imágenes.",
       icon: Film,
       color: "from-accent to-primary",
-      href: "/games/guess",
+      href: "/games/sixdegrees",
       features: [
         "Modo rápido 10 rondas",
         "Sistema de puntaje",
