@@ -24,7 +24,7 @@ export default function VersusWinner({winner}) {
         </div>
 
         {/* Trophy Icon */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <div className="inline-block relative">
             <Trophy className="w-20 h-20 text-primary mx-auto animate-float" />
             <div className="absolute inset-0 blur-xl bg-primary/30 animate-pulse" />
@@ -32,11 +32,10 @@ export default function VersusWinner({winner}) {
         </div>
 
         {/* Winner Title */}
-        <div className="text-center mb-12 space-y-4">
+        <div className="text-center mb-4 space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
             ¡Tu ganadora es...!
           </h1>
-          <Badge className="bg-primary/20 text-primary border-primary/30 px-6 py-2 text-lg">Campeona del Torneo</Badge>
         </div>
 
         {/* Winner Card */}

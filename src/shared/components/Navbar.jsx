@@ -1,11 +1,15 @@
-import { useState } from "react"
-import { Link } from "react-router"
-import { Button } from "@/components/ui/button"
-import { Menu, X } from "lucide-react"
-import logo from "../assets/logo.png"
+import { useState } from "react";
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
+import logo from "../assets/logo.png";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { signOut } from "@/features/auth/lib/auth";
 
 export default function Navbar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { user } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-lg">
@@ -45,12 +49,30 @@ export default function Navbar() {
 
         {/* CTA Buttons */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-            Login
-          </Button>
-          <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-            Comenzar
-          </Button>
+          <Link
+            variant="ghost"
+            size="sm"
+            className="hidden sm:inline-flex"
+            to="/login"
+          >
+            {user ? user.email : "Login"}
+          </Link>
+          {user ? (
+            <Button
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+              onClick={signOut}
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+            >
+              Comenzar
+            </Button>
+          )}
 
           {/* Hamburger Button (Mobile) */}
           <button
@@ -97,12 +119,25 @@ export default function Navbar() {
             <Button variant="ghost" size="sm" className="w-full">
               Login
             </Button>
-            <Button size="sm" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold">
-              Comenzar
-            </Button>
+            {user ? (
+              <Button
+                size="sm"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+                onClick={signOut}
+              >
+                Logout
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+              >
+                Comenzar
+              </Button>
+            )}
           </div>
         </div>
       )}
     </header>
-  )
+  );
 }

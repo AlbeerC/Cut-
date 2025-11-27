@@ -91,8 +91,8 @@ export const SixDegreesProvider = ({ children }) => {
   const findSharedMovie = async (actor1Id, actor2Id) => {
     try {
       const [response1, response2] = await Promise.all([
-        fetch(`https://api.themoviedb.org/3/person/${actor1Id}/movie_credits?api_key=${TMDB_API_KEY}&language=es-ES`),
-        fetch(`https://api.themoviedb.org/3/person/${actor2Id}/movie_credits?api_key=${TMDB_API_KEY}&language=es-ES`),
+        fetch(`https://api.themoviedb.org/3/person/${actor1Id}/movie_credits?api_key=${TMDB_API_KEY}&language=en-US`),
+        fetch(`https://api.themoviedb.org/3/person/${actor2Id}/movie_credits?api_key=${TMDB_API_KEY}&language=en-US`),
       ])
 
       const [data1, data2] = await Promise.all([response1.json(), response2.json()])

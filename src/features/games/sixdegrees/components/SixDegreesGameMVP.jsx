@@ -29,6 +29,8 @@ export default function SixDegreesGameMVP() {
     if (!actorA || !actorB) {
       selectRandomActors()
     }
+
+    window.scrollTo(0, 0)
   }, [])
 
   if (!actorA || !actorB) {

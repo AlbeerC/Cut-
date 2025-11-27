@@ -23,6 +23,8 @@ export default function DirectorRound() {
     nextRound,
   } = useDirectorContext()
 
+  useEffect(() => window.scrollTo(0, 0), [])
+
   useEffect(() => {
     if (roundData.length === 0) {
       navigate("/games/director")

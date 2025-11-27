@@ -8,6 +8,7 @@ import { useConfigContext } from "../context/ConfigContext"
 import { getMoviesForVersus } from "../api/versus"
 import { motion, AnimatePresence } from "framer-motion"
 import { Film, Sparkles } from "lucide-react"
+import { useEffect } from "react"
 
 export default function VersusBattle() {
   const { size, category, decade, genre } = useConfigContext()
@@ -15,6 +16,10 @@ export default function VersusBattle() {
   const { data: moviesPool, loading, error } = useFetch(() => getMoviesForVersus(category.value, size, genre, decade))
   
   const { currentPair, winner, finalWinner, handleChoice, availableMovies } = useVersusBattle(moviesPool)
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   // Estado de carga mejorado
   if (loading) {
@@ -117,17 +122,7 @@ export default function VersusBattle() {
   const remainingMovies = currentPair.length + availableMovies?.length || 0
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-30 md:py-8">
-      {/* Round Indicator */}
-      <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="mb-8 text-center md:mb-8"
-      >
-        <Badge className="bg-primary/20 text-primary border-primary/30 px-6 py-2 text-lg md:text-base">
-          {remainingMovies} películas restantes
-        </Badge>
-      </motion.div>
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-30">
 
       {/* VS Title */}
       <motion.h2
@@ -142,7 +137,7 @@ export default function VersusBattle() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="mb-6 md:mb-8 text-lg font-bold text-center"
+        className="mb-6 text-lg font-bold text-center"
       >
         {availableMovies.length} películas restantes
       </motion.p>

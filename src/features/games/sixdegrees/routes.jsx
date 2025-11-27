@@ -1,8 +1,5 @@
-import SixDegreesFinal from "./components/SixDegreesFinal";
-import SixDegreesGame from "./components/SixDegreesGame";
 import SixDegreesGameMVP from "./components/SixDegreesGameMVP";
 import SixDegreesLayout from "./components/SixDegreesLayout";
-import SixDegreesResult from "./components/SixDegreesResult";
 import StartGamePage from "./pages/StartGamePage";
 
 
@@ -13,8 +10,6 @@ export default [
     children: [
       { index: true, element: <StartGamePage /> },
       { path: "play", element: <SixDegreesGameMVP /> },
-      { path: "result", element: <SixDegreesResult /> },
-      { path: "finish", element: <SixDegreesFinal /> }
     ],
   },
 ]
