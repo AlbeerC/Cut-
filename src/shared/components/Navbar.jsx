@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import logo from "../assets/logo.png";
@@ -10,6 +10,8 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const { user } = useAuth();
+
+  const navigate = useNavigate()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-lg">
@@ -53,14 +55,14 @@ export default function Navbar() {
             variant="ghost"
             size="sm"
             className="hidden sm:inline-flex"
-            to="/login"
+            to={user ? "/profile" : "/login"}
           >
             {user ? user.email : "Login"}
           </Link>
           {user ? (
             <Button
               size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold cursor-pointer"
               onClick={signOut}
             >
               Logout
@@ -116,7 +118,7 @@ export default function Navbar() {
             >
               Favoritos
             </Link>
-            <Button variant="ghost" size="sm" className="w-full">
+            <Button variant="ghost" size="sm" className="w-full" onClick={() => navigate("/login")}>
               Login
             </Button>
             {user ? (
