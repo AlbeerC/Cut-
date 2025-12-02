@@ -47,15 +47,15 @@ export default function GamesCenterPage() {
     },
     {
       id: 4,
-      title: "Adivina la Película",
-      subtitle: "Guess the Movie",
+      title: "Six degrees",
+      subtitle: "Conecta actores",
       description:
-        "Pon a prueba tu conocimiento cinematográfico. Identifica películas a partir de pistas, citas o imágenes.",
+        "Conecta dos actores a través de películas compartidas. ¿Cómo se conectan los actores?",
       icon: Film,
       color: "from-accent to-primary",
       href: "/games/sixdegrees",
       features: [
-        "Modo rápido 10 rondas",
+        "2 - 6 pasos",
         "Sistema de puntaje",
         "Múltiples dificultades",
       ],
