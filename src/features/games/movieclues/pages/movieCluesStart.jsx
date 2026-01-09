@@ -1,4 +1,4 @@
-import MovieCluesConfig from "../components/MovieCluesConfig"
+import MovieCluesConfig from "../components/movieCluesConfig"
 
 export default function StartMovieCluesPage() {
   return <MovieCluesConfig />
