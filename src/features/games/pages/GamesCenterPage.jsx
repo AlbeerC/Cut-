@@ -62,16 +62,16 @@ export default function GamesCenterPage() {
     },
     {
       id: 5,
-      title: "Torneo de Géneros",
-      subtitle: "Battle by Genre",
+      title: "Adivina la película",
+      subtitle: "Guess the Movie",
       description:
-        "Elige tu género favorito y enfrenta las mejores películas. Las ganadoras compiten entre sí por el título final.",
+        "Adivina la película a través de pistas visuales",
       icon: Clock,
       color: "from-chart-5 to-primary",
-      href: "/games/genres",
+      href: "/games/movieclues",
       features: [
-        "Acción, Drama, Terror",
-        "Enfrentamientos por género",
+        "3 pistas",
+        "Sistema de puntaje",
         "Campeón absoluto",
       ],
     },

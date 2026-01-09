@@ -4,6 +4,7 @@ import versusRoutes from "./vsBattle/routes"
 import timelineRoutes from "./timeline/routes"
 import directorRoutes from "./director/routes"
 import sixDegreesRoutes from "./sixdegrees/routes"
+import movieCluesRoutes from "./movieclues/routes"
 
 export default [
   {
@@ -14,7 +15,8 @@ export default [
       ...versusRoutes,
       ...timelineRoutes,
       ...directorRoutes,
-      ...sixDegreesRoutes
+      ...sixDegreesRoutes,
+      ...movieCluesRoutes
     ],
   },
 ]
