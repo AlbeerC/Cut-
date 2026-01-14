@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
@@ -18,6 +18,10 @@ import {
 export default function SixDegreesConfig() {
   const router = useNavigate()
   const { updateConfig, selectRandomActors } = useSixDegrees()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const [selectedDifficulty, setSelectedDifficulty] = useState("medium")
   const [selectedMode, setSelectedMode] = useState("classic")
@@ -131,7 +135,7 @@ export default function SixDegreesConfig() {
           </Card>
 
           {/* Game Mode */}
-          <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
+{/*           <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
             <h2 className="text-lg font-semibold mb-3">Modo de Juego</h2>
             <div className="space-y-2">
               {Object.entries(modes).map(([key, mode]) => {
@@ -160,7 +164,7 @@ export default function SixDegreesConfig() {
                 )
               })}
             </div>
-          </Card>
+          </Card> */}
 
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
             <Button

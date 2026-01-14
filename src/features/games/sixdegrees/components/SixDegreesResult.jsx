@@ -1,13 +1,22 @@
-import { useNavigate } from "react-router"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Trophy, ArrowRight, Film, Award, Lightbulb, TrendingUp, Undo2, XCircle } from "lucide-react"
-import { useSixDegrees } from "../context/SixDegreesContext"
+import { useNavigate } from "react-router";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Trophy,
+  ArrowRight,
+  Film,
+  Award,
+  Lightbulb,
+  TrendingUp,
+  Undo2,
+  XCircle,
+} from "lucide-react";
+import { useSixDegrees } from "../context/SixDegreesContext";
 
 export default function SixDegreesResult() {
-  const router = useNavigate()
+  const router = useNavigate();
   const {
     actorA,
     actorB,
@@ -22,31 +31,35 @@ export default function SixDegreesResult() {
     lossReason,
     timeRemaining,
     initialTime,
-  } = useSixDegrees()
+  } = useSixDegrees();
 
   const handlePlayAgain = async () => {
-    await selectRandomActors()
-    router("/games/sixdegrees/play")
-  }
+    await selectRandomActors();
+    router("/games/sixdegrees/play");
+  };
 
   const handleNewConfig = () => {
-    router("/games/sixdegrees")
-  }
+    router("/games/sixdegrees");
+  };
 
   if (!actorA || !actorB) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="p-8 max-w-md text-center">
-          <p className="text-muted-foreground mb-4">No hay datos de partida disponibles</p>
-          <Button onClick={() => router("/games/sixdegrees")}>Volver al Inicio</Button>
+          <p className="text-muted-foreground mb-4">
+            No hay datos de partida disponibles
+          </p>
+          <Button onClick={() => router("/games/sixdegrees")}>
+            Volver al Inicio
+          </Button>
         </Card>
       </div>
-    )
+    );
   }
 
-  const isWin = gameWon && chain.length > 0
-  const isLoss = gameLost
-  const timeUsed = initialTime ? initialTime - timeRemaining : 0
+  const isWin = gameWon && chain.length > 0;
+  const isLoss = gameLost;
+  const timeUsed = initialTime ? initialTime - timeRemaining : 0;
 
   return (
     <div className="min-h-screen bg-background p-4 pt-30">
@@ -65,13 +78,15 @@ export default function SixDegreesResult() {
           >
             {isWin ? "🎉" : "😔"}
           </motion.div>
-          <h1 className="text-3xl font-bold mb-2">{isWin ? "¡Conexión Exitosa!" : "Partida Terminada"}</h1>
+          <h1 className="text-3xl font-bold mb-2">
+            {isWin ? "¡Conexión Exitosa!" : "Partida Terminada"}
+          </h1>
           <p className="text-muted-foreground">
             {isWin
               ? `Conectaste ${actorA.name} con ${actorB.name}`
               : lossReason === "timeout"
-                ? "Se acabó el tiempo"
-                : "Te rendiste"}
+              ? "Se acabó el tiempo"
+              : "Te rendiste"}
           </p>
         </motion.div>
 
@@ -119,30 +134,48 @@ export default function SixDegreesResult() {
 
         {/* Score Breakdown - only if won */}
         {isWin && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
             <Card className="p-4 mb-4 bg-card/50 backdrop-blur-sm">
-              <h2 className="text-lg font-semibold mb-3">Desglose de Puntuación</h2>
+              <h2 className="text-lg font-semibold mb-3">
+                Desglose de Puntuación
+              </h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Puntos base</span>
                   <span className="font-semibold">+100</span>
                 </div>
-                {chain.length - 1 > 2 && (
+                {chain.length - 1 > config.maxSteps && (
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Pasos extra ({chain.length - 1 - 2})</span>
-                    <span className="font-semibold text-red-400">-{(chain.length - 1 - 2) * 15}</span>
+                    <span className="text-muted-foreground">
+                      Pasos extra ({chain.length - 1 - config.maxSteps})
+                    </span>
+                    <span className="font-semibold text-red-400">
+                      -{(chain.length - 1 - config.maxSteps) * 15}
+                    </span>
                   </div>
                 )}
                 {hintsUsed > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Pistas usadas ({hintsUsed})</span>
-                    <span className="font-semibold text-red-400">-{hintsUsed * 10}</span>
+                    <span className="text-muted-foreground">
+                      Pistas usadas ({hintsUsed})
+                    </span>
+                    <span className="font-semibold text-red-400">
+                      -{hintsUsed * 10}
+                    </span>
                   </div>
                 )}
                 {undoCount > 0 && (
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Deshacer ({undoCount})</span>
-                    <span className="font-semibold text-red-400">-{undoCount * 2}</span>
+                    <span className="text-muted-foreground">
+                      Deshacer ({undoCount})
+                    </span>
+                    <span className="font-semibold text-red-400">
+                      -{undoCount * 2}
+                    </span>
                   </div>
                 )}
                 {chain.length - 1 === 2 && (
@@ -157,15 +190,21 @@ export default function SixDegreesResult() {
                     <span className="font-semibold text-accent">+30</span>
                   </div>
                 )}
-                {initialTime && timeRemaining > 0 && timeRemaining / initialTime > 0.5 && (
-                  <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Bonus de tiempo</span>
-                    <span className="font-semibold text-accent">+20</span>
-                  </div>
-                )}
+                {initialTime &&
+                  timeRemaining > 0 &&
+                  timeRemaining / initialTime > 0.5 && (
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">
+                        Bonus de tiempo
+                      </span>
+                      <span className="font-semibold text-accent">+20</span>
+                    </div>
+                  )}
                 <div className="border-t border-border pt-2 mt-2 flex justify-between items-center">
                   <span className="font-semibold">Total</span>
-                  <span className="text-2xl font-bold text-primary">{score}</span>
+                  <span className="text-2xl font-bold text-primary">
+                    {score}
+                  </span>
                 </div>
               </div>
             </Card>
@@ -174,7 +213,11 @@ export default function SixDegreesResult() {
 
         {/* Your Path */}
         {chain.length > 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
             <Card className="p-4 mb-6 bg-card/50 backdrop-blur-sm border-primary/20">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-semibold">Tu Ruta</h2>
@@ -185,11 +228,27 @@ export default function SixDegreesResult() {
               </div>
               <div className="space-y-3">
                 {chain.map((link, index) => (
-                  <div key={index}>
+                  <div key={index} className="space-y-2">
+                    {/* Película ANTES del actor (excepto el primero) */}
+                    {index > 0 && link.movie && (
+                      <div className="ml-14 flex items-center gap-2">
+                        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <Badge variant="outline" className="text-xs">
+                          <Film className="w-3 h-3 mr-1" />
+                          {link.movie.title} ({link.movie.year})
+                        </Badge>
+                      </div>
+                    )}
+
+                    {/* Actor */}
                     <div className="flex items-center gap-3">
-                      <Badge variant="secondary" className="w-8 h-8 flex items-center justify-center text-sm shrink-0">
+                      <Badge
+                        variant="secondary"
+                        className="w-8 h-8 flex items-center justify-center text-sm shrink-0"
+                      >
                         {index + 1}
                       </Badge>
+
                       <div className="flex items-center gap-2 flex-1 min-w-0">
                         <div className="relative w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0">
                           {link.actor.profile_path && (
@@ -200,20 +259,15 @@ export default function SixDegreesResult() {
                             />
                           )}
                         </div>
-                        <span className="font-medium truncate" title={link.actor.name}>
+
+                        <span
+                          className="font-medium truncate"
+                          title={link.actor.name}
+                        >
                           {link.actor.name}
                         </span>
                       </div>
                     </div>
-                    {link.movie && (
-                      <div className="ml-14 mt-2 flex items-center gap-2">
-                        <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                        <Badge variant="outline" className="text-xs">
-                          <Film className="w-3 h-3 mr-1" />
-                          {link.movie.title} ({link.movie.year})
-                        </Badge>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
@@ -228,7 +282,12 @@ export default function SixDegreesResult() {
           transition={{ delay: 0.4 }}
           className="grid grid-cols-2 gap-3"
         >
-          <Button variant="outline" size="lg" onClick={handleNewConfig} className="w-full bg-transparent">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={handleNewConfig}
+            className="w-full bg-transparent"
+          >
             Nueva Configuración
           </Button>
           <Button
@@ -241,5 +300,5 @@ export default function SixDegreesResult() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

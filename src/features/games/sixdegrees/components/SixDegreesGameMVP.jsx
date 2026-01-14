@@ -1,12 +1,23 @@
-import { useEffect, useState } from "react"
-import { useNavigate } from "react-router"
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { ArrowRight, Search, Undo2, Film, Lightbulb, Award, Timer, Flag, Loader2, AlertCircle } from "lucide-react"
-import { useSixDegrees } from "../context/SixDegreesContext"
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  ArrowRight,
+  Search,
+  Undo2,
+  Film,
+  Lightbulb,
+  Award,
+  Timer,
+  Flag,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
+import { useSixDegrees } from "../context/SixDegreesContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,10 +27,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 export default function SixDegreesGameMVP() {
-  const router = useNavigate()
+  const router = useNavigate();
   const {
     actorA,
     actorB,
@@ -44,91 +55,104 @@ export default function SixDegreesGameMVP() {
     stopTimer,
     setGameLost,
     setLossReason,
-  } = useSixDegrees()
+  } = useSixDegrees();
 
-  const [showGiveUpDialog, setShowGiveUpDialog] = useState(false)
-  const [showHintDialog, setShowHintDialog] = useState(false)
-  const [showUndoDialog, setShowUndoDialog] = useState(false)
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const [showGiveUpDialog, setShowGiveUpDialog] = useState(false);
+  const [showHintDialog, setShowHintDialog] = useState(false);
+  const [showUndoDialog, setShowUndoDialog] = useState(false);
 
   useEffect(() => {
     if (config.timeLimit && timeRemaining > 0 && !gameWon) {
       const timer = setInterval(() => {
         setTimeRemaining((prev) => {
           if (prev <= 1) {
-            clearInterval(timer)
-            setGameLost(true)
-            setLossReason("timeout")
+            clearInterval(timer);
+            setGameLost(true);
+            setLossReason("timeout");
             // Navigate after a brief delay
             setTimeout(() => {
-              router("/games/sixdegrees/result")
-            }, 1500)
-            return 0
+              router("/games/sixdegrees/result");
+            }, 1500);
+            return 0;
           }
-          return prev - 1
-        })
-      }, 1000)
+          return prev - 1;
+        });
+      }, 1000);
 
-      startTimer(timer)
+      startTimer(timer);
 
       return () => {
-        clearInterval(timer)
-      }
+        clearInterval(timer);
+      };
     }
-  }, [config.timeLimit, gameWon])
+  }, [config.timeLimit, gameWon]);
 
   useEffect(() => {
     if (gameWon) {
-      stopTimer()
+      stopTimer();
       // Short delay just for animation smoothness
       const timeout = setTimeout(() => {
-        router("/games/sixdegrees/result")
-      }, 800)
+        router("/games/sixdegrees/result");
+      }, 800);
 
-      return () => clearTimeout(timeout)
+      return () => clearTimeout(timeout);
     }
-  }, [gameWon, router, stopTimer])
+  }, [gameWon, router, stopTimer]);
 
   if (!actorA || !actorB) {
-    router("/games/sixdegrees")
-    return null
+    router("/games/sixdegrees");
+    return null;
   }
 
   const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, "0")}`
-  }
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
+  };
 
-  const isTimeRunningOut = config.timeLimit && timeRemaining < 30 && timeRemaining > 0
+  const isTimeRunningOut =
+    config.timeLimit && timeRemaining < 30 && timeRemaining > 0;
 
   const handleHintConfirm = () => {
-    setShowHintDialog(false)
-    requestHint()
-  }
+    setShowHintDialog(false);
+    requestHint();
+  };
 
   const handleUndoConfirm = () => {
-    setShowUndoDialog(false)
-    handleUndo()
-  }
+    setShowUndoDialog(false);
+    handleUndo();
+  };
 
   const handleGiveUpConfirm = () => {
-    setShowGiveUpDialog(false)
-    handleGiveUp()
+    setShowGiveUpDialog(false);
+    handleGiveUp();
     setTimeout(() => {
-      router("/games/sixdegrees/result")
-    }, 500)
-  }
+      router("/games/sixdegrees/result");
+    }, 500);
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 pt-30">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4"
+        >
           <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
             <h1 className="text-xl font-bold">Six Degrees</h1>
             <div className="flex items-center gap-2 flex-wrap">
               {config.timeLimit && (
-                <Badge className={`text-xs px-2 py-1 ${isTimeRunningOut ? "bg-red-500 text-white" : "bg-primary"}`}>
+                <Badge
+                  className={`text-xs px-2 py-1 ${
+                    isTimeRunningOut ? "bg-red-500 text-white" : "bg-primary"
+                  }`}
+                >
                   <Timer className="w-3 h-3 mr-1" />
                   {formatTime(timeRemaining)}
                 </Badge>
@@ -145,7 +169,10 @@ export default function SixDegreesGameMVP() {
         </motion.div>
 
         {/* Objetivo */}
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
           <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20 mb-4">
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <div className="flex items-center gap-3">
@@ -158,7 +185,9 @@ export default function SixDegreesGameMVP() {
                 </div>
                 <div className="text-left">
                   <p className="text-xs text-muted-foreground">Desde</p>
-                  <p className="font-semibold text-sm leading-tight">{actorA.name}</p>
+                  <p className="font-semibold text-sm leading-tight">
+                    {actorA.name}
+                  </p>
                 </div>
               </div>
 
@@ -167,7 +196,9 @@ export default function SixDegreesGameMVP() {
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <p className="text-xs text-muted-foreground">Hasta</p>
-                  <p className="font-semibold text-sm leading-tight">{actorB.name}</p>
+                  <p className="font-semibold text-sm leading-tight">
+                    {actorB.name}
+                  </p>
                 </div>
                 <div className="relative w-14 h-14 rounded-full overflow-hidden ring-2 ring-accent flex-shrink-0">
                   <img
@@ -186,28 +217,11 @@ export default function SixDegreesGameMVP() {
           <div className="flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-2">
             {chain.map((link, index) => (
               <div key={index} className="flex items-center gap-2 flex-wrap">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="flex items-center gap-2 bg-secondary/50 rounded-lg p-2"
-                >
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden ring-1 ring-primary/30 flex-shrink-0">
-                    <img
-                      src={`https://image.tmdb.org/t/p/w200${link.actor.profile_path}`}
-                      alt={link.actor.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium truncate max-w-[120px]" title={link.actor.name}>
-                      {link.actor.name}
-                    </p>
-                  </div>
-                </motion.div>
-
-                {link.movie && (
+                {/* Película ANTES del actor (excepto el primero) */}
+                {index > 0 && link.movie && (
                   <>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0 hidden md:block" />
+                    <ArrowRight className="w-4 h-4 text-muted-foreground hidden md:block" />
+
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
@@ -215,17 +229,34 @@ export default function SixDegreesGameMVP() {
                     >
                       <div className="flex items-center gap-1">
                         <Film className="w-3 h-3 text-primary flex-shrink-0" />
-                        <p
-                          className="text-xs text-muted-foreground truncate max-w-[150px]"
-                          title={`${link.movie.title} (${link.movie.year})`}
-                        >
+                        <p className="text-xs text-muted-foreground truncate max-w-[150px]">
                           {link.movie.title} ({link.movie.year})
                         </p>
                       </div>
                     </motion.div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0 hidden md:block" />
+
+                    <ArrowRight className="w-4 h-4 text-muted-foreground hidden md:block" />
                   </>
                 )}
+
+                {/* Actor */}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="flex items-center gap-2 bg-secondary/50 rounded-lg p-2"
+                >
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden ring-1 ring-primary/30">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w200${link.actor.profile_path}`}
+                      alt={link.actor.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <p className="text-xs font-medium truncate max-w-[120px]">
+                    {link.actor.name}
+                  </p>
+                </motion.div>
               </div>
             ))}
           </div>
@@ -244,7 +275,9 @@ export default function SixDegreesGameMVP() {
                   <Award className="w-8 h-8 text-accent flex-shrink-0" />
                   <div>
                     <h3 className="font-bold">¡Conectado!</h3>
-                    <p className="text-sm text-muted-foreground">Completaste la conexión en {chain.length - 1} pasos</p>
+                    <p className="text-sm text-muted-foreground">
+                      Completaste la conexión en {chain.length - 1} pasos
+                    </p>
                   </div>
                 </div>
               </Card>
@@ -281,7 +314,9 @@ export default function SixDegreesGameMVP() {
                       : "bg-destructive/20 text-destructive border border-destructive/30"
                   }`}
                 >
-                  {!errorMessage.startsWith("💡") && <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />}
+                  {!errorMessage.startsWith("💡") && (
+                    <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  )}
                   <span>{errorMessage}</span>
                 </motion.div>
               )}
@@ -301,15 +336,17 @@ export default function SixDegreesGameMVP() {
               </div>
             )}
 
-            {!isSearching && searchQuery.trim() && searchResults.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-sm text-muted-foreground mb-3 p-3 bg-muted/50 rounded-lg"
-              >
-                No se encontraron actores con ese nombre
-              </motion.div>
-            )}
+            {!isSearching &&
+              searchQuery.trim() &&
+              searchResults.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-sm text-muted-foreground mb-3 p-3 bg-muted/50 rounded-lg"
+                >
+                  No se encontraron actores con ese nombre
+                </motion.div>
+              )}
 
             {/* Resultados de búsqueda */}
             {searchResults.length > 0 && (
@@ -331,13 +368,18 @@ export default function SixDegreesGameMVP() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-xs">?</div>
+                        <div className="w-full h-full flex items-center justify-center text-xs">
+                          ?
+                        </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{actor.name}</p>
+                      <p className="text-sm font-medium truncate">
+                        {actor.name}
+                      </p>
                       <p className="text-xs text-muted-foreground">
-                        {actor.known_for_department || "Actor"} • Popularidad: {Math.round(actor.popularity || 0)}
+                        {actor.known_for_department || "Actor"} • Popularidad:{" "}
+                        {Math.round(actor.popularity || 0)}
                       </p>
                     </div>
                   </motion.div>
@@ -356,7 +398,9 @@ export default function SixDegreesGameMVP() {
           >
             <Undo2 className="w-4 h-4 mr-2" />
             Deshacer
-            {undoCount === 0 && <span className="ml-1 text-xs text-destructive">(-2pts)</span>}
+            {undoCount === 0 && (
+              <span className="ml-1 text-xs text-destructive">(-2pts)</span>
+            )}
           </Button>
 
           <Button
@@ -366,7 +410,8 @@ export default function SixDegreesGameMVP() {
             className="flex-1 bg-transparent"
           >
             <Lightbulb className="w-4 h-4 mr-2" />
-            Pista ({3 - hintsUsed})<span className="ml-1 text-xs text-destructive">(-10pts)</span>
+            Pista ({3 - hintsUsed})
+            <span className="ml-1 text-xs text-destructive">(-10pts)</span>
           </Button>
 
           <Button
@@ -386,12 +431,15 @@ export default function SixDegreesGameMVP() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Usar una pista?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esto te costará 10 puntos de tu puntuación final. Te quedan {3 - hintsUsed} pistas disponibles.
+              Esto te costará 10 puntos de tu puntuación final. Te quedan{" "}
+              {3 - hintsUsed} pistas disponibles.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleHintConfirm}>Usar Pista</AlertDialogAction>
+            <AlertDialogAction onClick={handleHintConfirm}>
+              Usar Pista
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -400,11 +448,15 @@ export default function SixDegreesGameMVP() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>¿Deshacer último paso?</AlertDialogTitle>
-            <AlertDialogDescription>Esto te costará 2 puntos de tu puntuación final.</AlertDialogDescription>
+            <AlertDialogDescription>
+              Esto te costará 2 puntos de tu puntuación final.
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleUndoConfirm}>Deshacer</AlertDialogAction>
+            <AlertDialogAction onClick={handleUndoConfirm}>
+              Deshacer
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -414,17 +466,21 @@ export default function SixDegreesGameMVP() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Rendirse?</AlertDialogTitle>
             <AlertDialogDescription>
-              ¿Estás seguro de que quieres rendirte? Perderás esta partida y no se guardará tu progreso.
+              ¿Estás seguro de que quieres rendirte? Perderás esta partida y no
+              se guardará tu progreso.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Continuar Jugando</AlertDialogCancel>
-            <AlertDialogAction onClick={handleGiveUpConfirm} className="bg-destructive">
+            <AlertDialogAction
+              onClick={handleGiveUpConfirm}
+              className="bg-destructive"
+            >
               Sí, Rendirse
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }

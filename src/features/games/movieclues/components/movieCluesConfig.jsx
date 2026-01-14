@@ -9,7 +9,8 @@ import { useMovieCluesContext } from "../context/MovieCluesContext"
 
 export default function MovieCluesConfig() {
   const navigate = useNavigate()
-  const { data: movies, loading, error } = useFetch(() => getPoolMovies(), [])
+  const { data: movies, loading, error } = useFetch(() => getPoolMovies(200), [])
+  console.log(movies)
 
   const { setRounds, setMoviePool, generateRounds, resetGame } = useMovieCluesContext()
   const [localRounds, setLocalRounds] = useState(5)

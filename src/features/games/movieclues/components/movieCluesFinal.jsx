@@ -44,7 +44,7 @@ export default function MovieCluesFinal() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 pt-20">
+    <div className="min-h-screen bg-background p-4 pt-30">
       {showConfetti && accuracy >= 60 && (
         <Confetti
           width={windowSize.width}
@@ -163,7 +163,7 @@ export default function MovieCluesFinal() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full border-primary/50 hover:bg-primary/10 font-bold h-12 bg-transparent"
+                className="w-full border-primary/50  font-bold h-12 bg-transparent"
               >
                 <Home className="w-5 h-5 mr-2" />
                 Volver al Menú

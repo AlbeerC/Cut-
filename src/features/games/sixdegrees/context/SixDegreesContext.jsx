@@ -219,7 +219,7 @@ export const SixDegreesProvider = ({ children }) => {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
-        const finalScore = calculateScore(newChain.length - 1, hintsUsed, undoCount, timeRemaining, initialTime)
+        const finalScore = calculateScore(newChain.length - 1, hintsUsed, undoCount, timeRemaining, initialTime, config.maxSteps)
         setScore(finalScore)
       }
     } catch (error) {
@@ -298,9 +298,8 @@ export const SixDegreesProvider = ({ children }) => {
     }
   }
 
-  const calculateScore = (steps, hints, undos, timeLeft, totalTime) => {
+  const calculateScore = (steps, hints, undos, timeLeft, totalTime, optimalSteps) => {
     const BASE_SCORE = 100
-    const optimalSteps = 2
 
     let finalScore = BASE_SCORE
 

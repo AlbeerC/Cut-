@@ -49,7 +49,7 @@ export default function MovieCluesProvider({ children }) {
     try {
       const API_KEY = import.meta.env.VITE_TMDB_API_KEY
       const response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=es-ES&page=1`,
+        `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`,
       )
       const data = await response.json()
       setSearchResults(data.results.slice(0, 8)) // Limit to 8 results
