@@ -1,6 +1,19 @@
-import { Trophy, Gamepad2, Clock, Star } from "lucide-react"
+import { Trophy, Gamepad2, Clock, Star } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export default function MainInfoProfile() {
+  const { profile } = useAuth();
+
+  const getDate = (date) => {
+    const d = new Date(date);
+
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const year = d.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
   // MOCK DATA (visual only)
   const user = {
     username: "cinefan22",
@@ -15,24 +28,26 @@ export default function MainInfoProfile() {
       { id: 2, game: "Timeline", score: 480, date: "Hace 4 días" },
       { id: 3, game: "Versus", score: 270, date: "Hace 1 semana" },
     ],
-  }
+  };
+
+  if (!profile) return null;
 
   return (
     <div className="container max-w-4xl mx-auto pt-30 pb-10 px-4">
       {/* Header */}
       <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-6 flex items-center gap-6 shadow-lg">
         <img
-          src={user.avatar_url}
+          src={profile.avatar_url}
           alt="Avatar"
           className="w-24 h-24 rounded-2xl object-cover border border-border"
         />
 
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold">{user.username}</h1>
-          <p className="text-muted-foreground">Miembro desde 2024</p>
+          <h1 className="text-3xl font-bold">{profile.username}</h1>
+          <p className="text-muted-foreground">Miembro desde el {getDate(profile.created_at)}</p>
           <div className="flex items-center gap-2 mt-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
-            <span className="font-semibold">{user.points} puntos</span>
+            <span className="font-semibold">{profile.points} puntos</span>
           </div>
         </div>
       </div>
@@ -94,5 +109,5 @@ export default function MainInfoProfile() {
         </div>
       </div>
     </div>
-  )
+  );
 }

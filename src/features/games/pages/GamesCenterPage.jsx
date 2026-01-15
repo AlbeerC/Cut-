@@ -23,11 +23,15 @@ export default function GamesHub() {
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [hoveredGame, setHoveredGame] = useState(null);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const games = [
     {
       id: 1,
-      title: "Movie Versus",
-      subtitle: "Eliminatoria Clásica",
+      title: "Batalla de películas",
+      subtitle: "Movie Versus",
       description:
         "Enfrenta películas en duelos épicos. Elige tu favorita en cada ronda hasta coronar a la ganadora definitiva.",
       longDescription:
@@ -38,11 +42,11 @@ export default function GamesHub() {
         "https://image.tmdb.org/t/p/original/ii8QGacT3MXESqBckQlyrATY0lT.jpg",
       href: "/games/versus",
       features: [
-        "8-16 películas",
+        "10-30 películas",
         "Torneos por categoría",
         "Comparte resultados",
       ],
-      stats: { difficulty: "Baja", avgTime: "2 min" },
+      stats: { difficulty: "Baja", avgTime: "3 min" },
     },
     {
       id: 2,
@@ -58,12 +62,12 @@ export default function GamesHub() {
         "https://w0.peakpx.com/wallpaper/16/113/HD-wallpaper-movie-pulp-fiction.jpg",
       href: "/games/director",
       features: ["Directores famosos", "Opciones múltiples", "Aprende jugando"],
-      stats: { difficulty: "Media", avgTime: "3 min" },
+      stats: { difficulty: "Media", avgTime: "4 min" },
     },
     {
       id: 3,
-      title: "Timeline Challenge",
-      subtitle: "Ordena por año",
+      title: "Línea del tiempo",
+      subtitle: "Timeline Challenge",
       description:
         "Ordena 4 películas según su año de estreno. ¿Cuánto conoces sobre la historia del cine?",
       longDescription:
@@ -78,7 +82,7 @@ export default function GamesHub() {
         "Puntos por acierto",
         "Décadas diferentes",
       ],
-      stats: { difficulty: "Alta", avgTime: "4 min" },
+      stats: { difficulty: "Alta", avgTime: "5 min" },
     },
     {
       id: 4,
@@ -98,12 +102,12 @@ export default function GamesHub() {
         "Sistema de puntaje",
         "Múltiples dificultades",
       ],
-      stats: { difficulty: "Media", avgTime: "4 min" },
+      stats: { difficulty: "Media", avgTime: "5 min" },
     },
     {
       id: 5,
-      title: "Six degrees",
-      subtitle: "Conecta actores",
+      title: "Conectados",
+      subtitle: "Six degrees",
       description:
         "Conecta dos actores a través de películas compartidas. ¿Cómo se conectan los actores?",
       longDescription:
@@ -114,7 +118,7 @@ export default function GamesHub() {
         "https://wallpapers.com/images/hd/heat-movie-mysterious-val-kimer-robert-de-niro-al-pacino-lsbed7icd7wwmhkz.jpg",
       href: "/games/sixdegrees",
       features: ["Actor A, Actor B", "Enlaces múltiples", "Múltiples opciones"],
-      stats: { difficulty: "Alta", avgTime: "5 min" },
+      stats: { difficulty: "Alta", avgTime: "6 min" },
     },
   ];
 
@@ -180,7 +184,7 @@ export default function GamesHub() {
               {/* Stats */}
               <div className="flex gap-6">
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" />
+                  <Cog className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-2xl font-bold">
                       {featuredGame.stats.difficulty}

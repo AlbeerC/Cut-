@@ -162,7 +162,7 @@ export default function SixDegreesGameMVP() {
               </Badge>
               <Badge className="text-xs px-2 py-1 bg-accent">
                 <Award className="w-3 h-3 mr-1" />
-                Hints: {hintsUsed}/3
+                Pistas: {hintsUsed}/3
               </Badge>
             </div>
           </div>

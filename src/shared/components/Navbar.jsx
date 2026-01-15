@@ -5,11 +5,12 @@ import { Menu, X } from "lucide-react";
 import logo from "../assets/logo.png";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { signOut } from "@/features/auth/lib/auth";
+import { ProfileButton } from "@/features/auth/components/ProfileButton";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const { user } = useAuth();
+  const { profile } = useAuth();
 
   const navigate = useNavigate()
 
@@ -23,6 +24,12 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
+          <Link
+            to="/"
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Inicio
+          </Link>
           <Link
             to="/games"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -41,40 +48,11 @@ export default function Navbar() {
           >
             Torneos
           </Link>
-          <Link
-            to="#favoritos"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Favoritos
-          </Link>
         </div>
 
         {/* CTA Buttons */}
         <div className="flex items-center gap-3">
-          <Link
-            variant="ghost"
-            size="sm"
-            className="hidden sm:inline-flex"
-            to={user ? "/profile" : "/login"}
-          >
-            {user ? user.email : "Login"}
-          </Link>
-          {user ? (
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold cursor-pointer"
-              onClick={signOut}
-            >
-              Logout
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-            >
-              Comenzar
-            </Button>
-          )}
+          <ProfileButton onClick={() => profile ? navigate("/profile") : navigate("/login")} />
 
           {/* Hamburger Button (Mobile) */}
           <button
@@ -121,7 +99,7 @@ export default function Navbar() {
             <Button variant="ghost" size="sm" className="w-full" onClick={() => navigate("/login")}>
               Login
             </Button>
-            {user ? (
+            {profile ? (
               <Button
                 size="sm"
                 className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"

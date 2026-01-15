@@ -32,13 +32,13 @@ export default function FeaturesSection() {
         {/* Section header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold text-balance">
-            Tres maneras de vivir{" "}
+            Viví el cine {" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-              tu pasión por el cine
+              jugando
             </span>
           </h2>
           <p className="text-lg text-muted-foreground text-pretty">
-            Elige tu juego favorito y demuestra que eres un verdadero cinéfilo
+            Explorá distintos juegos y desafíos pensados para verdaderos amantes del cine.
           </p>
         </div>
 

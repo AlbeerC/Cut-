@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, TrendingUp, Award, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const rankings = [
   { rank: 1, name: "CineManiac", points: 15420, avatar: "🎬" },
@@ -10,7 +11,10 @@ const rankings = [
   { rank: 5, name: "CinemaKing", points: 11560, avatar: "👑" },
 ];
 
+
 export default function CommunitySection() {
+  const navigate = useNavigate()
+
   return (
     <section id="ranking" className="py-24 relative">
       <div className="container mx-auto px-4 lg:px-8">
@@ -19,14 +23,15 @@ export default function CommunitySection() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h2 className="text-4xl md:text-5xl font-bold text-balance">
-                Sumate a la{" "}
+                Sé parte de los primeros cinéfilos de{" "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-                  comunidad cinéfila
+                  Cut!
                 </span>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
-                Participá en desafíos, ganá puntos y conectá con otros fans del
-                cine. Cada partida te acerca a los primeros lugares del ranking.
+                Jugá, sumá puntos y dejá tu marca en los rankings. Estás
+                entrando en una comunidad que recién empieza — cada partida
+                cuenta desde el primer día.
               </p>
             </div>
 
@@ -35,9 +40,11 @@ export default function CommunitySection() {
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <Users className="w-8 h-8 text-primary" />
-                  <div className="text-3xl font-bold">+100</div>
+                  <div className="text-3xl font-bold">
+                    Comunidad en crecimiento
+                  </div>
                   <div className="text-sm text-muted-foreground">
-                    Jugadores registrados
+                    Los primeros jugadores ya están participando
                   </div>
                 </CardContent>
               </Card>
@@ -45,9 +52,11 @@ export default function CommunitySection() {
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <TrendingUp className="w-8 h-8 text-accent" />
-                  <div className="text-3xl font-bold">Desafíos semanales</div>
+                  <div className="text-3xl font-bold">
+                    Sistema de puntos activo
+                  </div>
                   <div className="text-sm text-muted-foreground">
-                    Competí y sumá puntos cada semana
+                    Cada partida impacta en tu posición
                   </div>
                 </CardContent>
               </Card>
@@ -56,6 +65,7 @@ export default function CommunitySection() {
             <Button
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold group"
+              onClick={() => navigate("/login")}
             >
               Unirse Ahora
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -119,8 +129,12 @@ export default function CommunitySection() {
                 ))}
               </div>
 
-              <Button variant="outline" className="w-full bg-transparent">
-                Ver Ranking Completo
+              <Button
+                variant="outline"
+                className="w-full bg-transparent"
+                disabled
+              >
+                Ranking completo · Próximamente
               </Button>
             </CardContent>
           </Card>

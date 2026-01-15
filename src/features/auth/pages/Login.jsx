@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { signIn, signUp, signInWithGoogle } from '../lib/auth'
 import { useNavigate } from 'react-router'
 
@@ -10,6 +10,10 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
