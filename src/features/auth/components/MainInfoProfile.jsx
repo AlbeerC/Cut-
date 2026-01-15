@@ -1,5 +1,6 @@
 import { Trophy, Gamepad2, Clock, Star } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function MainInfoProfile() {
   const { profile } = useAuth();
@@ -36,15 +37,16 @@ export default function MainInfoProfile() {
     <div className="container max-w-4xl mx-auto pt-30 pb-10 px-4">
       {/* Header */}
       <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-6 flex items-center gap-6 shadow-lg">
-        <img
-          src={profile.avatar_url}
-          alt="Avatar"
-          className="w-24 h-24 rounded-2xl object-cover border border-border"
-        />
+        <Avatar className="h-24 w-24">
+          <AvatarImage src={profile.avatar_url || "/placeholder.svg"} alt={profile.username} />
+          <AvatarFallback className="bg-primary text-primary-foreground text-md">
+            {profile.username.slice(0, 2).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
 
         <div className="flex flex-col gap-1">
-          <h1 className="text-3xl font-bold">{profile.username}</h1>
-          <p className="text-muted-foreground">Miembro desde el {getDate(profile.created_at)}</p>
+          <h1 className="text-3xl font-bold max-md:text-xl">{profile.username}</h1>
+          <p className="text-muted-foreground max-md:text-md">Miembro desde el {getDate(profile.created_at)}</p>
           <div className="flex items-center gap-2 mt-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
             <span className="font-semibold">{profile.points} puntos</span>

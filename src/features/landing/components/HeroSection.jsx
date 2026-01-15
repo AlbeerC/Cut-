@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Play, Sparkles } from "lucide-react";
+import { CheckCircle, Play, Sparkles } from "lucide-react";
 import heroImage from "@/shared/assets/cinema-movie-popcorn-film-camera.png";
 import bgImage from "@/shared/assets/cinema-film-reels-pattern.png";
 import { useNavigate } from "react-router";
@@ -92,12 +92,12 @@ export default function HeroSection() {
               <div className="absolute -top-4 -right-4 bg-card border border-border rounded-xl p-4 shadow-lg animate-float">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Play className="w-6 h-6 text-primary" />
+                    <CheckCircle className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <div className="text-sm font-semibold">Nuevo Torneo</div>
+                    <div className="text-sm font-semibold">Decisión perfecta</div>
                     <div className="text-xs text-muted-foreground">
-                      Comienza en 2h
+                      Sin pistas usadas
                     </div>
                   </div>
                 </div>
