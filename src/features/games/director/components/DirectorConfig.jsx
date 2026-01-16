@@ -84,7 +84,7 @@ export default function DirectorConfig() {
             </div>
 
             <div className="pt-2 border-t border-border">
-              <p className="text-xs text-muted-foreground text-center">10 pts por ronda correcta</p>
+              <p className="text-xs text-muted-foreground text-center">100 pts por ronda correcta</p>
             </div>
           </div>
         </Card>

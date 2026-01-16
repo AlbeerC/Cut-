@@ -1,49 +1,59 @@
-import { motion } from "framer-motion"
-import { Trophy, Star, Target, TrendingUp, Home, RotateCcw } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Link, useNavigate } from "react-router"
-import Confetti from "react-confetti"
-import { useEffect, useState } from "react"
-import { useDirectorContext } from "../context/DirectorContext"
+import { motion } from "framer-motion";
+import {
+  Trophy,
+  Star,
+  Target,
+  TrendingUp,
+  Home,
+  RotateCcw,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Link, useNavigate } from "react-router";
+import Confetti from "react-confetti";
+import { useEffect, useState } from "react";
+import { useDirectorContext } from "../context/DirectorContext";
 
 export default function DirectorFinal() {
-  const navigate = useNavigate()
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
-  const [showConfetti, setShowConfetti] = useState(true)
+  const navigate = useNavigate();
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const [showConfetti, setShowConfetti] = useState(true);
 
-  const { score, rounds, resetGame } = useDirectorContext()
+  const { score, rounds, resetGame } = useDirectorContext();
 
   useEffect(() => {
-    setWindowSize({ width: window.innerWidth, height: window.innerHeight })
-    const timer = setTimeout(() => setShowConfetti(false), 5000)
-    return () => clearTimeout(timer)
-  }, [])
+    setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    const timer = setTimeout(() => setShowConfetti(false), 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const totalRounds = rounds
-  const accuracy = (score / totalRounds) * 100
-  const correctAnswers = score
-  const wrongAnswers = totalRounds - score
-  const totalPoints = score * 10
+  const totalRounds = rounds;
+  const correctAnswers = score;
+  const accuracy = totalRounds > 0 ? (correctAnswers / totalRounds) * 100 : 0;
+  const wrongAnswers = totalRounds - correctAnswers;
+
+  // 🔑 regla del juego
+  const POINTS_PER_CORRECT = 100;
+  const totalPoints = correctAnswers * POINTS_PER_CORRECT;
 
   const getPerformanceMessage = () => {
-    if (accuracy >= 80) return "¡Experto en directores! 🎬"
-    if (accuracy >= 60) return "¡Buen conocimiento! 🎥"
-    if (accuracy >= 40) return "¡Sigue practicando! 📽️"
-    return "¡No te rindas! 🎞️"
-  }
+    if (accuracy >= 80) return "¡Experto en directores! 🎬";
+    if (accuracy >= 60) return "¡Buen conocimiento! 🎥";
+    if (accuracy >= 40) return "¡Sigue practicando! 📽️";
+    return "¡No te rindas! 🎞️";
+  };
 
   const getPerformanceColor = () => {
-    if (accuracy >= 80) return "from-green-500 to-emerald-500"
-    if (accuracy >= 60) return "from-primary to-accent"
-    if (accuracy >= 40) return "from-yellow-500 to-orange-500"
-    return "from-red-500 to-orange-500"
-  }
+    if (accuracy >= 80) return "from-green-500 to-emerald-500";
+    if (accuracy >= 60) return "from-primary to-accent";
+    if (accuracy >= 40) return "from-yellow-500 to-orange-500";
+    return "from-red-500 to-orange-500";
+  };
 
   const handlePlayAgain = () => {
-    resetGame()
-    navigate("/games/director")
-  }
+    resetGame();
+    navigate("/games/director");
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 pt-30">
@@ -70,16 +80,24 @@ export default function DirectorFinal() {
           >
             <Trophy className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-1">¡Juego Terminado!</h1>
-          <p className="text-lg text-muted-foreground">{getPerformanceMessage()}</p>
+          <h1 className="text-3xl md:text-4xl font-bold mb-1">
+            ¡Juego Terminado!
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            {getPerformanceMessage()}
+          </p>
         </motion.div>
 
         {/* Score Card */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
           <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-6 mb-5">
             <div className="text-center mb-5 flex items-center gap-5 justify-center">
               <div className="text-4xl font-bold mb-2">
-                <span className="text-primary">{score}</span>
+                <span className="text-primary">{correctAnswers}</span>
                 <span className="text-muted-foreground">/{totalRounds}</span>
               </div>
               <p className="text-muted-foreground">Respuestas Correctas</p>
@@ -89,7 +107,9 @@ export default function DirectorFinal() {
             <div className="mb-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">Precisión</span>
-                <span className="text-sm font-bold text-primary">{accuracy.toFixed(0)}%</span>
+                <span className="text-sm font-bold text-primary">
+                  {accuracy.toFixed(0)}%
+                </span>
               </div>
               <div className="h-4 bg-muted rounded-full overflow-hidden">
                 <motion.div
@@ -110,7 +130,9 @@ export default function DirectorFinal() {
               >
                 <Card className="bg-green-500/10 border-green-500/30 p-3 text-center gap-2">
                   <Target className="w-5 h-5 text-green-500 mx-auto mb-1" />
-                  <div className="text-xl font-bold text-green-500">{correctAnswers}</div>
+                  <div className="text-xl font-bold text-green-500">
+                    {correctAnswers}
+                  </div>
                   <div className="text-xs text-muted-foreground">Correctas</div>
                 </Card>
               </motion.div>
@@ -122,8 +144,12 @@ export default function DirectorFinal() {
               >
                 <Card className="bg-red-500/10 border-red-500/30 p-3 text-center gap-2">
                   <TrendingUp className="w-5 h-5 text-red-500 mx-auto mb-1" />
-                  <div className="text-xl font-bold text-red-500">{wrongAnswers}</div>
-                  <div className="text-xs text-muted-foreground">Incorrectas</div>
+                  <div className="text-xl font-bold text-red-500">
+                    {wrongAnswers}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Incorrectas
+                  </div>
                 </Card>
               </motion.div>
 
@@ -134,7 +160,9 @@ export default function DirectorFinal() {
               >
                 <Card className="bg-primary/10 border-primary/30 p-3 text-center gap-2">
                   <Star className="w-5 h-5 text-primary mx-auto mb-1" />
-                  <div className="text-xl font-bold text-primary">{totalPoints}</div>
+                  <div className="text-xl font-bold text-primary">
+                    {totalPoints}
+                  </div>
                   <div className="text-xs text-muted-foreground">Puntos</div>
                 </Card>
               </motion.div>
@@ -175,5 +203,5 @@ export default function DirectorFinal() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,14 +1,14 @@
-import { motion, AnimatePresence } from "framer-motion"
-import { Check, X, ChevronRight, Film, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { useDirectorContext } from "../context/DirectorContext"
-import { useNavigate } from "react-router"
-import { useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion";
+import { Check, X, ChevronRight, Film, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { useDirectorContext } from "../context/DirectorContext";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export default function DirectorRound() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const {
     currentRound,
@@ -21,7 +21,8 @@ export default function DirectorRound() {
     selectOption,
     confirmAnswer,
     nextRound,
-  } = useDirectorContext()
+    gameFinished,
+  } = useDirectorContext();
 
   useEffect(() => {
     console.log(
@@ -30,14 +31,16 @@ export default function DirectorRound() {
       "roundData.length:",
       roundData.length,
       "currentRoundData:",
-      !!currentRoundData,
-    )
+      !!currentRoundData
+    );
 
     if (roundData.length === 0) {
-      console.error("[v0] No hay datos de rondas, redirigiendo a configuración")
-      navigate("/games/director")
+      console.error(
+        "[v0] No hay datos de rondas, redirigiendo a configuración"
+      );
+      navigate("/games/director");
     }
-  }, [roundData, currentRound, navigate])
+  }, [roundData, currentRound, navigate]);
 
   if (!currentRoundData) {
     return (
@@ -49,28 +52,24 @@ export default function DirectorRound() {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
-  const { movie, correctDirector, options } = currentRoundData
-
-  const handleNext = () => {
-    if (currentRound >= roundData.length) {
-      console.log("[v0] Juego terminado, navegando a resultados")
-      navigate("/games/director/finish")
-    } else {
-      console.log("[v0] Siguiente ronda")
-      nextRound()
-    }
-  }
+  const { movie, correctDirector, options } = currentRoundData;
 
   const handleButtonClick = () => {
-    if (showResult) {
-      handleNext()
-    } else {
-      confirmAnswer()
+    if (!showResult) {
+      confirmAnswer();
+      return;
     }
-  }
+
+    if (gameFinished) {
+      navigate("/games/director/finish");
+      return;
+    }
+
+    nextRound();
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col pt-30">
@@ -78,12 +77,18 @@ export default function DirectorRound() {
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto p-3 lg:p-4">
           {/* Progress */}
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-2">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-2"
+          >
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs lg:text-sm font-medium text-muted-foreground">
                 Ronda {currentRound} de {rounds}
               </span>
-              <span className="text-xs lg:text-sm font-medium text-primary">Puntos: {score * 10}</span>
+              <span className="text-xs lg:text-sm font-medium text-primary">
+                Puntos: {score * 10}
+              </span>
             </div>
             <Progress value={(currentRound / rounds) * 100} className="h-1.5" />
           </motion.div>
@@ -108,10 +113,16 @@ export default function DirectorRound() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <Film className="w-4 h-4 text-primary flex-shrink-0" />
-                <h2 className="text-sm lg:text-base font-bold text-muted-foreground">¿Quién dirigió esta película?</h2>
+                <h2 className="text-sm lg:text-base font-bold text-muted-foreground">
+                  ¿Quién dirigió esta película?
+                </h2>
               </div>
-              <h3 className="text-base lg:text-lg font-bold text-balance truncate">{movie.title}</h3>
-              <p className="text-xs text-muted-foreground">({new Date(movie.release_date).getFullYear()})</p>
+              <h3 className="text-base lg:text-lg font-bold text-balance truncate">
+                {movie.title}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                ({new Date(movie.release_date).getFullYear()})
+              </p>
             </div>
           </motion.div>
         </div>
@@ -122,10 +133,11 @@ export default function DirectorRound() {
         <div className="max-w-7xl mx-auto p-3 lg:p-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 lg:gap-4 mb-2">
             {options.map((director, index) => {
-              const isSelected = selectedOption === director.name
-              const isCorrectAnswer = director.name === correctDirector.name
-              const shouldShowCorrect = showResult && isCorrectAnswer
-              const shouldShowWrong = showResult && isSelected && !isCorrectAnswer
+              const isSelected = selectedOption === director.name;
+              const isCorrectAnswer = director.name === correctDirector.name;
+              const shouldShowCorrect = showResult && isCorrectAnswer;
+              const shouldShowWrong =
+                showResult && isSelected && !isCorrectAnswer;
 
               return (
                 <motion.div
@@ -140,9 +152,19 @@ export default function DirectorRound() {
                       isSelected && !showResult
                         ? "border-primary shadow-[0_0_30px_rgba(251,146,60,0.4)]"
                         : "border-border hover:border-primary/50"
-                    } ${shouldShowCorrect ? "border-green-500 shadow-[0_0_30px_rgba(34,197,94,0.4)]" : ""} ${
-                      shouldShowWrong ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.4)]" : ""
-                    } ${showResult && !isSelected && !isCorrectAnswer ? "opacity-50" : ""}`}
+                    } ${
+                      shouldShowCorrect
+                        ? "border-green-500 shadow-[0_0_30px_rgba(34,197,94,0.4)]"
+                        : ""
+                    } ${
+                      shouldShowWrong
+                        ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.4)]"
+                        : ""
+                    } ${
+                      showResult && !isSelected && !isCorrectAnswer
+                        ? "opacity-50"
+                        : ""
+                    }`}
                   >
                     <div className="p-2 lg:p-3">
                       <div className="relative w-20 h-20 lg:w-28 lg:h-28 rounded-lg overflow-hidden mb-2 bg-muted flex items-center justify-center mx-auto">
@@ -165,7 +187,10 @@ export default function DirectorRound() {
                               className="absolute inset-0 bg-green-500/20 backdrop-blur-sm flex items-center justify-center"
                             >
                               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-green-500 flex items-center justify-center">
-                                <Check className="w-5 h-5 lg:w-6 lg:h-6 text-white" strokeWidth={3} />
+                                <Check
+                                  className="w-5 h-5 lg:w-6 lg:h-6 text-white"
+                                  strokeWidth={3}
+                                />
                               </div>
                             </motion.div>
                           )}
@@ -176,7 +201,10 @@ export default function DirectorRound() {
                               className="absolute inset-0 bg-red-500/20 backdrop-blur-sm flex items-center justify-center"
                             >
                               <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-red-500 flex items-center justify-center">
-                                <X className="w-5 h-5 lg:w-6 lg:h-6 text-white" strokeWidth={3} />
+                                <X
+                                  className="w-5 h-5 lg:w-6 lg:h-6 text-white"
+                                  strokeWidth={3}
+                                />
                               </div>
                             </motion.div>
                           )}
@@ -188,14 +216,18 @@ export default function DirectorRound() {
                     </div>
                   </Card>
                 </motion.div>
-              )
+              );
             })}
           </div>
 
           {/* Result Message */}
           <AnimatePresence>
             {showResult && (
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+              >
                 <Card
                   className={`p-3 lg:p-4 text-center ${
                     selectedOption === correctDirector.name
@@ -212,7 +244,9 @@ export default function DirectorRound() {
                     {selectedOption === correctDirector.name ? "🎉" : "😔"}
                   </motion.div>
                   <h3 className="text-base lg:text-xl font-bold mb-1">
-                    {selectedOption === correctDirector.name ? "¡Correcto!" : "Incorrecto"}
+                    {selectedOption === correctDirector.name
+                      ? "¡Correcto!"
+                      : "Incorrecto"}
                   </h3>
                   <p className="text-xs lg:text-sm text-muted-foreground">
                     {selectedOption === correctDirector.name
@@ -232,13 +266,13 @@ export default function DirectorRound() {
           <motion.div whileTap={{ scale: 0.98 }}>
             <Button
               size="default"
-              disabled={!selectedOption}
+              disabled={!selectedOption && !showResult}
               onClick={handleButtonClick}
               className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-black font-bold disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(251,146,60,0.3)]"
             >
               {showResult ? (
                 <>
-                  {currentRound >= roundData.length ? "Ver Resultados" : "Siguiente Ronda"}
+                  {gameFinished ? "Ver Resultados" : "Siguiente Ronda"}
                   <ChevronRight className="w-4 h-4 ml-2" />
                 </>
               ) : (
@@ -249,5 +283,5 @@ export default function DirectorRound() {
         </div>
       </div>
     </div>
-  )
+  );
 }
