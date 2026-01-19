@@ -64,7 +64,7 @@ export default function TimelineConfig() {
 
             <div className="pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground text-center">
-                10 pts por posición correcta • 20 pts bonus por ronda perfecta • Combos dan pts extra
+                150pts por orden perfecto • 100 pts por un error • 50 pts por más de un error
               </p>
             </div>
           </div>

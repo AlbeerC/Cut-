@@ -6,15 +6,18 @@ import { useEffect, useState } from "react"
 import { useFetch } from "@/features/movies/hooks/useFetch"
 import { getPoolMovies } from "../../timeline/api/getPoolMovies"
 import { useMovieCluesContext } from "../context/MovieCluesContext"
+import { useAuth } from "@/features/auth/context/AuthContext"
+import { startMovieCluesGame } from "../db/points.db"
 
 export default function MovieCluesConfig() {
   const navigate = useNavigate()
   const { data: movies, loading, error } = useFetch(() => getPoolMovies(200), [])
-  console.log(movies)
 
-  const { setRounds, setMoviePool, generateRounds, resetGame } = useMovieCluesContext()
+  const { setRounds, setMoviePool, generateRounds, resetGame, setGameId } = useMovieCluesContext()
   const [localRounds, setLocalRounds] = useState(5)
   const [isStarting, setIsStarting] = useState(false)
+
+  const { user } = useAuth()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -39,6 +42,10 @@ export default function MovieCluesConfig() {
     const success = generateRounds(movies, localRounds)
 
     if (success) {
+      const gameId = await startMovieCluesGame(user.id)
+      console.log("creating gameId", gameId)
+
+      setGameId(gameId)
       navigate("/games/movieclues/play")
     } else {
       alert("Error al generar las rondas. Intenta de nuevo.")
@@ -57,7 +64,7 @@ export default function MovieCluesConfig() {
             Adivina la Película
           </h1>
           <p className="text-base text-muted-foreground max-w-md mx-auto">
-            Descubre la película a partir de pistas visuales
+            Descubre la película a partir del póster
           </p>
         </div>
 
@@ -88,7 +95,7 @@ export default function MovieCluesConfig() {
 
             <div className="pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground text-center">
-                100 pts (1 pista) • 75 pts (2 pistas) • 50 pts (3 pistas) • 25 pts (4+ pistas)
+                150 pts (sin pistas) • 100 pts (1 pista) • 75 pts (2 pistas) • 25 pts (3 pistas)
               </p>
             </div>
           </div>

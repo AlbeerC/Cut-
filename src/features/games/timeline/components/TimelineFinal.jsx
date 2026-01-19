@@ -1,3 +1,5 @@
+'use client';
+
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -11,7 +13,7 @@ export default function TimelineFinal() {
 
   const { totalPoints, rounds, resetGame, maxCombo, resultsHistory } = useTimelineContext()
 
-  const maxPoints = rounds * 60 // 40 base + 20 perfect bonus per round
+  const maxPoints = rounds * 150 + (rounds - 1) * 50 // 150 base per round + 50 streak bonus (starts from 2nd perfect)
   const percentage = Math.round((totalPoints / maxPoints) * 100)
   const perfectRounds = resultsHistory.filter((r) => r.isPerfect).length
 

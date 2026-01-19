@@ -20,8 +20,8 @@ export default function TimelineRound() {
     currentCombo,
   } = useTimelineContext();
 
-  const handleConfirm = () => {
-    confirmRound();
+  const handleConfirm = async () => {
+    await confirmRound();
     navigate("/games/timeline/result");
   };
 

@@ -33,6 +33,7 @@ export default function MovieCluesRound() {
     revealNextClue,
     nextRound,
     roundData,
+    gameFinished
   } = useMovieCluesContext()
 
   useEffect(() => {
@@ -60,10 +61,11 @@ export default function MovieCluesRound() {
   }
 
   const handleNext = () => {
-    if (currentRound >= rounds) {
+    if (gameFinished) {
       navigate("/games/movieclues/finish")
     } else {
       nextRound()
+      navigate("/games/movieclues/play")
     }
   }
 

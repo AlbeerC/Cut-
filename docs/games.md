@@ -51,9 +51,9 @@ Un desafío de memoria y contexto histórico.
 
 **Puntaje (por ronda)**
 - Orden perfecto: **+150 puntos**
-- 1 error: **+100 puntos**
-- Más de 1 error: **+50 puntos**
-- Todo incorrecto: **0 puntos**
+- 2 errores: **+100 puntos**
+- 3+ errores: **+50 puntos**
+- Racha perfecta: **+50 puntos**
 
 ---
 
@@ -67,10 +67,10 @@ Un juego de deducción visual.
 - Puede usar hasta 3 pistas, que reducen progresivamente el blur del póster.
 
 **Puntaje (por ronda)**
-- Sin usar pistas: **+200 puntos**
-- Usando 1 pista: **+150 puntos**
-- Usando 2 pistas: **+100 puntos**
-- Usando 3 pistas: **+50 puntos**
+- Sin usar pistas: **+150 puntos**
+- Usando 1 pista: **+100 puntos**
+- Usando 2 pistas: **+75 puntos**
+- Usando 3 pistas: **+25 puntos**
 - No adivinar la película: **0 puntos**
 
 > Menos pistas = más puntaje.

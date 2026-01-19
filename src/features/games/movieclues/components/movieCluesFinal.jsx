@@ -20,7 +20,7 @@ export default function MovieCluesFinal() {
     return () => clearTimeout(timer)
   }, [])
 
-  const maxPoints = rounds * 100 // Maximum points if all correct on first try
+  const maxPoints = rounds * 150 // Maximum points if all correct on first try
   const accuracy = (score / rounds) * 100
   const wrongAnswers = rounds - score
 

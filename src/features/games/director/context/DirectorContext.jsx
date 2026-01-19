@@ -57,40 +57,28 @@ export default function DirectorProvider({ children }) {
     if (!selectedOption || showResult) return;
 
     const current = roundData[currentRound - 1];
-    if (selectedOption === current.correctDirector.name) {
+    const isCorrect = selectedOption === current.correctDirector.name;
+
+    if (isCorrect) {
       setScore((prev) => prev + 1);
     }
 
-    // 👉 Guardar ronda en DB
+    // 👉 Guardar ronda
     if (gameId) {
       await addDirectorRound({
         gameId,
         roundNumber: currentRound,
         movieId: current.movie.id,
-        result:
-          selectedOption === current.correctDirector.name
-            ? "correct"
-            : "incorrect",
+        result: isCorrect ? "correct" : "incorrect",
       });
     }
 
-    setShowResult(true);
-  };
-
-  const nextRound = async () => {
-    setShowResult(false);
-    setSelectedOption(null);
-
-    const next = currentRound + 1;
-
-    if (next <= roundData.length) {
-      setCurrentRound(next);
-    } else {
-      console.log("🏁 FIN DEL JUEGO");
+    // 👉 SI ES LA ÚLTIMA RONDA
+    if (currentRound === roundData.length) {
       setGameFinished(true);
 
       if (gameId) {
-        const finalScore = score * 100;
+        const finalScore = (isCorrect ? score + 1 : score) * 100;
 
         await finishDirectorGame({
           gameId,
@@ -99,6 +87,14 @@ export default function DirectorProvider({ children }) {
         });
       }
     }
+
+    setShowResult(true);
+  };
+
+  const nextRound = () => {
+    setShowResult(false);
+    setSelectedOption(null);
+    setCurrentRound((prev) => prev + 1);
   };
 
   const resetGame = () => {
@@ -131,7 +127,7 @@ export default function DirectorProvider({ children }) {
     confirmAnswer,
     nextRound,
     resetGame,
-    gameFinished
+    gameFinished,
   };
 
   return (

@@ -1,31 +1,45 @@
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Check, X, Star, Award, ArrowRight, Flame } from "lucide-react"
-import { useNavigate } from "react-router"
-import { useTimelineContext } from "../context/TimelineContext"
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Check, X, Star, Award, ArrowRight, Flame } from "lucide-react";
+import { useNavigate } from "react-router";
+import { useTimelineContext } from "../context/TimelineContext";
 
 export default function TimelineResult() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const { roundResult, currentRound, rounds, nextRound, isLastRound, currentCombo } = useTimelineContext()
+  const {
+    roundResult,
+    currentRound,
+    rounds,
+    nextRound,
+    isLastRound,
+    currentCombo,
+    gameFinished,
+  } = useTimelineContext();
 
-  const { movies, correctCount, roundPoints, comboBonus, isPerfect } = roundResult
+  const { movies, correctCount, roundPoints, comboBonus, isPerfect } =
+    roundResult;
 
   function handleNext() {
     if (isLastRound) {
-      navigate("/games/timeline/finish")
+      nextRound(); // ← acá se finaliza el juego
+      navigate("/games/timeline/finish");
     } else {
-      nextRound()
-      navigate("/games/timeline/play")
+      nextRound();
+      navigate("/games/timeline/play");
     }
   }
 
   return (
     <div className="min-h-screen bg-background pt-30 px-4 pb-4">
       <div className="max-w-3xl mx-auto">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mb-3">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="mb-3"
+        >
           <div className="flex items-center justify-between gap-3 mb-2">
             <div className="flex items-center gap-2">
               <motion.div
@@ -48,7 +62,8 @@ export default function TimelineResult() {
                   transition={{ delay: 0.4, type: "spring" }}
                 >
                   <Badge className="text-base px-3 py-1.5 bg-gradient-to-r from-orange-500 to-red-500">
-                    <Flame className="w-4 h-4 mr-1" />x{currentCombo} +{comboBonus}
+                    <Flame className="w-4 h-4 mr-1" />x{currentCombo} +
+                    {comboBonus}
                   </Badge>
                 </motion.div>
               )}
@@ -65,7 +80,8 @@ export default function TimelineResult() {
                 )}
               </h1>
               <p className="text-sm text-muted-foreground">
-                <span className="text-primary font-bold">{correctCount}/4</span> correctas
+                <span className="text-primary font-bold">{correctCount}/4</span>{" "}
+                correctas
               </p>
             </div>
           </div>
@@ -98,7 +114,9 @@ export default function TimelineResult() {
             >
               <Card
                 className={`p-2 border transition-colors ${
-                  movie.isCorrect ? "bg-green-950/20 border-green-500/50" : "bg-red-950/20 border-red-500/50"
+                  movie.isCorrect
+                    ? "bg-green-950/20 border-green-500/50"
+                    : "bg-red-950/20 border-red-500/50"
                 }`}
               >
                 <div className="flex items-center gap-2">
@@ -115,13 +133,19 @@ export default function TimelineResult() {
                   </div>
 
                   <div className="flex items-center gap-1">
-                    <Badge variant={movie.isCorrect ? "default" : "destructive"} className="text-sm px-2 py-0.5">
+                    <Badge
+                      variant={movie.isCorrect ? "default" : "destructive"}
+                      className="text-sm px-2 py-0.5"
+                    >
                       {movie.userPosition}
                     </Badge>
                     {!movie.isCorrect && (
                       <>
                         <ArrowRight className="w-3 h-3 text-muted-foreground" />
-                        <Badge variant="outline" className="text-sm px-2 py-0.5 border-green-500/50 text-green-500">
+                        <Badge
+                          variant="outline"
+                          className="text-sm px-2 py-0.5 border-green-500/50 text-green-500"
+                        >
                           {movie.correctPosition}
                         </Badge>
                       </>
@@ -137,13 +161,19 @@ export default function TimelineResult() {
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-sm truncate">{movie.title}</h3>
-                    <p className="text-xs text-muted-foreground">{movie.year}</p>
+                    <h3 className="font-semibold text-sm truncate">
+                      {movie.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {movie.year}
+                    </p>
                   </div>
 
                   <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-accent/20">
                     <Star className="w-3 h-3 text-accent fill-accent" />
-                    <span className="text-xs font-bold text-accent">{movie.rating?.toFixed(1) || "N/A"}</span>
+                    <span className="text-xs font-bold text-accent">
+                      {movie.rating?.toFixed(1) || "N/A"}
+                    </span>
                   </div>
                 </div>
               </Card>
@@ -151,17 +181,21 @@ export default function TimelineResult() {
           ))}
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.9 }}
+        >
           <Button
             size="lg"
             className="px-6 py-3 text-sm font-semibold bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity w-full"
             onClick={handleNext}
           >
-            {isLastRound ? "Ver resultado final" : "Siguiente ronda"}
+            {gameFinished ? "Ver resultado final" : "Siguiente ronda"}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </motion.div>
       </div>
     </div>
-  )
+  );
 }
