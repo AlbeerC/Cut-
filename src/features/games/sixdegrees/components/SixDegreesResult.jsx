@@ -33,11 +33,6 @@ export default function SixDegreesResult() {
     initialTime,
   } = useSixDegrees();
 
-  const handlePlayAgain = async () => {
-    await selectRandomActors();
-    router("/games/sixdegrees/play");
-  };
-
   const handleNewConfig = () => {
     router("/games/sixdegrees");
   };
@@ -85,8 +80,8 @@ export default function SixDegreesResult() {
             {isWin
               ? `Conectaste ${actorA.name} con ${actorB.name}`
               : lossReason === "timeout"
-              ? "Se acabó el tiempo"
-              : "Te rendiste"}
+                ? "Se acabó el tiempo"
+                : "Te rendiste"}
           </p>
         </motion.div>
 
@@ -146,7 +141,7 @@ export default function SixDegreesResult() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Puntos base</span>
-                  <span className="font-semibold">+100</span>
+                  <span className="font-semibold">+300</span>
                 </div>
                 {chain.length - 1 > config.maxSteps && (
                   <div className="flex justify-between items-center">
@@ -158,13 +153,21 @@ export default function SixDegreesResult() {
                     </span>
                   </div>
                 )}
+                {chain.length - 1 <= config.maxSteps && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">
+                      Dentro del límite de pasos
+                    </span>
+                    <span className="font-semibold text-accent">+150</span>
+                  </div>
+                )}
                 {hintsUsed > 0 && (
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">
                       Pistas usadas ({hintsUsed})
                     </span>
                     <span className="font-semibold text-red-400">
-                      -{hintsUsed * 10}
+                      -{hintsUsed * 25}
                     </span>
                   </div>
                 )}
@@ -174,7 +177,7 @@ export default function SixDegreesResult() {
                       Deshacer ({undoCount})
                     </span>
                     <span className="font-semibold text-red-400">
-                      -{undoCount * 2}
+                      -{undoCount * 10}
                     </span>
                   </div>
                 )}
@@ -187,7 +190,7 @@ export default function SixDegreesResult() {
                 {hintsUsed === 0 && (
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">Sin pistas</span>
-                    <span className="font-semibold text-accent">+30</span>
+                    <span className="font-semibold text-accent">+50</span>
                   </div>
                 )}
                 {initialTime &&
@@ -283,19 +286,19 @@ export default function SixDegreesResult() {
           className="grid grid-cols-2 gap-3"
         >
           <Button
-            variant="outline"
             size="lg"
             onClick={handleNewConfig}
-            className="w-full bg-transparent"
-          >
-            Nueva Configuración
-          </Button>
-          <Button
-            size="lg"
-            onClick={handlePlayAgain}
             className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 font-bold shadow-[0_0_20px_rgba(251,146,60,0.3)]"
           >
-            Jugar de Nuevo
+            Jugar de nuevo
+          </Button>
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={() => router("/games")}
+            className="w-full bg-transparent"
+          >
+            Volver a juegos
           </Button>
         </motion.div>
       </div>

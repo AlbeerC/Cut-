@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useRef } from "react"
 import { actorsPool } from "../api/actorsPool"
+import { finishSixDegreesGame } from "../db/points.db"
+import { useAuth } from "@/features/auth/context/AuthContext"
 
 const SixDegreesContext = createContext(null)
 
@@ -18,6 +20,9 @@ export const SixDegreesProvider = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState("")
   const [gameLost, setGameLost] = useState(false)
   const [lossReason, setLossReason] = useState(null)
+
+  const [gameId, setGameId] = useState(null)
+  const { user } = useAuth()
 
   // Estados de configuración del juego
   const [config, setConfig] = useState({
@@ -215,12 +220,22 @@ export const SixDegreesProvider = ({ children }) => {
 
       if (selectedActor.id === actorB?.id) {
         setGameWon(true)
+
         if (timerRef.current) {
           clearInterval(timerRef.current)
           timerRef.current = null
         }
         const finalScore = calculateScore(newChain.length - 1, hintsUsed, undoCount, timeRemaining, initialTime, config.maxSteps)
         setScore(finalScore)
+
+        // Finish game
+        if (gameId) {
+          await finishSixDegreesGame({
+            gameId,
+            userId: user.id,
+            score: finalScore,
+          })
+        }
       }
     } catch (error) {
       setErrorMessage("Error al validar la conexión. Por favor, intenta de nuevo.")
@@ -244,9 +259,16 @@ export const SixDegreesProvider = ({ children }) => {
     }
   }
 
-  const handleGiveUp = () => {
+  const handleGiveUp = async () => {
     setGameLost(true)
     setLossReason("gaveup")
+    setGameId(null)
+    await finishSixDegreesGame({
+      gameId,
+      userId: user.id,
+      score: 0,
+    })
+
     if (timerRef.current) {
       clearInterval(timerRef.current)
       timerRef.current = null
@@ -299,23 +321,27 @@ export const SixDegreesProvider = ({ children }) => {
   }
 
   const calculateScore = (steps, hints, undos, timeLeft, totalTime, optimalSteps) => {
-    const BASE_SCORE = 100
+    const BASE_SCORE = 300
 
     let finalScore = BASE_SCORE
 
     const extraSteps = Math.max(0, steps - optimalSteps)
-    finalScore -= extraSteps * 15
+    finalScore -= extraSteps * 25
 
-    finalScore -= hints * 10
+    finalScore -= hints * 25
 
-    finalScore -= undos * 2
+    finalScore -= undos * 10
+
+    if (extraSteps === 0) {
+      finalScore += 150
+    }
 
     if (steps === optimalSteps) {
       finalScore += 50
     }
 
     if (hints === 0) {
-      finalScore += 30
+      finalScore += 50
     }
 
     if (totalTime && timeLeft > 0) {
@@ -376,6 +402,7 @@ export const SixDegreesProvider = ({ children }) => {
     stopTimer,
     setGameLost,
     setLossReason,
+    setGameId
   }
 
   return <SixDegreesContext.Provider value={value}>{children}</SixDegreesContext.Provider>

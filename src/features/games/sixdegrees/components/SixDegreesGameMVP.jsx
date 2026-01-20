@@ -399,7 +399,7 @@ export default function SixDegreesGameMVP() {
             <Undo2 className="w-4 h-4 mr-2" />
             Deshacer
             {undoCount === 0 && (
-              <span className="ml-1 text-xs text-destructive">(-2pts)</span>
+              <span className="ml-1 text-xs text-destructive">(-10pts)</span>
             )}
           </Button>
 
@@ -411,7 +411,7 @@ export default function SixDegreesGameMVP() {
           >
             <Lightbulb className="w-4 h-4 mr-2" />
             Pista ({3 - hintsUsed})
-            <span className="ml-1 text-xs text-destructive">(-10pts)</span>
+            <span className="ml-1 text-xs text-destructive">(-25pts)</span>
           </Button>
 
           <Button
@@ -431,7 +431,7 @@ export default function SixDegreesGameMVP() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Usar una pista?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esto te costará 10 puntos de tu puntuación final. Te quedan{" "}
+              Esto te costará 25 puntos de tu puntuación final. Te quedan{" "}
               {3 - hintsUsed} pistas disponibles.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -449,7 +449,7 @@ export default function SixDegreesGameMVP() {
           <AlertDialogHeader>
             <AlertDialogTitle>¿Deshacer último paso?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esto te costará 2 puntos de tu puntuación final.
+              Esto te costará 10 puntos de tu puntuación final.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

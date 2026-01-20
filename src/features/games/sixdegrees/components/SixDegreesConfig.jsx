@@ -14,10 +14,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { useAuth } from "@/features/auth/context/AuthContext"
+import { startSixDegreesGame } from "../db/points.db"
 
 export default function SixDegreesConfig() {
   const router = useNavigate()
-  const { updateConfig, selectRandomActors } = useSixDegrees()
+  const { updateConfig, selectRandomActors, setGameId } = useSixDegrees()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -26,6 +28,8 @@ export default function SixDegreesConfig() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("medium")
   const [selectedMode, setSelectedMode] = useState("classic")
   const [isLoading, setIsLoading] = useState(false)
+
+  const { user } = useAuth()
 
   const difficulties = {
     easy: { maxSteps: 8, label: "Fácil", description: "Hasta 8 pasos", icon: Zap, color: "text-green-500" },
@@ -49,6 +53,9 @@ export default function SixDegreesConfig() {
 
     try {
       await selectRandomActors()
+      const gameId = await startSixDegreesGame(user.id)
+      
+      setGameId(gameId)
       router("/games/sixdegrees/play")
     } catch (error) {
       console.error("Error starting game:", error)

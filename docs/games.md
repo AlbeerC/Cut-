@@ -91,13 +91,14 @@ El desafío más complejo de Cut!.
 - Completar la conexión: **+300 puntos**
 - Bonus por eficiencia:
   - Dentro del límite de pasos: **+150 puntos**
-  - 1 paso extra: **+75 puntos**
-  - 2 o más pasos extra: **0 puntos**
+  - Por cada paso extra: **-25 puntos**
+  - Ruta óptima: **+50 puntos**
 - Uso de pistas:
-  - Cada pista utilizada reduce **50 puntos** del total posible
+  - Cada pista utilizada reduce **25 puntos** del total posible
+  - Cada deshacer reduce **10 puntos** del total posible
 - Rendirse: **0 puntos**
 
-**Puntaje máximo posible:** **450 puntos**
+**Puntaje máximo posible: 500 puntos**
 
 ---
 
