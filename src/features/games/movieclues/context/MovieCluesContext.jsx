@@ -169,6 +169,8 @@ export default function MovieCluesProvider({ children }) {
     setShowResult(false);
     setAttempts(0);
     setRoundPoints(0);
+    setGameId(null);
+    setGameFinished(false)
   };
 
   const currentRoundData = roundData[currentRound - 1] || null;
@@ -195,6 +197,7 @@ export default function MovieCluesProvider({ children }) {
     showResult,
     attempts,
     roundPoints,
+    isLastRound: currentRound === rounds,
 
     // Methods
     generateRounds,

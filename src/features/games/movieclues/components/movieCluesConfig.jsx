@@ -11,7 +11,7 @@ import { startMovieCluesGame } from "../db/points.db"
 
 export default function MovieCluesConfig() {
   const navigate = useNavigate()
-  const { data: movies, loading, error } = useFetch(() => getPoolMovies(200), [])
+  const { data: movies, loading, error } = useFetch(() => getPoolMovies(300), [])
 
   const { setRounds, setMoviePool, generateRounds, resetGame, setGameId } = useMovieCluesContext()
   const [localRounds, setLocalRounds] = useState(5)

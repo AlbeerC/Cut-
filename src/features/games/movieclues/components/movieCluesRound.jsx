@@ -33,7 +33,8 @@ export default function MovieCluesRound() {
     revealNextClue,
     nextRound,
     roundData,
-    gameFinished
+    gameFinished,
+    isLastRound
   } = useMovieCluesContext()
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function MovieCluesRound() {
   }
 
   const handleNext = () => {
-    if (gameFinished) {
+    if (isLastRound) {
       navigate("/games/movieclues/finish")
     } else {
       nextRound()
@@ -78,24 +79,25 @@ export default function MovieCluesRound() {
 
   // Blur level based on revealed clues
   const getBlurLevel = () => {
+    if (showResult) return "blur-0"
     if (revealedClues === 1) return "blur-[20px]"
     if (revealedClues === 2) return "blur-[10px]"
     if (revealedClues === 3) return "blur-[5px]"
     return "blur-0"
   }
 
-  return (
-    <div className="h-screen bg-background overflow-hidden flex flex-col pt-30">
-      <div className="max-w-6xl mx-auto w-full h-full flex flex-col p-3">
-        {/* Header */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-2 shrink-0">
+return (
+    <div className="h-screen bg-background overflow-hidden flex flex-col safe-top safe-bottom pt-20">
+      <div className="max-w-6xl mx-auto w-full h-full flex flex-col p-3 lg:p-4">
+        {/* Header - Compacto en mobile */}
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-2 lg:mb-3 shrink-0">
           <div className="flex items-center justify-between mb-1">
             <span className="text-xs font-medium text-muted-foreground">
-              Ronda {currentRound} de {rounds}
+              Ronda {currentRound}/{rounds}
             </span>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 lg:gap-2">
               <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                {score} correctas
+                {score} ✓
               </Badge>
               <Badge className="text-xs px-2 py-0.5 bg-primary">{totalPoints} pts</Badge>
             </div>
@@ -103,22 +105,28 @@ export default function MovieCluesRound() {
           <Progress value={(currentRound / rounds) * 100} className="h-1.5" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-3 flex-1 min-h-0">
-          {/* Left: Movie Poster with Clues */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col min-h-0 max-w-sm mx-auto">
-            <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-3 flex flex-col flex-1 min-h-0">
-              <div className="flex items-center justify-between mb-2 shrink-0">
-                <h3 className="text-sm font-semibold flex items-center gap-1.5">
-                  <Eye className="w-4 h-4 text-primary" />
-                  Pistas Reveladas
+        {/* Layout adaptativo: vertical en mobile, horizontal en desktop */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 lg:gap-3 flex-1 min-h-0">
+          {/* Poster - Más compacto en mobile */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            className="flex flex-col min-h-0 w-full lg:max-w-sm lg:mx-auto"
+          >
+            <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-2 lg:p-3 flex flex-col flex-1 min-h-0">
+              {/* Header más compacto en mobile */}
+              <div className="flex items-center justify-between mb-1.5 lg:mb-2 shrink-0">
+                <h3 className="text-xs lg:text-sm font-semibold flex items-center gap-1">
+                  <Eye className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-primary" />
+                  <span className="hidden sm:inline">Pistas</span>
+                  <Badge variant="outline" className="text-xs ml-1 lg:ml-0">
+                    {revealedClues}/{maxClues}
+                  </Badge>
                 </h3>
-                <Badge variant="outline" className="text-xs">
-                  {revealedClues}/{maxClues}
-                </Badge>
               </div>
 
-              {/* Poster */}
-              <div className="relative w-full flex-1 min-h-0 rounded-lg overflow-hidden bg-muted mb-2 flex items-center justify-center">
+              {/* Poster - altura fija en mobile para evitar scroll */}
+              <div className="relative w-full rounded-lg overflow-hidden bg-muted mb-1.5 lg:mb-2 flex items-center justify-center h-40 sm:h-48 lg:flex-1 lg:min-h-0">
                 <img
                   src={`https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`}
                   alt="Película misteriosa"
@@ -126,66 +134,70 @@ export default function MovieCluesRound() {
                 />
               </div>
 
-              {/* Clue Indicators */}
-              <div className="space-y-1 shrink-0">
-                <div className="flex items-center gap-2 text-xs">
-                  <div className={`w-1.5 h-1.5 rounded-full ${revealedClues >= 1 ? "bg-primary" : "bg-muted"}`} />
-                  <span className={revealedClues >= 1 ? "text-foreground" : "text-muted-foreground"}>
-                    Poster muy borroso
+              {/* Indicadores de pistas - horizontal en mobile */}
+              <div className="flex lg:flex-col gap-1.5 lg:gap-1 shrink-0 text-[10px] sm:text-xs">
+                <div className="flex items-center gap-1 lg:gap-2 flex-1 lg:flex-none">
+                  <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${revealedClues >= 1 ? "bg-primary" : "bg-muted"}`} />
+                  <span className={`truncate ${revealedClues >= 1 ? "text-foreground" : "text-muted-foreground"}`}>
+                    Muy borroso
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <div className={`w-1.5 h-1.5 rounded-full ${revealedClues >= 2 ? "bg-primary" : "bg-muted"}`} />
-                  <span className={revealedClues >= 2 ? "text-foreground" : "text-muted-foreground"}>
-                    Poster menos borroso
+                <div className="flex items-center gap-1 lg:gap-2 flex-1 lg:flex-none">
+                  <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${revealedClues >= 2 ? "bg-primary" : "bg-muted"}`} />
+                  <span className={`truncate ${revealedClues >= 2 ? "text-foreground" : "text-muted-foreground"}`}>
+                    Menos borroso
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-xs">
-                  <div className={`w-1.5 h-1.5 rounded-full ${revealedClues >= 3 ? "bg-primary" : "bg-muted"}`} />
-                  <span className={revealedClues >= 3 ? "text-foreground" : "text-muted-foreground"}>
-                    Poster casi claro
+                <div className="flex items-center gap-1 lg:gap-2 flex-1 lg:flex-none">
+                  <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${revealedClues >= 3 ? "bg-primary" : "bg-muted"}`} />
+                  <span className={`truncate ${revealedClues >= 3 ? "text-foreground" : "text-muted-foreground"}`}>
+                    Casi claro
                   </span>
                 </div>
               </div>
             </Card>
           </motion.div>
 
-          {/* Right: Search and Results */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col gap-2 min-h-0">
+          {/* Search and Controls - Más compacto en mobile */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            className="flex flex-col gap-2 min-h-0"
+          >
             {/* Search Input */}
-            <Card className="bg-card/50 border-primary/20 p-3 shrink-0">
-              <h3 className="text-sm font-semibold mb-2 flex items-center gap-1.5">
-                <Search className="w-4 h-4 text-primary" />
+            <Card className="bg-card/50 border-primary/20 p-2 lg:p-3 shrink-0">
+              <h3 className="text-xs lg:text-sm font-semibold mb-1.5 lg:mb-2 flex items-center gap-1.5">
+                <Search className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-primary" />
                 Buscar Película
               </h3>
 
               <div className="relative">
                 <Input
                   type="text"
-                  placeholder="Escribe el nombre de la película..."
+                  placeholder="Nombre de la película..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setIsSearchFocused(true)}
                   onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                   disabled={showResult}
-                  className="pr-10"
+                  className="pr-10 text-sm h-9"
                 />
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
 
-                {/* Search Results Dropdown */}
+                {/* Search Results Dropdown - Posición fija en mobile */}
                 <AnimatePresence>
                   {isSearchFocused && searchResults.length > 0 && !selectedMovie && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute z-50 w-full mt-1 bg-card border border-border rounded-lg shadow-xl max-h-48 overflow-y-auto"
+                      className="fixed lg:absolute z-50 left-3 right-3 lg:left-0 lg:right-0 lg:w-full mt-1 bg-card border border-border rounded-lg shadow-xl max-h-[40vh] lg:max-h-48 overflow-y-auto"
                     >
                       {searchResults.map((movie) => (
                         <button
                           key={movie.id}
                           onClick={() => selectMovieFromSearch(movie)}
-                          className="w-full p-2 flex items-center gap-2 hover:bg-muted transition-colors text-left"
+                          className="w-full p-2 flex items-center gap-2 hover:bg-muted active:bg-muted transition-colors text-left"
                         >
                           <div className="w-8 h-12 rounded overflow-hidden bg-muted shrink-0">
                             {movie.poster_path ? (
@@ -195,7 +207,9 @@ export default function MovieCluesRound() {
                                 className="w-full h-full object-cover blur-[2px]"
                               />
                             ) : (
-                              <Film className="w-4 h-4 text-muted-foreground m-auto" />
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Film className="w-4 h-4 text-muted-foreground" />
+                              </div>
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -222,10 +236,12 @@ export default function MovieCluesRound() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <Film className="w-3 h-3 text-muted-foreground m-auto" />
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Film className="w-3 h-3 text-muted-foreground" />
+                          </div>
                         )}
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <p className="font-semibold text-xs">{selectedMovie.title}</p>
                         <p className="text-xs text-muted-foreground">
                           {selectedMovie.release_date?.slice(0, 4) || "N/A"}
@@ -237,12 +253,12 @@ export default function MovieCluesRound() {
               )}
             </Card>
 
-            {/* Result Message */}
+            {/* Result Message - Más compacto en mobile */}
             <AnimatePresence>
               {showResult && (
                 <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="shrink-0">
                   <Card
-                    className={`p-3 text-center ${
+                    className={`p-2.5 lg:p-3 text-center gap-2 ${
                       isCorrect ? "bg-green-500/10 border-green-500/50" : "bg-red-500/10 border-red-500/50"
                     }`}
                   >
@@ -250,23 +266,23 @@ export default function MovieCluesRound() {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ type: "spring" }}
-                      className={`w-12 h-12 rounded-full mx-auto mb-2 flex items-center justify-center ${
+                      className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full mx-auto mb-1.5 lg:mb-2 flex items-center justify-center ${
                         isCorrect ? "bg-green-500" : "bg-red-500"
                       }`}
                     >
                       {isCorrect ? (
-                        <Check className="w-6 h-6 text-white" strokeWidth={3} />
+                        <Check className="w-5 h-5 lg:w-6 lg:h-6 text-white" strokeWidth={3} />
                       ) : (
-                        <X className="w-6 h-6 text-white" strokeWidth={3} />
+                        <X className="w-5 h-5 lg:w-6 lg:h-6 text-white" strokeWidth={3} />
                       )}
                     </motion.div>
-                    <h3 className="text-base font-bold mb-1">{isCorrect ? "¡Correcto!" : "Incorrecto"}</h3>
+                    <h3 className="text-sm lg:text-base font-bold mb-1">{isCorrect ? "¡Correcto!" : "Incorrecto"}</h3>
                     {isCorrect ? (
                       <>
                         <p className="text-xs text-muted-foreground mb-1.5">
                           ¡Excelente! Adivinaste "{currentMovie.title}"
                         </p>
-                        <Badge className="text-sm px-3 py-0.5 bg-primary">+{roundPoints} puntos</Badge>
+                        <Badge className="text-xs lg:text-sm px-3 py-0.5 bg-primary">+{roundPoints} puntos</Badge>
                       </>
                     ) : (
                       <div>
@@ -280,15 +296,15 @@ export default function MovieCluesRound() {
               )}
             </AnimatePresence>
 
-            {/* Action Buttons */}
-            <div className="space-y-1.5 shrink-0">
+            {/* Action Buttons - Más compactos en mobile */}
+            <div className="space-y-1.5 shrink-0 mt-auto">
               {!showResult ? (
                 <>
                   <Button
                     size="default"
                     disabled={!selectedMovie}
                     onClick={handleConfirm}
-                    className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity font-semibold disabled:opacity-50 text-sm py-2"
+                    className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity font-semibold disabled:opacity-50 text-sm h-10 lg:h-11"
                   >
                     Confirmar Respuesta
                   </Button>
@@ -298,10 +314,10 @@ export default function MovieCluesRound() {
                       size="default"
                       variant="outline"
                       onClick={revealNextClue}
-                      className="w-full border-primary/50  text-sm py-2"
+                      className="w-full border-primary/50 text-xs lg:text-sm h-9 lg:h-10"
                     >
-                      <EyeOff className="w-3.5 h-3.5 mr-2" />
-                      Revelar Siguiente Pista (-pts)
+                      <EyeOff className="w-3.5 h-3.5 mr-1.5 lg:mr-2" />
+                      Revelar Pista (-pts)
                     </Button>
                   )}
                 </>
@@ -309,9 +325,9 @@ export default function MovieCluesRound() {
                 <Button
                   size="default"
                   onClick={handleNext}
-                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity font-semibold text-sm py-2"
+                  className="w-full bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity font-semibold text-sm h-10 lg:h-11"
                 >
-                  {currentRound >= rounds ? "Ver Resultados" : "Siguiente Ronda"}
+                  {isLastRound ? "Ver Resultados" : "Siguiente Ronda"}
                 </Button>
               )}
             </div>
