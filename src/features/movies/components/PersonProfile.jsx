@@ -1,44 +1,47 @@
-import { useState } from "react"
-import { Calendar, MapPin, Award } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import PersonProfileSkeleton from "./PersonProfileSkeleton"
+import { useState } from "react";
+import { Calendar, MapPin, Award } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import PersonProfileSkeleton from "./PersonProfileSkeleton";
 
 export default function PersonProfile({ person, loading, error }) {
-  const [showFullBio, setShowFullBio] = useState(false)
+  const [showFullBio, setShowFullBio] = useState(false);
 
   // Format date to readable format
   const formatDate = (dateString) => {
-    if (!dateString) return null
-    const date = new Date(dateString)
+    if (!dateString) return null;
+    const date = new Date(dateString);
     return date.toLocaleDateString("es-ES", {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })
-  }
+    });
+  };
 
   // Calculate age or lifespan
   const getAge = (birthday, deathday) => {
-    if (!birthday) return null
-    const birth = new Date(birthday)
-    const end = deathday ? new Date(deathday) : new Date()
-    const age = end.getFullYear() - birth.getFullYear()
-    return age
-  }
+    if (!birthday) return null;
+    const birth = new Date(birthday);
+    const end = deathday ? new Date(deathday) : new Date();
+    const age = end.getFullYear() - birth.getFullYear();
+    return age;
+  };
 
   // Truncate biography to first 3 sentences
   const getTruncatedBio = (bio) => {
-    if (!bio) return ""
-    const sentences = bio.match(/[^.!?]+[.!?]+/g) || []
-    return sentences.slice(0, 3).join(" ")
-  }
+    if (!bio) return "";
+    const sentences = bio.match(/[^.!?]+[.!?]+/g) || [];
+    return sentences.slice(0, 3).join(" ");
+  };
 
-  const age = person?.birthday ? getAge(person.birthday, person.deathday) : null
-  const truncatedBio = getTruncatedBio(person?.biography)
-  const shouldShowButton = person?.biography && person.biography.length > truncatedBio.length
+  const age = person?.birthday
+    ? getAge(person.birthday, person.deathday)
+    : null;
+  const truncatedBio = getTruncatedBio(person?.biography);
+  const shouldShowButton =
+    person?.biography && person.biography.length > truncatedBio.length;
 
-  if (error) return <p>{error}</p>
-  if (loading) return <PersonProfileSkeleton />
+  if (error) return <p>{error}</p>;
+  if (loading) return <PersonProfileSkeleton />;
 
   return (
     <div className="mx-5 mb-12">
@@ -73,7 +76,9 @@ export default function PersonProfile({ person, loading, error }) {
                 {person?.known_for_department && (
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full">
                     <Award className="w-4 h-4 text-primary" />
-                    <span className="text-sm font-medium text-primary">{person.known_for_department}</span>
+                    <span className="text-sm font-medium text-primary">
+                      {person.known_for_department}
+                    </span>
                   </div>
                 )}
               </div>
@@ -86,7 +91,9 @@ export default function PersonProfile({ person, loading, error }) {
                       <Calendar className="w-4 h-4 text-accent" />
                       <span>
                         {formatDate(person.birthday)}
-                        {age && ` (${age} años${person?.deathday ? "" : ""})`}
+                        {person.deathday
+                          ? ` – ${formatDate(person.deathday)} (${age} años)`
+                          : age && ` (${age} años)`}
                       </span>
                     </div>
                   )}
@@ -103,9 +110,13 @@ export default function PersonProfile({ person, loading, error }) {
               {/* Biography */}
               {person?.biography && (
                 <div className="pt-2">
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Biografía</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">
+                    Biografía
+                  </h3>
                   <div className="text-muted-foreground leading-relaxed space-y-2">
-                    <p className="text-pretty">{showFullBio ? person.biography : truncatedBio}</p>
+                    <p className="text-pretty">
+                      {showFullBio ? person.biography : truncatedBio}
+                    </p>
                     {shouldShowButton && (
                       <Button
                         variant="ghost"
@@ -127,5 +138,5 @@ export default function PersonProfile({ person, loading, error }) {
         <div className="h-1 bg-gradient-to-r from-primary via-accent to-primary" />
       </div>
     </div>
-  )
+  );
 }

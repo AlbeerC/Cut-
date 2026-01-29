@@ -5,11 +5,19 @@ import { signOut } from "../lib/auth";
 import { LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { useProfileStats } from "../hooks/useProfileStats";
+import { useAuth } from "../context/AuthContext";
 
 export default function UserProfile() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { user, profile } = useAuth()
+
+  const userId = user?.id
+
+  const { data, loading, error } = useProfileStats(userId);
 
   const navigate = useNavigate()
 
@@ -18,10 +26,14 @@ export default function UserProfile() {
     navigate("/login")
   };
 
+  if (!user || !profile) return null
+  if (loading) return <div className="pt-20 min-h-[70vh]">Cargando...</div>
+  if (error) return <div>Error al cargar los datos</div>
+
   return (
     <>
-      <MainInfoProfile />
-      <ProfileTabs />
+      <MainInfoProfile stats={data.stats} profileStats={data.profile} recentGames={data.recentGames} achievements={data.achievements} profile={profile}/>
+      <ProfileTabs activity={data.activity} games={data.gamesByType} stats={data.stats} general={data.generalStats}/>
 
       <Button
         variant="default"

@@ -1,9 +1,9 @@
 import { Trophy, Gamepad2, Clock, Star } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatPoints } from "@/shared/utils/formatPoints";
 
-export default function MainInfoProfile() {
-  const { profile } = useAuth();
+export default function MainInfoProfile( {profile, profileStats, stats, recentGames, achievements} ) {
 
   const getDate = (date) => {
     const d = new Date(date);
@@ -14,24 +14,6 @@ export default function MainInfoProfile() {
 
     return `${day}/${month}/${year}`;
   };
-
-  // MOCK DATA (visual only)
-  const user = {
-    username: "cinefan22",
-    avatar_url: "https://i.pravatar.cc/150?img=14",
-    points: 1480,
-    totalGames: 86,
-    bestScore: 970,
-    hoursPlayed: 42,
-    badges: ["Experto", "Cinépata", "Top 5 Semanal"],
-    recentGames: [
-      { id: 1, game: "Versus", score: 320, date: "Hace 2 días" },
-      { id: 2, game: "Timeline", score: 480, date: "Hace 4 días" },
-      { id: 3, game: "Versus", score: 270, date: "Hace 1 semana" },
-    ],
-  };
-
-  if (!profile) return null;
 
   return (
     <div className="container max-w-4xl mx-auto pt-30 pb-10 px-4">
@@ -49,7 +31,7 @@ export default function MainInfoProfile() {
           <p className="text-muted-foreground max-md:text-md">Miembro desde el {getDate(profile.created_at)}</p>
           <div className="flex items-center gap-2 mt-2">
             <Trophy className="w-5 h-5 text-yellow-500" />
-            <span className="font-semibold">{profile.points} puntos</span>
+            <span className="font-semibold">{formatPoints(profileStats.points)} puntos</span>
           </div>
         </div>
       </div>
@@ -59,19 +41,19 @@ export default function MainInfoProfile() {
         <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-4 flex flex-col items-center shadow">
           <Gamepad2 className="w-7 h-7 mb-2 text-primary" />
           <p className="text-xs text-muted-foreground">Partidas jugadas</p>
-          <p className="text-2xl font-bold">{user.totalGames}</p>
+          <p className="text-2xl font-bold">{stats.games_completed}</p>
         </div>
 
         <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-4 flex flex-col items-center shadow">
           <Star className="w-7 h-7 mb-2 text-primary" />
           <p className="text-xs text-muted-foreground">Mejor puntaje</p>
-          <p className="text-2xl font-bold">{user.bestScore}</p>
+          <p className="text-2xl font-bold">{stats.best_score}</p>
         </div>
 
         <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-4 flex flex-col items-center shadow">
           <Clock className="w-7 h-7 mb-2 text-primary" />
           <p className="text-xs text-muted-foreground">Horas jugadas</p>
-          <p className="text-2xl font-bold">{user.hoursPlayed} h</p>
+          <p className="text-2xl font-bold">{stats.hours_played} h</p>
         </div>
       </div>
 
@@ -79,15 +61,22 @@ export default function MainInfoProfile() {
       <div className="mt-10">
         <h2 className="text-xl font-semibold mb-3">Logros</h2>
         <div className="flex gap-3 flex-wrap">
-          {user.badges.map((b, i) => (
+          {achievements.map((achi, i) => (
             <span
-              key={i}
+              key={achi.id}
               className="px-4 py-2 bg-primary/10 text-primary rounded-xl border border-primary/20 text-sm font-medium"
             >
-              {b}
+              {achi.icon} {" "}
+              {achi.title}
             </span>
           ))}
         </div>
+
+        {achievements.length === 0 && (
+          <p className="text-neutral-400 text-sm">
+            Todavía no has logrado ningún logro
+          </p>
+        )}
       </div>
 
       {/* Recent Games */}
@@ -95,7 +84,7 @@ export default function MainInfoProfile() {
         <h2 className="text-xl font-semibold mb-3">Historial reciente</h2>
 
         <div className="space-y-3">
-          {user.recentGames.map((g) => (
+          {recentGames.map((g) => (
             <div
               key={g.id}
               className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-4 flex justify-between items-center shadow"
