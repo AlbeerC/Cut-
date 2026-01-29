@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { useProfileStats } from "../hooks/useProfileStats";
 import { useAuth } from "../context/AuthContext";
+import ProfileSkeleton from "../components/ProfileSkeleton";
 
 export default function UserProfile() {
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function UserProfile() {
   };
 
   if (!user || !profile) return null
-  if (loading) return <div className="pt-20 min-h-[70vh]">Cargando...</div>
+  if (loading) return <ProfileSkeleton />
   if (error) return <div>Error al cargar los datos</div>
 
   return (

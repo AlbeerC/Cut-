@@ -47,7 +47,7 @@ export default function VersusWelcome() {
             <Swords className="w-16 h-16 text-primary mx-auto mb-4 animate-float" />
           </div>
           <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
-            Movie Versus
+            Versus de películas
           </h1>
           <p className="text-xl text-muted-foreground max-w-md mx-auto">
             Elegí entre dos películas hasta que quede tu favorita

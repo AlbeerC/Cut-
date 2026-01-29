@@ -20,7 +20,7 @@ export default function MainInfoProfile( {profile, profileStats, stats, recentGa
       {/* Header */}
       <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-6 flex items-center gap-6 shadow-lg">
         <Avatar className="h-24 w-24">
-          <AvatarImage src={profile.avatar_url || "/placeholder.svg"} alt={profile.username} />
+          <AvatarImage key={profile.avatar_url}src={profile.avatar_url || "/placeholder.svg"} alt={profile.username} />
           <AvatarFallback className="bg-primary text-primary-foreground text-md">
             {profile.username.slice(0, 2).toUpperCase()}
           </AvatarFallback>

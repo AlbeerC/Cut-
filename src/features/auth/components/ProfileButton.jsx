@@ -17,7 +17,7 @@ export function ProfileButton({ onClick }) {
         className="gap-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:border-primary/40 transition-all duration-200"
       >
         <Avatar className="h-8 w-8">
-          <AvatarImage src={profile.avatar_url || "/placeholder.svg"} alt={profile.username} />
+          <AvatarImage key={profile.avatar_url} src={profile.avatar_url || "/placeholder.svg"} alt={profile.username} />
           <AvatarFallback className="bg-primary text-primary-foreground text-md">
             {profile.username.slice(0, 2).toUpperCase()}
           </AvatarFallback>

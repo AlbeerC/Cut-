@@ -2,18 +2,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, TrendingUp, Award, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
+import { formatPoints } from "@/shared/utils/formatPoints";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-const rankings = [
-  { rank: 1, name: "CineManiac", points: 15420, avatar: "🎬" },
-  { rank: 2, name: "FilmBuff2024", points: 14890, avatar: "🎥" },
-  { rank: 3, name: "MovieMaster", points: 13750, avatar: "🍿" },
-  { rank: 4, name: "ReelExpert", points: 12980, avatar: "🎞️" },
-  { rank: 5, name: "CinemaKing", points: 11560, avatar: "👑" },
-];
-
-
-export default function CommunitySection() {
-  const navigate = useNavigate()
+export default function CommunitySection({ ranking }) {
+  const navigate = useNavigate();
 
   return (
     <section id="ranking" className="py-24 relative">
@@ -86,7 +79,7 @@ export default function CommunitySection() {
               </div>
 
               <div className="space-y-3">
-                {rankings.map((player) => (
+                {ranking.map((player) => (
                   <div
                     key={player.rank}
                     className="flex items-center gap-4 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
@@ -96,21 +89,32 @@ export default function CommunitySection() {
                         player.rank === 1
                           ? "bg-primary text-primary-foreground"
                           : player.rank === 2
-                          ? "bg-accent text-accent-foreground"
-                          : player.rank === 3
-                          ? "bg-chart-3 text-foreground"
-                          : "bg-muted text-muted-foreground"
+                            ? "bg-accent text-accent-foreground"
+                            : player.rank === 3
+                              ? "bg-chart-3 text-foreground"
+                              : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {player.rank}
                     </div>
 
-                    <div className="text-2xl">{player.avatar}</div>
+                    {player && (
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          key={player.avatar_url}
+                          src={player.avatar_url || "/placeholder.svg"}
+                          alt={player.username}
+                        />
+                        <AvatarFallback className="bg-white text-primary-foreground text-md">
+                          {player.username.slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    )}
 
                     <div className="flex-1">
-                      <div className="font-semibold">{player.name}</div>
+                      <div className="font-semibold">{player.username}</div>
                       <div className="text-sm text-muted-foreground">
-                        {player.points.toLocaleString()} puntos
+                        {formatPoints(player.points)} puntos
                       </div>
                     </div>
 
@@ -120,8 +124,8 @@ export default function CommunitySection() {
                           player.rank === 1
                             ? "text-primary"
                             : player.rank === 2
-                            ? "text-accent"
-                            : "text-chart-3"
+                              ? "text-accent"
+                              : "text-chart-3"
                         }`}
                       />
                     )}

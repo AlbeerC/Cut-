@@ -33,7 +33,7 @@ export default function TimelineConfig() {
             <Calendar className="w-12 h-12 text-primary mx-auto mb-3" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Timeline Challenge
+            Línea del tiempo
           </h1>
           <p className="text-base text-muted-foreground max-w-md mx-auto">Ordena 4 películas según su año de estreno</p>
         </div>

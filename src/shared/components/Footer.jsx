@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom"
-import { Film, Twitter, Instagram, Youtube, Mail } from "lucide-react"
+import { Link } from "react-router-dom";
+import { Film, Twitter, Instagram, Youtube, Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -17,7 +17,8 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              La plataforma definitiva para fanáticos del cine. Juega, compite y descubre.
+              La plataforma definitiva para fanáticos del cine. Juega, compite y
+              descubre.
             </p>
           </div>
 
@@ -26,23 +27,43 @@ export function Footer() {
             <h4 className="font-semibold">Juegos</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="/games/versus"
+                  className="hover:text-foreground transition-colors"
+                >
                   Versus de Películas
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
-                  Trivia Cinematográfica
+                <Link
+                  to="/games/director"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Quien la dirigió
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
-                  Ranking de Fans
+                <Link
+                  to="/games/timeline"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Línea del tiempo
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
-                  Torneos
+                <Link
+                  to="/games/movieclues"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Adivina la película
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/games/sixdegrees"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Conectados
                 </Link>
               </li>
             </ul>
@@ -53,22 +74,34 @@ export function Footer() {
             <h4 className="font-semibold">Comunidad</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Rankings
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Torneos
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Favoritos
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Foro
                 </Link>
               </li>
@@ -80,22 +113,34 @@ export function Footer() {
             <h4 className="font-semibold">Legal</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Términos y Condiciones
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Política de Privacidad
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Contacto
                 </Link>
               </li>
               <li>
-                <Link to="#" className="hover:text-foreground transition-colors">
+                <Link
+                  to="#"
+                  className="hover:text-foreground transition-colors"
+                >
                   Ayuda
                 </Link>
               </li>
@@ -105,23 +150,38 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">© 2025 Cut! Todos los derechos reservados.</p>
+          <p className="text-sm text-muted-foreground">
+            © 2026 Cut! Todos los derechos reservados.
+            <span className="pl-4"> Desarrollado por <a className="text-primary" href="https://github.com/AlbeerC" target="_blank">Alberto Caminos</a></span>
+          </p>
 
           {/* Social links */}
           <div className="flex items-center gap-4">
-            <Link to="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link
+              to="#"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
               <Twitter className="w-5 h-5" />
               <span className="sr-only">Twitter</span>
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link
+              to="#"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
               <Instagram className="w-5 h-5" />
               <span className="sr-only">Instagram</span>
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link
+              to="#"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
               <Youtube className="w-5 h-5" />
               <span className="sr-only">YouTube</span>
             </Link>
-            <Link to="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link
+              to="#"
+              className="text-muted-foreground hover:text-primary transition-colors"
+            >
               <Mail className="w-5 h-5" />
               <span className="sr-only">Email</span>
             </Link>
@@ -129,5 +189,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

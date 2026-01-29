@@ -143,7 +143,7 @@ export default function MovieCluesProvider({ children }) {
     } else {
       // 🏁 FIN DEL JUEGO
       setGameFinished(true);
-
+      console.log("finishing")
       if (gameId) {
         await finishMovieCluesGame({
           gameId,

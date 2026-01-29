@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react"
-import { useNavigate } from "react-router"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Zap, Clock, Trophy, Users, Loader2, HelpCircle } from "lucide-react"
-import { useSixDegrees } from "../context/SixDegreesContext"
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Zap, Clock, Trophy, Users, Loader2, HelpCircle } from "lucide-react";
+import { useSixDegrees } from "../context/SixDegreesContext";
 import {
   Dialog,
   DialogContent,
@@ -13,62 +13,96 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { useAuth } from "@/features/auth/context/AuthContext"
-import { startSixDegreesGame } from "../db/points.db"
+} from "@/components/ui/dialog";
+import { useAuth } from "@/features/auth/context/AuthContext";
+import { startSixDegreesGame } from "../db/points.db";
 
 export default function SixDegreesConfig() {
-  const router = useNavigate()
-  const { updateConfig, selectRandomActors, setGameId } = useSixDegrees()
+  const router = useNavigate();
+  const { updateConfig, selectRandomActors, setGameId } = useSixDegrees();
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
-  const [selectedDifficulty, setSelectedDifficulty] = useState("medium")
-  const [selectedMode, setSelectedMode] = useState("classic")
-  const [isLoading, setIsLoading] = useState(false)
+  const [selectedDifficulty, setSelectedDifficulty] = useState("medium");
+  const [selectedMode, setSelectedMode] = useState("classic");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   const difficulties = {
-    easy: { maxSteps: 8, label: "Fácil", description: "Hasta 8 pasos", icon: Zap, color: "text-green-500" },
-    medium: { maxSteps: 6, label: "Media", description: "Hasta 6 pasos", icon: Clock, color: "text-primary" },
-    hard: { maxSteps: 4, label: "Difícil", description: "Hasta 4 pasos", icon: Trophy, color: "text-red-500" },
-  }
+    easy: {
+      maxSteps: 8,
+      label: "Fácil",
+      description: "Hasta 8 pasos",
+      icon: Zap,
+      color: "text-green-500",
+    },
+    medium: {
+      maxSteps: 6,
+      label: "Media",
+      description: "Hasta 6 pasos",
+      icon: Clock,
+      color: "text-primary",
+    },
+    hard: {
+      maxSteps: 4,
+      label: "Difícil",
+      description: "Hasta 4 pasos",
+      icon: Trophy,
+      color: "text-red-500",
+    },
+  };
 
   const modes = {
-    classic: { timeLimit: null, label: "Clásico", description: "Sin límite de tiempo", icon: Users },
-    blitz: { timeLimit: 120, label: "Relámpago", description: "2 minutos", icon: Zap },
-  }
+    classic: {
+      timeLimit: null,
+      label: "Clásico",
+      description: "Sin límite de tiempo",
+      icon: Users,
+    },
+    blitz: {
+      timeLimit: 120,
+      label: "Relámpago",
+      description: "2 minutos",
+      icon: Zap,
+    },
+  };
 
   const handleStart = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
 
     updateConfig({
       maxSteps: difficulties[selectedDifficulty].maxSteps,
       timeLimit: modes[selectedMode].timeLimit,
       difficulty: selectedDifficulty,
-    })
+    });
 
     try {
-      await selectRandomActors()
-      const gameId = await startSixDegreesGame(user.id)
-      
-      setGameId(gameId)
-      router("/games/sixdegrees/play")
+      await selectRandomActors();
+      const gameId = await startSixDegreesGame(user.id);
+
+      setGameId(gameId);
+      router("/games/sixdegrees/play");
     } catch (error) {
-      console.error("Error starting game:", error)
-      setIsLoading(false)
+      console.error("Error starting game:", error);
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-background p-4 pt-30 flex items-center justify-center">
       <div className="max-w-2xl w-full">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-6"
+        >
           <div className="flex items-center justify-center gap-3 mb-2">
-            <h1 className="text-3xl font-bold">Six Degrees</h1>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+              Conectados
+            </h1>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -81,23 +115,30 @@ export default function SixDegreesConfig() {
                   <DialogDescription asChild>
                     <div className="space-y-3 text-left">
                       <p className="text-sm">
-                        <strong>Objetivo:</strong> Conecta dos actores a través de películas en las que trabajaron
-                        juntos.
+                        <strong>Objetivo:</strong> Conecta dos actores a través
+                        de películas en las que trabajaron juntos.
                       </p>
                       <p className="text-sm">
                         <strong>Reglas:</strong>
                       </p>
                       <ul className="list-disc list-inside text-sm space-y-1 ml-2">
                         <li>Comienza con el actor inicial</li>
-                        <li>Busca otro actor que haya trabajado con él en alguna película</li>
+                        <li>
+                          Busca otro actor que haya trabajado con él en alguna
+                          película
+                        </li>
                         <li>Continúa hasta llegar al actor objetivo</li>
-                        <li>Mientras menos pasos uses, mejor puntuación obtendrás</li>
+                        <li>
+                          Mientras menos pasos uses, mejor puntuación obtendrás
+                        </li>
                       </ul>
                       <p className="text-sm">
-                        <strong>Ayudas:</strong> Puedes usar hasta 3 pistas y deshacer pasos, pero te restarán puntos.
+                        <strong>Ayudas:</strong> Puedes usar hasta 3 pistas y
+                        deshacer pasos, pero te restarán puntos.
                       </p>
                       <p className="text-sm">
-                        <strong>Puntuación:</strong> Bonus por rutas óptimas, velocidad y no usar ayudas.
+                        <strong>Puntuación:</strong> Bonus por rutas óptimas,
+                        velocidad y no usar ayudas.
                       </p>
                     </div>
                   </DialogDescription>
@@ -105,7 +146,9 @@ export default function SixDegreesConfig() {
               </DialogContent>
             </Dialog>
           </div>
-          <p className="text-muted-foreground">Conecta dos actores a través de películas compartidas</p>
+          <p className="text-muted-foreground">
+            Conecta dos actores a través de películas compartidas
+          </p>
         </motion.div>
 
         <motion.div
@@ -119,10 +162,14 @@ export default function SixDegreesConfig() {
             <h2 className="text-lg font-semibold mb-3">Dificultad</h2>
             <div className="grid grid-cols-3 gap-3">
               {Object.entries(difficulties).map(([key, diff]) => {
-                const Icon = diff.icon
-                const isSelected = selectedDifficulty === key
+                const Icon = diff.icon;
+                const isSelected = selectedDifficulty === key;
                 return (
-                  <motion.div key={key} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <motion.div
+                    key={key}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
                     <Card
                       onClick={() => setSelectedDifficulty(key)}
                       className={`p-4 text-center cursor-pointer border-2 transition-all ${
@@ -132,17 +179,21 @@ export default function SixDegreesConfig() {
                       }`}
                     >
                       <Icon className={`w-6 h-6 mx-auto mb-2 ${diff.color}`} />
-                      <h3 className="font-semibold text-sm mb-1">{diff.label}</h3>
-                      <p className="text-xs text-muted-foreground">{diff.description}</p>
+                      <h3 className="font-semibold text-sm mb-1">
+                        {diff.label}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">
+                        {diff.description}
+                      </p>
                     </Card>
                   </motion.div>
-                )
+                );
               })}
             </div>
           </Card>
 
           {/* Game Mode */}
-{/*           <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
+          {/*           <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/20">
             <h2 className="text-lg font-semibold mb-3">Modo de Juego</h2>
             <div className="space-y-2">
               {Object.entries(modes).map(([key, mode]) => {
@@ -193,5 +244,5 @@ export default function SixDegreesConfig() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

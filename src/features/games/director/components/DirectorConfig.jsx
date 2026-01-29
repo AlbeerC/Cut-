@@ -53,7 +53,7 @@ export default function DirectorConfig() {
             <Clapperboard className="w-12 h-12 text-primary mx-auto mb-3" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
-            Director Challenge
+            Quién la dirigió?
           </h1>
           <p className="text-base text-muted-foreground max-w-md mx-auto">Adivina quién dirigió cada película</p>
         </div>
