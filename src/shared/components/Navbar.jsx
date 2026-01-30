@@ -80,17 +80,17 @@ export default function Navbar() {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/login")}
-                className="text-sm font-medium"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               >
                 Login
               </Button>
-              <Button
+{/*               <Button
                 size="sm"
                 onClick={() => navigate("/register")}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
               >
                 Comenzar
-              </Button>
+              </Button> */}
             </>
           )}
         </div>
@@ -172,7 +172,7 @@ export default function Navbar() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="w-full"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                   onClick={() => {
                     navigate("/login");
                     closeMobileMenu();
@@ -180,7 +180,7 @@ export default function Navbar() {
                 >
                   Login
                 </Button>
-                <Button
+ {/*                <Button
                   size="sm"
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                   onClick={() => {
@@ -189,7 +189,7 @@ export default function Navbar() {
                   }}
                 >
                   Comenzar
-                </Button>
+                </Button> */}
               </>
             )}
           </div>
