@@ -84,7 +84,7 @@ export default function ProfileTabs({ activity, games, stats, general }) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-neutral-900 border border-neutral-800 p-4 rounded-xl">
                   <p className="text-neutral-400 text-sm">Horas Jugadas</p>
-                  <p className="text-3xl font-bold mt-1">{stats.hours_played} h</p>
+                  <p className="text-3xl font-bold mt-1">{stats?.hours_played} h</p>
                 </div>
 
                 <div className="bg-neutral-900 border border-neutral-800 p-4 rounded-xl">

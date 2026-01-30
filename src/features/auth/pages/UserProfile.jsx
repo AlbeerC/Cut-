@@ -20,6 +20,8 @@ export default function UserProfile() {
 
   const { data, loading, error } = useProfileStats(userId);
 
+  console.log(data)
+
   const navigate = useNavigate()
 
   const logout = () => {
@@ -27,7 +29,7 @@ export default function UserProfile() {
     navigate("/login")
   };
 
-  if (!user || !profile) return null
+  if (!user || !profile) return <p className="pt-30 min-h-[70vh] text-center">Usuario no autenticado</p>
   if (loading) return <ProfileSkeleton />
   if (error) return <div>Error al cargar los datos</div>
 

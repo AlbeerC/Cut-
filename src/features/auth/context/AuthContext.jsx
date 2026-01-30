@@ -18,6 +18,13 @@ export const AuthProvider = ({ children }) => {
     if (!error) setProfile(data);
   };
 
+  const updateProfileInfo = (updatedData) => {
+    setProfile(prev => ({
+      ...prev,
+      ...updatedData,
+    }));
+  };
+
   useEffect(() => {
     const getSession = async () => {
       const {
@@ -52,7 +59,7 @@ export const AuthProvider = ({ children }) => {
     return () => authListener.subscription.unsubscribe();
   }, []);
 
-  const value = { user, loading, profile };
+  const value = { user, loading, profile, updateProfileInfo };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
