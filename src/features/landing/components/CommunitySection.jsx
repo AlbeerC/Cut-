@@ -15,13 +15,13 @@ export default function CommunitySection({ ranking }) {
           {/* Left content */}
           <div className="space-y-8">
             <div className="space-y-4">
-              <h2 className="text-4xl md:text-5xl font-bold text-balance">
+              <h2 className="text-3xl md:text-5xl font-bold text-balance">
                 Sé parte de los primeros cinéfilos de{" "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
                   Cut!
                 </span>
               </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed text-pretty">
+              <p className="text-md md:text-lg text-muted-foreground leading-relaxed text-pretty">
                 Jugá, sumá puntos y dejá tu marca en los rankings. Estás
                 entrando en una comunidad que recién empieza — cada partida
                 cuenta desde el primer día.
@@ -33,7 +33,7 @@ export default function CommunitySection({ ranking }) {
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <Users className="w-8 h-8 text-primary" />
-                  <div className="text-3xl font-bold">
+                  <div className="text-2xl md:text-3xl font-bold">
                     Comunidad en crecimiento
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -45,7 +45,7 @@ export default function CommunitySection({ ranking }) {
               <Card className="border-border bg-card">
                 <CardContent className="p-6 space-y-2">
                   <TrendingUp className="w-8 h-8 text-accent" />
-                  <div className="text-3xl font-bold">
+                  <div className="text-2xl md:text-3xl font-bold">
                     Sistema de puntos activo
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -98,21 +98,10 @@ export default function CommunitySection({ ranking }) {
                       {player.rank}
                     </div>
 
-                    {player && (
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage
-                          key={player.avatar_url}
-                          src={player.avatar_url || "/placeholder.svg"}
-                          alt={player.username}
-                        />
-                        <AvatarFallback className="bg-white text-primary-foreground text-md">
-                          {player.username.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
+
 
                     <div className="flex-1">
-                      <div className="font-semibold">{player.username}</div>
+                      <div className="font-semibold text-sm">{player.username}</div>
                       <div className="text-sm text-muted-foreground">
                         {formatPoints(player.points)} puntos
                       </div>
