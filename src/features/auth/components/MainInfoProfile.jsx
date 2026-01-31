@@ -23,8 +23,6 @@ export default function MainInfoProfile({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { updateProfileInfo } = useAuth();
 
-  console.log(profile, profileStats, stats, recentGames, achievements);
-
   const getDate = (date) => {
     const d = new Date(date);
     const day = d.getDate().toString().padStart(2, "0");

@@ -5,6 +5,7 @@ import landingRoutes from "../features/landing/routes"
 import moviesRoutes from "../features/movies/routes"
 import gamesRoutes from "../features/games/routes"
 import authRoutes from "../features/auth/routes"
+import extraRoutes from "../shared/pages/routes"
 
 export const router = createBrowserRouter([
   {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
       ...moviesRoutes,
       ...gamesRoutes,
       ...authRoutes,
+      ...extraRoutes
     ],
   },
 ])

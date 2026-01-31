@@ -72,7 +72,7 @@ export default function DirectorRound() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pt-30">
+    <div className="min-h-screen bg-background flex flex-col pt-20">
       {/* Fixed Header - Progress & Movie Info */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto p-3 lg:p-4">
@@ -167,7 +167,7 @@ export default function DirectorRound() {
                     }`}
                   >
                     <div className="p-2 lg:p-3">
-                      <div className="relative w-20 h-20 lg:w-28 lg:h-28 rounded-lg overflow-hidden mb-2 bg-muted flex items-center justify-center mx-auto">
+                      <div className="relative w-28 h-28 rounded-lg overflow-hidden mb-2 bg-muted flex items-center justify-center mx-auto">
                         {director.image ? (
                           <img
                             src={director.image || "/placeholder.svg"}

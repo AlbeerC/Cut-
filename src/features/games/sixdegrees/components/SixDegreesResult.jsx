@@ -234,11 +234,18 @@ export default function SixDegreesResult() {
                   <div key={index} className="space-y-2">
                     {/* Película ANTES del actor (excepto el primero) */}
                     {index > 0 && link.movie && (
-                      <div className="ml-14 flex items-center gap-2">
+                      <div className="ml-14 flex items-center gap-2 min-w-0">
                         <ArrowRight className="w-4 h-4 text-muted-foreground shrink-0" />
-                        <Badge variant="outline" className="text-xs">
-                          <Film className="w-3 h-3 mr-1" />
-                          {link.movie.title} ({link.movie.year})
+                        <Badge
+                          variant="outline"
+                          className="text-xs max-w-[200px]"
+                        >
+                          <div className="flex items-center gap-1 min-w-0">
+                            <Film className="w-3 h-3 shrink-0" />
+                            <span className="truncate">
+                              {link.movie.title} ({link.movie.year})
+                            </span>
+                          </div>
                         </Badge>
                       </div>
                     )}

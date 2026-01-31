@@ -6,13 +6,12 @@ import {
   Play,
   Users,
   Gamepad2,
-  TrendingUp,
   Star,
   Heart,
   Cog,
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import gameicon1 from "@/shared/assets/gameicon1.png";
 import gameicon2 from "@/shared/assets/gameicon2.png";
 import gameicon3 from "@/shared/assets/gameicon3.png";
@@ -22,6 +21,10 @@ import gameicon5 from "@/shared/assets/gameicon5.png";
 export default function GamesHub() {
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [hoveredGame, setHoveredGame] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragX = useMotionValue(0);
+  const carouselRef = useRef(null);
+  const autoRotateRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -123,12 +126,55 @@ export default function GamesHub() {
   ];
 
   // Auto-rotate featured game
-  useEffect(() => {
-    const interval = setInterval(() => {
+  const startAutoRotate = () => {
+    if (autoRotateRef.current) {
+      clearInterval(autoRotateRef.current);
+    }
+    autoRotateRef.current = setInterval(() => {
       setFeaturedIndex((prev) => (prev + 1) % games.length);
     }, 6000);
-    return () => clearInterval(interval);
-  }, [games.length]);
+  };
+
+  const stopAutoRotate = () => {
+    if (autoRotateRef.current) {
+      clearInterval(autoRotateRef.current);
+    }
+  };
+
+  useEffect(() => {
+    startAutoRotate();
+    return () => stopAutoRotate();
+  }, []);
+
+  const handleDragEnd = (event, info) => {
+    setIsDragging(false);
+    const threshold = 50; // Minimum drag distance to trigger change
+    const velocity = info.velocity.x;
+    const offset = info.offset.x;
+
+    // Determine direction based on drag distance and velocity
+    if (Math.abs(offset) > threshold || Math.abs(velocity) > 500) {
+      if (offset > 0 || velocity > 500) {
+        // Swiped right - go to previous
+        setFeaturedIndex((prev) => (prev - 1 + games.length) % games.length);
+      } else if (offset < 0 || velocity < -500) {
+        // Swiped left - go to next
+        setFeaturedIndex((prev) => (prev + 1) % games.length);
+      }
+    }
+
+    // Reset drag position
+    animate(dragX, 0, { type: "spring", stiffness: 300, damping: 30 });
+
+    // Restart auto-rotation after manual interaction
+    stopAutoRotate();
+    setTimeout(() => startAutoRotate(), 6000);
+  };
+
+  const handleDragStart = () => {
+    setIsDragging(true);
+    stopAutoRotate();
+  };
 
   const featuredGame = games[featuredIndex];
 
@@ -152,15 +198,27 @@ export default function GamesHub() {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/95 to-background/60" />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
 
-        <div className="relative max-w-7xl mx-auto px-4 py-20 sm:py-20 min-h-[600px] flex items-center">
-          <div className="grid lg:grid-cols-2 gap-12 items-center w-full">
+        {/* Draggable container for mobile */}
+        <motion.div
+          ref={carouselRef}
+          className="relative max-w-7xl mx-auto px-4 py-20 sm:py-20 min-h-[600px] flex items-center cursor-grab active:cursor-grabbing"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          style={{ x: dragX }}
+          // Only enable drag on mobile
+          dragEnabled={true}
+        >
+          <div className="grid lg:grid-cols-2 gap-12 items-center w-full pointer-events-none">
             {/* Left Content */}
             <motion.div
               key={`content-${featuredIndex}`}
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="space-y-6"
+              className="space-y-6 pointer-events-auto"
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/20 border border-primary/30 backdrop-blur-sm">
                 <Star className="w-4 h-4 text-primary" />
@@ -189,9 +247,7 @@ export default function GamesHub() {
                     <p className="text-2xl font-bold">
                       {featuredGame.stats.difficulty}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      Dificultad
-                    </p>
+                    <p className="text-xs text-muted-foreground">Dificultad</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -235,20 +291,17 @@ export default function GamesHub() {
               initial={{ opacity: 0, scale: 0.85, rotate: -8 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
-              className="hidden lg:flex items-center justify-center"
+              className="hidden lg:flex items-center justify-center pointer-events-auto"
             >
               <div className="relative">
                 {/* Glow */}
                 <div
-                  className={`absolute inset-0 bg-gradient-to-br ${featuredGame.color}
-      blur-3xl opacity-40`}
+                  className={`absolute inset-0 bg-gradient-to-br ${featuredGame.color} blur-3xl opacity-40`}
                 />
 
                 {/* Card */}
                 <div
-                  className={`relative w-64 h-64 rounded-3xl
-      bg-gradient-to-br ${featuredGame.color}
-      p-2 shadow-2xl`}
+                  className={`relative w-64 h-64 rounded-3xl bg-gradient-to-br ${featuredGame.color} p-2 shadow-2xl`}
                 >
                   {/* Image wrapper */}
                   <div className="w-full h-full rounded-2xl overflow-hidden bg-black/30">
@@ -263,21 +316,37 @@ export default function GamesHub() {
               </div>
             </motion.div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Carousel Indicators */}
         <div className="relative pb-8 flex justify-center gap-2">
           {games.map((_, idx) => (
             <button
               key={idx}
-              onClick={() => setFeaturedIndex(idx)}
+              onClick={() => {
+                setFeaturedIndex(idx);
+                stopAutoRotate();
+                setTimeout(() => startAutoRotate(), 6000);
+              }}
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 idx === featuredIndex
                   ? "w-12 bg-primary"
                   : "w-6 bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
+              aria-label={`Ver ${games[idx].title}`}
             />
           ))}
+        </div>
+
+        {/* Swipe hint for mobile (optional) */}
+        <div className="lg:hidden absolute bottom-20 left-1/2 -translate-x-1/2 pointer-events-none">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isDragging ? 0 : 0.5 }}
+            className="text-xs text-muted-foreground flex items-center gap-2 bg-background/50 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/30"
+          >
+            <span>← Desliza →</span>
+          </motion.div>
         </div>
       </div>
 
@@ -293,8 +362,7 @@ export default function GamesHub() {
             Todos los Juegos
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Elige tu desafío favorito y demuestra tu conocimiento
-            cinematográfico
+            Elige tu desafío favorito y demuestra tu conocimiento cinematográfico
           </p>
         </motion.div>
 

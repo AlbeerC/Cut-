@@ -69,40 +69,32 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Comunidad */}
+          {/* Enlaces */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Comunidad</h4>
+            <h4 className="font-semibold">Enlaces</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  to="#"
+                  to="/"
                   className="hover:text-foreground transition-colors"
                 >
-                  Rankings
+                  Inicio
                 </Link>
               </li>
               <li>
                 <Link
-                  to="#"
+                  to="/games"
                   className="hover:text-foreground transition-colors"
                 >
-                  Torneos
+                  Centro de juegos
                 </Link>
               </li>
               <li>
                 <Link
-                  to="#"
+                  to="/movies?endpoint=top_rated&page=1"
                   className="hover:text-foreground transition-colors"
                 >
-                  Favoritos
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Foro
+                  Explorar películas
                 </Link>
               </li>
             </ul>
@@ -110,27 +102,11 @@ export function Footer() {
 
           {/* Legal */}
           <div className="space-y-4">
-            <h4 className="font-semibold">Legal</h4>
+            <h4 className="font-semibold">Nosotros</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  to="#"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Términos y Condiciones
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
-                  className="hover:text-foreground transition-colors"
-                >
-                  Política de Privacidad
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="#"
+                  to="/contacto"
                   className="hover:text-foreground transition-colors"
                 >
                   Contacto
@@ -138,10 +114,18 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  to="#"
+                  to="about"
                   className="hover:text-foreground transition-colors"
                 >
-                  Ayuda
+                  Sobre nosotros
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/faq"
+                  className="hover:text-foreground transition-colors"
+                >
+                  Preguntas frecuentes
                 </Link>
               </li>
             </ul>
@@ -152,11 +136,21 @@ export function Footer() {
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
             © 2026 Cut! Todos los derechos reservados.
-            <span className="pl-4"> Desarrollado por <a className="text-primary" href="https://github.com/AlbeerC" target="_blank">Alberto Caminos</a></span>
+            <span className="pl-4">
+              {" "}
+              Desarrollado por{" "}
+              <a
+                className="text-primary"
+                href="https://github.com/AlbeerC"
+                target="_blank"
+              >
+                Alberto Caminos
+              </a>
+            </span>
           </p>
 
           {/* Social links */}
-          <div className="flex items-center gap-4">
+          {/*           <div className="flex items-center gap-4">
             <Link
               to="#"
               className="text-muted-foreground hover:text-primary transition-colors"
@@ -185,7 +179,7 @@ export function Footer() {
               <Mail className="w-5 h-5" />
               <span className="sr-only">Email</span>
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

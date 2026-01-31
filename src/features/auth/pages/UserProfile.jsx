@@ -20,7 +20,6 @@ export default function UserProfile() {
 
   const { data, loading, error } = useProfileStats(userId);
 
-  console.log(data)
 
   const navigate = useNavigate()
 
