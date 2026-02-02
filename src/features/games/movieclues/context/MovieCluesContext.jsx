@@ -1,11 +1,10 @@
-import { createContext, useContext, useState } from "react";
-import {
-  addMovieCluesRound,
-  finishMovieCluesGame,
-} from "../db/points.db";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import { createContext, useContext, useState } from "react";
+import { addMovieCluesRound, finishMovieCluesGame } from "../db/points.db";
 
 const MovieCluesContext = createContext();
+
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 export default function MovieCluesProvider({ children }) {
   const [rounds, setRounds] = useState(5);
@@ -17,23 +16,61 @@ export default function MovieCluesProvider({ children }) {
 
   // Current round state
   const [currentMovie, setCurrentMovie] = useState(null);
-  const [revealedClues, setRevealedClues] = useState(1);
+  const [backdrops, setBackdrops] = useState([]); // Escenas de la pelicula
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // 0, 1, 2
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [showResult, setShowResult] = useState(false);
-  const [attempts, setAttempts] = useState(0);
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [inputLocked, setInputLocked] = useState(false); // Bloquear input despues de intento fallido
   const [roundPoints, setRoundPoints] = useState(0);
-
-  const maxClues = 4; // Poster borroso → menos borroso → claro → + año
-
-  // States for db logic
-  const { user } = useAuth();
+  const [isLoadingBackdrops, setIsLoadingBackdrops] = useState(false);
   const [gameId, setGameId] = useState(null);
-  const [gameFinished, setGameFinished] = useState(false);
+  const { user } = useAuth();
+
+  const maxImages = 3; // Maximo 3 imagenes por ronda
+
+  // Fetch backdrops for a movie
+  const fetchBackdrops = async (movieId) => {
+    setIsLoadingBackdrops(true);
+    try {
+      const response = await fetch(
+        `https://api.themoviedb.org/3/movie/${movieId}/images?api_key=${API_KEY}`,
+      );
+      const data = await response.json();
+
+      // Filtrar backdrops SIN idioma (iso_639_1: null) - estos no tienen texto/titulos
+      const availableBackdrops = data.backdrops || [];
+      const cleanBackdrops = availableBackdrops.filter(
+        (backdrop) => backdrop.iso_639_1 === null,
+      );
+
+      // Si no hay backdrops limpios, usar los que hay pero preferir los sin idioma
+      const backdropsToUse =
+        cleanBackdrops.length >= 3
+          ? cleanBackdrops
+          : [
+              ...cleanBackdrops,
+              ...availableBackdrops.filter((b) => b.iso_639_1 !== null),
+            ];
+
+      const shuffled = [...backdropsToUse].sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, Math.min(3, shuffled.length));
+
+      setBackdrops(selected);
+      setIsLoadingBackdrops(false);
+      return selected;
+    } catch (error) {
+      console.error("[v0] Error fetching backdrops:", error);
+      setBackdrops([]);
+      setIsLoadingBackdrops(false);
+      return [];
+    }
+  };
 
   // Generate all rounds at once
-  const generateRounds = (movies, numRounds) => {
+  const generateRounds = async (movies, numRounds) => {
     if (!movies || movies.length < numRounds) {
       console.error("[v0] No hay suficientes películas para generar rondas");
       return false;
@@ -44,7 +81,11 @@ export default function MovieCluesProvider({ children }) {
 
     setRoundData(selected);
     setCurrentMovie(selected[0]);
-    setRevealedClues(1);
+    setCurrentImageIndex(0);
+
+    // Cargar backdrops de la primera pelicula
+    await fetchBackdrops(selected[0].id);
+
     return true;
   };
 
@@ -56,12 +97,13 @@ export default function MovieCluesProvider({ children }) {
     }
 
     try {
-      const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
       const response = await fetch(
         `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=en-US&page=1`,
       );
       const data = await response.json();
-      setSearchResults(data.results.slice(0, 8)); // Limit to 8 results
+      // Ordenar por popularidad
+      const sorted = data.results.sort((a, b) => b.popularity - a.popularity);
+      setSearchResults(sorted.slice(0, 8));
     } catch (error) {
       console.error("[v0] Error searching movies:", error);
       setSearchResults([]);
@@ -75,55 +117,82 @@ export default function MovieCluesProvider({ children }) {
     setSearchResults([]);
   };
 
-  // Confirm answer
+  // Points based on image number: 150 / 100 / 75
+  const getPointsForImage = (imageIndex) => {
+    const pointsMap = { 0: 150, 1: 100, 2: 75 };
+    return pointsMap[imageIndex] || 0;
+  };
+
+  // Confirm answer - 1 intento por imagen
   const confirmAnswer = () => {
-    if (!selectedMovie || !currentMovie) return;
+    if (!selectedMovie || !currentMovie || inputLocked) return;
 
-    const isCorrect = selectedMovie.id === currentMovie.id;
-    const newAttempts = attempts + 1;
+    const correct = selectedMovie.id === currentMovie.id;
+    setIsCorrect(correct);
 
-    const pointsMap = { 1: 150, 2: 100, 3: 75, 4: 25 };
-    const earnedPoints = isCorrect ? pointsMap[revealedClues] || 0 : 0;
-
-    const roundNumber = currentRound;
-
-    const roundResult = {
-      isCorrect,
-      attempts: newAttempts,
-      revealedClues,
-      earnedPoints,
-    };
-
-    setAttempts(newAttempts);
-    setRoundPoints(earnedPoints);
-    setShowResult(true);
-
-    if (isCorrect) {
+    if (correct) {
+      const earnedPoints = getPointsForImage(currentImageIndex);
+      setRoundPoints(earnedPoints);
       setScore((prev) => prev + 1);
       setTotalPoints((prev) => prev + earnedPoints);
-    }
+      setShowResult(true);
 
-    if (gameId) {
-      addMovieCluesRound({
-        gameId,
-        roundNumber,
-        movieId: currentMovie.id,
-        result: JSON.stringify(roundResult),
-      });
+      if (gameId) {
+        addMovieCluesRound({
+          gameId,
+          roundNumber: currentRound,
+          movieId: currentMovie.id,
+          result: JSON.stringify({
+            isCorrect: true,
+            clues: currentImageIndex,
+            earnedPoints: earnedPoints,
+          }),
+        });
+      }
+    } else {
+      // Respuesta incorrecta
+      setInputLocked(true); // Bloquear input
+
+      if (
+        currentImageIndex < maxImages - 1 &&
+        currentImageIndex < backdrops.length - 1
+      ) {
+        // Hay mas imagenes disponibles - mostrar feedback y desbloquear siguiente imagen
+        setShowResult(true);
+        setRoundPoints(0);
+      } else {
+        // No hay mas imagenes - fin de la ronda sin puntos
+        setShowResult(true);
+        setRoundPoints(0);
+
+        if (gameId) {
+          addMovieCluesRound({
+            gameId,
+            roundNumber: currentRound,
+            movieId: currentMovie.id,
+            result: JSON.stringify({
+              isCorrect: false,
+              clues: currentImageIndex,
+              earnedPoints: roundPoints,
+            }),
+          });
+        }
+      }
     }
   };
 
-  // Reveal next clue (wrong answer)
-  const revealNextClue = () => {
-    if (revealedClues < maxClues) {
-      setRevealedClues((prev) => prev + 1);
+  // Pasar a la siguiente imagen (despues de respuesta incorrecta)
+  const nextImage = () => {
+    if (
+      currentImageIndex < maxImages - 1 &&
+      currentImageIndex < backdrops.length - 1
+    ) {
+      setCurrentImageIndex((prev) => prev + 1);
       setShowResult(false);
+      setInputLocked(false);
       setSelectedMovie(null);
       setSearchQuery("");
-      setAttempts((prev) => prev + 1);
-    } else {
-      // No more clues, force next round
-      setShowResult(true);
+      setIsCorrect(false);
     }
   };
 
@@ -131,19 +200,23 @@ export default function MovieCluesProvider({ children }) {
   const nextRound = async () => {
     if (currentRound < roundData.length) {
       const nextRoundIndex = currentRound;
+      const nextMovie = roundData[nextRoundIndex];
+
       setCurrentRound((prev) => prev + 1);
-      setCurrentMovie(roundData[nextRoundIndex]);
-      setRevealedClues(1);
+      setCurrentMovie(nextMovie);
+      setCurrentImageIndex(0);
       setSearchQuery("");
       setSearchResults([]);
       setSelectedMovie(null);
       setShowResult(false);
-      setAttempts(0);
+      setIsCorrect(false);
+      setInputLocked(false);
       setRoundPoints(0);
+
+      // Cargar backdrops de la siguiente pelicula
+      await fetchBackdrops(nextMovie.id);
     } else {
-      // 🏁 FIN DEL JUEGO
-      setGameFinished(true);
-      console.log("finishing")
+      // Fin del juego
       if (gameId) {
         await finishMovieCluesGame({
           gameId,
@@ -154,6 +227,13 @@ export default function MovieCluesProvider({ children }) {
     }
   };
 
+  const giveUp = () => {
+    setIsCorrect(false);
+    setRoundPoints(0);
+    setInputLocked(true);
+    setShowResult(true);
+  };
+
   // Reset game
   const resetGame = () => {
     setCurrentRound(1);
@@ -162,18 +242,27 @@ export default function MovieCluesProvider({ children }) {
     setMoviePool([]);
     setRoundData([]);
     setCurrentMovie(null);
-    setRevealedClues(1);
+    setBackdrops([]);
+    setCurrentImageIndex(0);
     setSearchQuery("");
     setSearchResults([]);
     setSelectedMovie(null);
     setShowResult(false);
-    setAttempts(0);
+    setIsCorrect(false);
+    setInputLocked(false);
     setRoundPoints(0);
-    setGameId(null);
-    setGameFinished(false)
   };
 
-  const currentRoundData = roundData[currentRound - 1] || null;
+  // Calcular puntos posibles para la imagen actual
+  const possiblePoints = getPointsForImage(currentImageIndex);
+
+  // Verificar si hay mas imagenes disponibles
+  const hasMoreImages =
+    currentImageIndex < maxImages - 1 &&
+    currentImageIndex < backdrops.length - 1;
+
+  // Imagen actual
+  const currentBackdrop = backdrops[currentImageIndex] || null;
 
   const value = {
     rounds,
@@ -182,21 +271,28 @@ export default function MovieCluesProvider({ children }) {
     moviePool,
     setMoviePool,
     roundData,
-    currentRoundData,
     score,
     totalPoints,
 
     // Current round state
     currentMovie,
-    revealedClues,
-    maxClues,
+    backdrops,
+    currentBackdrop,
+    currentImageIndex,
+    maxImages,
     searchQuery,
     setSearchQuery,
     searchResults,
     selectedMovie,
     showResult,
-    attempts,
+    isCorrect,
+    inputLocked,
     roundPoints,
+    possiblePoints,
+    hasMoreImages,
+    isLoadingBackdrops,
+    gameId,
+    setGameId,
     isLastRound: currentRound === rounds,
 
     // Methods
@@ -204,14 +300,10 @@ export default function MovieCluesProvider({ children }) {
     searchMovies,
     selectMovieFromSearch,
     confirmAnswer,
-    revealNextClue,
+    nextImage,
     nextRound,
     resetGame,
-
-    // Poitns DB
-    gameId,
-    setGameId,
-    gameFinished
+    giveUp,
   };
 
   return (

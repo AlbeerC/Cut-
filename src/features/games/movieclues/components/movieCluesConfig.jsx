@@ -6,20 +6,19 @@ import { useEffect, useState } from "react"
 import { useFetch } from "@/features/movies/hooks/useFetch"
 import { getPoolMovies } from "../../timeline/api/getPoolMovies"
 import { useMovieCluesContext } from "../context/MovieCluesContext"
-import { useAuth } from "@/features/auth/context/AuthContext"
 import { startMovieCluesGame } from "../db/points.db"
 import { toast } from "react-toastify"
+import { useAuth } from "@/features/auth/context/AuthContext"
 import { safeStartGame } from "../../utils/gameAuth"
 
 export default function MovieCluesConfig() {
   const navigate = useNavigate()
-  const { data: movies, loading, error } = useFetch(() => getPoolMovies(300), [])
+  const { data: movies, loading, error } = useFetch(() => getPoolMovies(), [])
+  const { user } = useAuth();
 
   const { setRounds, setMoviePool, generateRounds, resetGame, setGameId } = useMovieCluesContext()
   const [localRounds, setLocalRounds] = useState(5)
   const [isStarting, setIsStarting] = useState(false)
-
-  const { user } = useAuth()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -28,12 +27,12 @@ export default function MovieCluesConfig() {
 
   const handleStart = async () => {
     if (!movies || movies.length === 0) {
-      toast.error("No se pudieron cargar las películas. Intenta de nuevo.")
+      toast.error("No se pudieron cargar las peliculas. Intenta de nuevo.")
       return
     }
 
     if (movies.length < localRounds) {
-      toast.error(`Solo hay ${movies.length} películas disponibles. Selecciona menos rondas.`)
+      toast.error(`Solo hay ${movies.length} peliculas disponibles. Selecciona menos rondas.`)
       return
     }
 
@@ -41,7 +40,7 @@ export default function MovieCluesConfig() {
     setRounds(localRounds)
     setMoviePool(movies)
 
-    const success = generateRounds(movies, localRounds)
+    const success = await generateRounds(movies, localRounds)
 
     if (success) {
       const gameId = await safeStartGame({
@@ -68,7 +67,7 @@ export default function MovieCluesConfig() {
             Adivina la Película
           </h1>
           <p className="text-base text-muted-foreground max-w-md mx-auto">
-            Descubre la película a partir del póster
+            Adivina la pelicula a partir de escenas reales
           </p>
         </div>
 
@@ -99,7 +98,7 @@ export default function MovieCluesConfig() {
 
             <div className="pt-2 border-t border-border">
               <p className="text-xs text-muted-foreground text-center">
-                150 pts (sin pistas) • 100 pts (1 pista) • 75 pts (2 pistas) • 25 pts (3 pistas)
+                150 pts (escena 1) • 100 pts (escena 2) • 75 pts (escena 3)
               </p>
             </div>
           </div>

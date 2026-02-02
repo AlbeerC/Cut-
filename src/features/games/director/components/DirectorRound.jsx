@@ -94,7 +94,7 @@ export default function DirectorRound() {
                 Ronda {currentRound} de {rounds}
               </span>
               <span className="text-xs lg:text-sm font-medium text-primary">
-                Puntos: {score * 10}
+                Puntos: {score * 100}
               </span>
             </div>
             <Progress value={(currentRound / rounds) * 100} className="h-1.5" />

@@ -1,3 +1,5 @@
+"use client"
+
 import { motion } from "framer-motion"
 import { Trophy, Star, Target, Eye, Home, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -44,7 +46,7 @@ export default function MovieCluesFinal() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 pt-30">
+    <div className="min-h-screen bg-background p-4 pt-25">
       {showConfetti && accuracy >= 60 && (
         <Confetti
           width={windowSize.width}
@@ -61,21 +63,21 @@ export default function MovieCluesFinal() {
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: "spring", delay: 0.2 }}
-          className="text-center mb-6"
+          className="text-center mb-2"
         >
           <div
             className={`inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br ${getPerformanceColor()} mb-3 shadow-2xl shadow-primary/50`}
           >
             <Trophy className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">¡Juego Terminado!</h1>
-          <p className="text-lg text-muted-foreground">{getPerformanceMessage()}</p>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">¡Juego Terminado!</h1>
+          <p className="text-md text-muted-foreground">{getPerformanceMessage()}</p>
         </motion.div>
 
         {/* Score Card */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-6 mb-5">
-            <div className="text-center mb-5">
+          <Card className="bg-card/50 backdrop-blur-sm border-primary/20 p-6 mb-2">
+            <div className="text-center mb-3">
               <div className="text-5xl font-bold mb-2">
                 <span className="text-primary">{totalPoints}</span>
               </div>
@@ -84,7 +86,7 @@ export default function MovieCluesFinal() {
             </div>
 
             {/* Accuracy Bar */}
-            <div className="mb-5">
+            <div className="mb-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">Precisión</span>
                 <span className="text-sm font-bold text-primary">{accuracy.toFixed(0)}%</span>
@@ -106,7 +108,7 @@ export default function MovieCluesFinal() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.6 }}
               >
-                <Card className="bg-green-500/10 border-green-500/30 p-3 text-center">
+                <Card className="bg-green-500/10 border-green-500/30 p-3 text-center gap-2">
                   <Target className="w-5 h-5 text-green-500 mx-auto mb-1" />
                   <div className="text-xl font-bold text-green-500">{score}</div>
                   <div className="text-xs text-muted-foreground">Correctas</div>
@@ -118,7 +120,7 @@ export default function MovieCluesFinal() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.7 }}
               >
-                <Card className="bg-red-500/10 border-red-500/30 p-3 text-center">
+                <Card className="bg-red-500/10 border-red-500/30 p-3 text-center gap-2">
                   <Eye className="w-5 h-5 text-red-500 mx-auto mb-1" />
                   <div className="text-xl font-bold text-red-500">{wrongAnswers}</div>
                   <div className="text-xs text-muted-foreground">Falladas</div>
@@ -130,7 +132,7 @@ export default function MovieCluesFinal() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.8 }}
               >
-                <Card className="bg-primary/10 border-primary/30 p-3 text-center">
+                <Card className="bg-primary/10 border-primary/30 p-3 text-center gap-2">
                   <Star className="w-5 h-5 text-primary mx-auto mb-1" />
                   <div className="text-xl font-bold text-primary">{totalPoints}</div>
                   <div className="text-xs text-muted-foreground">Puntos</div>
@@ -163,7 +165,7 @@ export default function MovieCluesFinal() {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full border-primary/50  font-bold h-12 bg-transparent"
+                className="w-full border-primary/50 hover:bg-primary/10 font-bold h-12 bg-transparent"
               >
                 <Home className="w-5 h-5 mr-2" />
                 Volver al Menú
