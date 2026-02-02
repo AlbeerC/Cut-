@@ -4,6 +4,9 @@ import { supabase } from "@/features/auth/lib/supabase";
  * Crea una nueva partida de "Quién la dirigió"
  */
 export const startDirectorGame = async (userId) => {
+
+  if (!userId) return null;
+
   const { data, error } = await supabase
     .from("games")
     .insert({
@@ -33,6 +36,9 @@ export const addDirectorRound = async ({
   movieId,
   result,
 }) => {
+
+  if (!gameId || !roundNumber || !movieId) return null;
+
   const { error } = await supabase.from("game_rounds").insert({
     game_id: gameId,
     round_number: roundNumber,
@@ -55,6 +61,9 @@ export const finishDirectorGame = async ({
   userId,
   score,
 }) => {
+
+  if (!gameId || !userId || !score) return null;
+
       console.log("🚨 finishDirectorGame CALLED", { gameId, userId, score });
   // 1. Finalizar la partida
   const { error: gameError } = await supabase

@@ -98,10 +98,10 @@ export default function CommunitySection({ ranking }) {
                       {player.rank}
                     </div>
 
-
-
                     <div className="flex-1">
-                      <div className="font-semibold text-sm">{player.username}</div>
+                      <div className="font-semibold text-sm">
+                        {player.username}
+                      </div>
                       <div className="text-sm text-muted-foreground">
                         {formatPoints(player.points)} puntos
                       </div>
@@ -120,6 +120,16 @@ export default function CommunitySection({ ranking }) {
                     )}
                   </div>
                 ))}
+                {ranking.length === 0 && (
+                  <div className="flex flex-col items-center justify-center">
+                    <p className="text-chart-1 text-center">
+                      El ranking semanal está vacío por ahora.
+                    </p>
+                    <p className="text-chart-2 text-center">
+                      Jugá y estrená la tabla esta semana 🎬
+                    </p>
+                  </div>
+                )}
               </div>
 
               <Button

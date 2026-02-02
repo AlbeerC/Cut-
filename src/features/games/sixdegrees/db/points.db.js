@@ -4,6 +4,11 @@ import { supabase } from "@/features/auth/lib/supabase";
    START GAME
 ========================= */
 export async function startSixDegreesGame(userId) {
+
+  if (!userId) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("games")
     .insert({
@@ -28,6 +33,10 @@ export async function startSixDegreesGame(userId) {
    FINISH GAME
 ========================= */
 export const finishSixDegreesGame = async ({ gameId, userId, score }) => {
+
+  if (!gameId || !userId || !score) {
+    return null;
+  }
   // 👉 Finalizar partida
   const { error: gameError } = await supabase
     .from("games")

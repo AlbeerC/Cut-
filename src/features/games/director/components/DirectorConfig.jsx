@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { getMoviesWithDirectors } from "../api/getMoviesPool"
 import { useFetch } from "@/features/movies/hooks/useFetch"
 import { useDirectorContext } from "../context/DirectorContext"
+import { toast } from "react-toastify"
 
 export default function DirectorConfig() {
   const navigate = useNavigate()
@@ -24,12 +25,12 @@ export default function DirectorConfig() {
 
   const handleStart = async () => {
     if (!movies || movies.length === 0) {
-      alert("No se pudieron cargar las películas. Intenta de nuevo.")
+      toast.error("No se pudieron cargar las películas. Intenta de nuevo.")
       return
     }
 
     if (movies.length < localRounds) {
-      alert(`Solo hay ${movies.length} películas disponibles. Selecciona menos rondas.`)
+      toast.error(`Solo hay ${movies.length} películas disponibles. Selecciona menos rondas.`)
       return
     }
 
@@ -40,7 +41,7 @@ export default function DirectorConfig() {
     if (success) {
       navigate("/games/director/play")
     } else {
-      alert("Error al generar las rondas. Intenta de nuevo.")
+      toast.error("Error al generar las rondas. Intenta de nuevo.")
       setIsStarting(false)
     }
   }

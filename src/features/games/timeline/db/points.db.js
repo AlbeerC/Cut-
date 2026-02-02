@@ -2,6 +2,11 @@ import { supabase } from "@/features/auth/lib/supabase";
 
 // 1️⃣ Crear partida
 export const startTimelineGame = async (userId) => {
+
+  if (!userId) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("games")
     .insert({
@@ -26,6 +31,9 @@ export const addTimelineRound = async ({
   roundNumber,
   result
 }) => {
+
+  if (!gameId || !roundNumber) return null;
+
   const { error } = await supabase.from("game_rounds").insert({
     game_id: gameId,
     round_number: roundNumber,
@@ -40,6 +48,8 @@ export const addTimelineRound = async ({
 
 // 3️⃣ Finalizar partida + sumar puntos
 export const finishTimelineGame = async ({ gameId, userId, score }) => {
+
+  if (!gameId || !userId || !score) return null;
   // 👉 Finalizar partida
   const { error: gameError } = await supabase
     .from("games")

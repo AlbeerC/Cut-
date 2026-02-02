@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { startVersusGame, finishVersusGame } from "../db/points.db";
 import { useConfigContext } from "../context/ConfigContext";
+import { safeStartGame } from "../../utils/gameAuth";
 
 function shuffleArray(array) {
   const arr = [...array];
@@ -35,14 +36,18 @@ export function useVersusBattle(moviesPool) {
 
   // Cuando llega el pool, lo barajamos e inicializamos el primer duelo
   useEffect(() => {
-    if (!moviesPool || moviesPool.length < 2 || !user) return;
+    if (!moviesPool || moviesPool.length < 2) return;
     if (initializedRef.current) return;
 
     initializedRef.current = true;
 
     const initGame = async () => {
       if (!gameIdRef.current) {
-        const gameId = await startVersusGame(user.id);
+        const gameId = await safeStartGame({
+          user,
+          startGameFn: startVersusGame,
+        });
+
         gameIdRef.current = gameId;
       }
 

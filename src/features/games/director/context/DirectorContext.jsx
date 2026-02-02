@@ -6,6 +6,7 @@ import {
   finishDirectorGame,
 } from "../db/points.db";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import { safeStartGame } from "../../utils/gameAuth";
 
 const DirectorContext = createContext();
 
@@ -40,7 +41,10 @@ export default function DirectorProvider({ children }) {
     }
 
     // 👉 Crear partida en DB
-    const newGameId = await startDirectorGame(user.id);
+    const newGameId = await safeStartGame({
+      user,
+      startGameFn: startDirectorGame,
+    });
     setGameId(newGameId);
 
     setRoundData(generated);

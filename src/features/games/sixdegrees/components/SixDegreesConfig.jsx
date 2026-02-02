@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { startSixDegreesGame } from "../db/points.db";
+import { safeStartGame } from "../../utils/gameAuth";
 
 export default function SixDegreesConfig() {
   const router = useNavigate();
@@ -81,7 +82,10 @@ export default function SixDegreesConfig() {
 
     try {
       await selectRandomActors();
-      const gameId = await startSixDegreesGame(user.id);
+      const gameId = await safeStartGame({
+        user,
+        startGameFn: startSixDegreesGame,
+      });
 
       setGameId(gameId);
       router("/games/sixdegrees/play");

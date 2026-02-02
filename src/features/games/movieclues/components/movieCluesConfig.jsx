@@ -8,6 +8,8 @@ import { getPoolMovies } from "../../timeline/api/getPoolMovies"
 import { useMovieCluesContext } from "../context/MovieCluesContext"
 import { useAuth } from "@/features/auth/context/AuthContext"
 import { startMovieCluesGame } from "../db/points.db"
+import { toast } from "react-toastify"
+import { safeStartGame } from "../../utils/gameAuth"
 
 export default function MovieCluesConfig() {
   const navigate = useNavigate()
@@ -26,12 +28,12 @@ export default function MovieCluesConfig() {
 
   const handleStart = async () => {
     if (!movies || movies.length === 0) {
-      alert("No se pudieron cargar las películas. Intenta de nuevo.")
+      toast.error("No se pudieron cargar las películas. Intenta de nuevo.")
       return
     }
 
     if (movies.length < localRounds) {
-      alert(`Solo hay ${movies.length} películas disponibles. Selecciona menos rondas.`)
+      toast.error(`Solo hay ${movies.length} películas disponibles. Selecciona menos rondas.`)
       return
     }
 
@@ -42,13 +44,15 @@ export default function MovieCluesConfig() {
     const success = generateRounds(movies, localRounds)
 
     if (success) {
-      const gameId = await startMovieCluesGame(user.id)
-      console.log("creating gameId", gameId)
+      const gameId = await safeStartGame({
+        user,
+        startGameFn: startMovieCluesGame,
+      })
 
       setGameId(gameId)
       navigate("/games/movieclues/play")
     } else {
-      alert("Error al generar las rondas. Intenta de nuevo.")
+      toast.error("Error al generar las rondas. Intenta de nuevo.")
       setIsStarting(false)
     }
   }

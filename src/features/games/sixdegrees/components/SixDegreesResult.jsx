@@ -52,6 +52,17 @@ export default function SixDegreesResult() {
     );
   }
 
+  const getBaseScore = () => {
+    if (config.difficulty === "easy") {
+      return 200
+    } else if (config.difficulty === "medium") {
+      return 300
+    } else {
+      return 400
+    }
+  }
+
+  const baseScore = getBaseScore()
   const isWin = gameWon && chain.length > 0;
   const isLoss = gameLost;
   const timeUsed = initialTime ? initialTime - timeRemaining : 0;
@@ -141,7 +152,7 @@ export default function SixDegreesResult() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Puntos base</span>
-                  <span className="font-semibold">+300</span>
+                  <span className="font-semibold">{baseScore}</span>
                 </div>
                 {chain.length - 1 > config.maxSteps && (
                   <div className="flex justify-between items-center">
@@ -181,7 +192,7 @@ export default function SixDegreesResult() {
                     </span>
                   </div>
                 )}
-                {chain.length - 1 === 2 && (
+                {(chain.length - 1 === 2 || chain.length - 1 === 1) && (
                   <div className="flex justify-between items-center">
                     <span className="text-muted-foreground">Ruta óptima</span>
                     <span className="font-semibold text-accent">+50</span>

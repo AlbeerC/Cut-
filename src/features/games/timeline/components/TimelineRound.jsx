@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router";
 import { GripVertical, Award, Flame } from "lucide-react";
 import { useTimelineContext } from "../context/TimelineContext";
+import { useAsyncLock } from "../../hooks/useAsyncLock";
 
 export default function TimelineRound() {
   const navigate = useNavigate();
+  const { runSafe } = useAsyncLock();
 
   const {
     rounds,
@@ -21,7 +23,9 @@ export default function TimelineRound() {
   } = useTimelineContext();
 
   const handleConfirm = async () => {
-    await confirmRound();
+    runSafe(async () => {
+      await confirmRound();
+    });
     navigate("/games/timeline/result");
   };
 

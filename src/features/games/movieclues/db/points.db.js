@@ -4,6 +4,11 @@ import { supabase } from "@/features/auth/lib/supabase";
    START GAME
 ========================= */
 export async function startMovieCluesGame(userId) {
+
+  if (!userId) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("games")
     .insert({
@@ -32,6 +37,11 @@ export async function addMovieCluesRound({
   movieId,
   result,
 }) {
+
+  if (!gameId || !roundNumber || !movieId) {
+    return null;
+  }
+
   const { error } = await supabase.from("game_rounds").insert({
     game_id: gameId,
     round_number: roundNumber,
@@ -49,6 +59,11 @@ export async function addMovieCluesRound({
    FINISH GAME
 ========================= */
 export const finishMovieCluesGame = async ({ gameId, userId, score }) => {
+
+  if (!gameId || !userId || !score) {
+    return null;
+  }
+  
   // 👉 Finalizar partida
   const { error: gameError } = await supabase
     .from("games")

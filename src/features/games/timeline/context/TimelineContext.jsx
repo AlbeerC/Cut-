@@ -5,6 +5,7 @@ import {
   finishTimelineGame,
 } from "../db/points.db";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import { safeStartGame } from "../../utils/gameAuth";
 
 const TimelineContext = createContext();
 
@@ -30,7 +31,10 @@ export default function TimelineProvider({ children }) {
   useEffect(() => {
     const initGame = async () => {
       if (moviesPool?.length > 0 && !gameId) {
-        const newGameId = await startTimelineGame(user.id);
+        const newGameId = await safeStartGame({
+          user,
+          startGameFn: startTimelineGame,
+        });
         setGameId(newGameId);
         generateRound();
       }

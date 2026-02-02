@@ -5,9 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Check, X, Star, Award, ArrowRight, Flame } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useTimelineContext } from "../context/TimelineContext";
+import { useAsyncLock } from "../../hooks/useAsyncLock";
 
 export default function TimelineResult() {
   const navigate = useNavigate();
+  const { runSafe } = useAsyncLock();
 
   const {
     roundResult,
@@ -24,10 +26,14 @@ export default function TimelineResult() {
 
   function handleNext() {
     if (isLastRound) {
-      nextRound(); // ← acá se finaliza el juego
+      runSafe(async () => {
+        await nextRound();
+      })
       navigate("/games/timeline/finish");
     } else {
-      nextRound();
+      runSafe(async () => {
+        await nextRound();
+      })
       navigate("/games/timeline/play");
     }
   }

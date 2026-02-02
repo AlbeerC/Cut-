@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useDirectorContext } from "../context/DirectorContext";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import { useAsyncLock } from "../../hooks/useAsyncLock";
 
 export default function DirectorRound() {
   const navigate = useNavigate();
@@ -55,11 +56,15 @@ export default function DirectorRound() {
     );
   }
 
+  const { runSafe } = useAsyncLock()
+
   const { movie, correctDirector, options } = currentRoundData;
 
   const handleButtonClick = () => {
     if (!showResult) {
-      confirmAnswer();
+      runSafe(async () => {
+        await confirmAnswer()
+      })
       return;
     }
 
@@ -68,7 +73,9 @@ export default function DirectorRound() {
       return;
     }
 
-    nextRound();
+    runSafe(async () => {
+      await nextRound()
+    })
   };
 
   return (

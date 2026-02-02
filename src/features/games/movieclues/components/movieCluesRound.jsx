@@ -8,10 +8,12 @@ import { Progress } from "@/components/ui/progress";
 import { useMovieCluesContext } from "../context/MovieCluesContext";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
+import { useAsyncLock } from "../../hooks/useAsyncLock";
 
 export default function MovieCluesRound() {
   const navigate = useNavigate();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { runSafe } = useAsyncLock();
 
   const {
     currentRound,
@@ -63,17 +65,23 @@ export default function MovieCluesRound() {
 
   function handleNext() {
     if (isLastRound) {
-      nextRound(); // ← acá se finaliza el juego
+      runSafe(async () => {
+        await nextRound();
+      })
       navigate("/games/movieclues/finish");
     } else {
-      nextRound();
+      runSafe(async () => {
+        await nextRound();
+      })
       navigate("/games/movieclues/play");
     }
   }
 
   const handleConfirm = () => {
     if (!selectedMovie) return;
-    confirmAnswer();
+    runSafe(async () => {
+      await confirmAnswer();
+    })
   };
 
   const isCorrect =

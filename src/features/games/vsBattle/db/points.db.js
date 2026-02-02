@@ -6,6 +6,10 @@ import { supabase } from "@/features/auth/lib/supabase";
  * @returns {string} gameId
  */
 export const startVersusGame = async (userId) => {
+  if (!userId) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("games")
     .insert({
@@ -33,6 +37,10 @@ export const startVersusGame = async (userId) => {
  * @param {number} params.score
  */
 export const finishVersusGame = async ({ gameId, userId, score = 50 }) => {
+  if (!userId) {
+    return null;
+  }
+
   // 1. Finalizar la partida
   const { error: gameError } = await supabase
     .from("games")
@@ -49,13 +57,11 @@ export const finishVersusGame = async ({ gameId, userId, score = 50 }) => {
   }
 
   // 2. Registrar historial
-  const { error: historyError } = await supabase
-    .from("points_history")
-    .insert({
-      user_id: userId,
-      delta: score,
-      reason: "versus_completed",
-    });
+  const { error: historyError } = await supabase.from("points_history").insert({
+    user_id: userId,
+    delta: score,
+    reason: "versus_completed",
+  });
 
   if (historyError) {
     console.error("Error inserting points history:", historyError);
@@ -63,13 +69,10 @@ export const finishVersusGame = async ({ gameId, userId, score = 50 }) => {
   }
 
   // 3. SUMAR puntos reales al usuario
-  const { error: profileError } = await supabase.rpc(
-    "increment_user_points",
-    {
-      p_user_id: userId,
-      p_delta: score,
-    }
-  );
+  const { error: profileError } = await supabase.rpc("increment_user_points", {
+    p_user_id: userId,
+    p_delta: score,
+  });
 
   if (profileError) {
     console.error("Error updating user points:", profileError);
