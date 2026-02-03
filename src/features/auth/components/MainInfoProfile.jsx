@@ -19,6 +19,7 @@ export default function MainInfoProfile({
   stats,
   recentGames,
   achievements,
+  isOwnProfile,
 }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { updateProfileInfo } = useAuth();
@@ -82,27 +83,33 @@ export default function MainInfoProfile({
     }
   };
 
+  if (!stats || !profile) {
+    return null;
+  }
+
   return (
     <>
       <div className="container max-w-4xl mx-auto pt-30 pb-10 px-4">
         {/* Header */}
         <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-6 shadow-lg relative">
           {/* Edit Button - Floating top-right */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsEditModalOpen(true)}
-            className="absolute top-4 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
-            aria-label="Editar perfil"
-          >
-            <Settings className="h-4 w-4" />
-          </Button>
+          {isOwnProfile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsEditModalOpen(true)}
+              className="absolute top-4 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
+              aria-label="Editar perfil"
+            >
+              <Settings className="h-6 w-6" />
+            </Button>
+          )}
 
           <div className="flex items-center gap-6 pr-12">
             <Avatar className="h-24 w-24 ring-2 ring-primary/20">
               <AvatarImage
-                src={getAvatarPublicUrl(profile.avatar_url)}
-                alt={`Avatar de ${profile.username}`}
+                src={getAvatarPublicUrl(profile?.avatar_url)}
+                alt={`Avatar de ${profile?.username}`}
               />
 
               <AvatarFallback className="bg-primary text-primary-foreground text-md">
@@ -120,7 +127,7 @@ export default function MainInfoProfile({
               <div className="flex items-center gap-2 mt-2">
                 <Trophy className="w-5 h-5 text-yellow-500" />
                 <span className="font-semibold">
-                  {formatPoints(profileStats.points)} puntos
+                  {formatPoints(profileStats?.points)} puntos
                 </span>
               </div>
             </div>
@@ -154,7 +161,7 @@ export default function MainInfoProfile({
           <div className="flex gap-3 flex-wrap">
             {achievements.map((achi) => (
               <span
-                key={achi.id}
+                key={achi.key}
                 className="px-4 py-2 bg-primary/10 text-primary rounded-xl border border-primary/20 text-sm font-medium"
               >
                 {achi.icon} {achi.title}

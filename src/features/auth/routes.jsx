@@ -8,7 +8,7 @@ export default [
         element: <Login />
     },
     {
-        path: "profile",
+        path: "profile/:username",
         element: <UserProfile />
     }
 ]

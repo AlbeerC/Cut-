@@ -13,8 +13,8 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    if (profile) {
-      navigate("/profile");
+    if (profile?.username) {
+      navigate(`/profile/${profile.username}`);
     } else {
       navigate("/login");
     }
@@ -52,7 +52,7 @@ export default function Navbar() {
           >
             Explorar
           </Link>
-{/*           <Link
+          {/*           <Link
             to="#torneos"
             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -84,7 +84,7 @@ export default function Navbar() {
               >
                 Login
               </Button>
-{/*               <Button
+              {/*               <Button
                 size="sm"
                 onClick={() => navigate("/register")}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
@@ -98,7 +98,7 @@ export default function Navbar() {
         {/* Mobile: Profile Button + Hamburger */}
         <div className="flex md:hidden items-center gap-3">
           {!loading && <ProfileButton onClick={handleProfileClick} />}
-          
+
           <button
             className="p-2 rounded-md hover:bg-muted transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -134,7 +134,7 @@ export default function Navbar() {
             >
               Explorar
             </Link>
-{/*             <Link
+            {/*             <Link
               to="#torneos"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               onClick={closeMobileMenu}
@@ -180,7 +180,7 @@ export default function Navbar() {
                 >
                   Login
                 </Button>
- {/*                <Button
+                {/*                <Button
                   size="sm"
                   className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                   onClick={() => {

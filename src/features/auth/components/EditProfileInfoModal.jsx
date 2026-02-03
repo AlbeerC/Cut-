@@ -40,6 +40,8 @@ export function EditProfileInfoModal({
   const [isLoading, setIsLoading] = useState(false);
   const fileInputRef = useRef(null);
 
+  const USERNAME_REGEX = /^[a-zA-Z0-9_.]*$/;
+
   // Inicializar cuando el modal se abre
   useEffect(() => {
     if (open) {
@@ -170,20 +172,25 @@ export function EditProfileInfoModal({
 
       {/* Name Input */}
       <div className="space-y-2">
-        <Label htmlFor="name">Nombre</Label>
+        <Label htmlFor="name">Nombre de usuario</Label>
         <Input
           id="name"
-          placeholder="Tu nombre"
+          placeholder="Tu nombre de usuario"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (USERNAME_REGEX.test(value)) {
+              setName(value);
+            }
+          }}
           className="text-base"
           autoComplete="name"
           autoFocus
-          maxLength={50}
+          maxLength={20}
         />
-        {name.length > 40 && (
+        {name.length > 10 && (
           <p className="text-xs text-muted-foreground">
-            {50 - name.length} caracteres restantes
+            {20 - name.length} caracteres restantes
           </p>
         )}
       </div>
@@ -232,11 +239,11 @@ export function EditProfileInfoModal({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="bg-transparent"
+            className="bg-transparent mx-1"
           >
             Cancelar
           </Button>
-          <Button onClick={handleSave} disabled={!name.trim() || isLoading}>
+          <Button onClick={handleSave} disabled={!name.trim() || isLoading} className='mx-1'>
             {isLoading ? "Guardando..." : "Guardar cambios"}
           </Button>
         </DialogFooter>

@@ -31,7 +31,10 @@ export function useProfileStats(userId) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!userId) return
+    if (!userId) {
+      setLoading(false)
+      return
+    }
 
     let cancelled = false
 
