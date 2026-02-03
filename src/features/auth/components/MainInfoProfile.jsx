@@ -1,4 +1,4 @@
-import { Trophy, Gamepad2, Clock, Star, Settings } from "lucide-react";
+import { Trophy, Gamepad2, Clock, Star, Settings, Share2 } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,31 @@ export default function MainInfoProfile({
     const month = (d.getMonth() + 1).toString().padStart(2, "0");
     const year = d.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+  const handleShareProfile = async () => {
+    const profileUrl = `${window.location.origin}/profile/${profile.username}`;
+
+    try {
+      // Intentar usar Web Share API si está disponible (móvil)
+      if (navigator.share) {
+        await navigator.share({
+          title: `Perfil de ${profile.username} en Cut!`,
+          text: `¡Mira mi perfil en Cut! Gané ${formatPoints(profileStats?.points)} puntos.`,
+          url: profileUrl,
+        });
+      } else {
+        // Fallback: copiar al portapapeles
+        await navigator.clipboard.writeText(profileUrl);
+        toast.success("¡Enlace copiado al portapapeles!");
+      }
+    } catch (err) {
+      // Si el usuario cancela el share o hay error
+      if (err.name !== "AbortError") {
+        console.error("Error al compartir:", err);
+        toast.error("No se pudo compartir el perfil");
+      }
+    }
   };
 
   const handleSaveProfile = async (data) => {
@@ -102,6 +127,17 @@ export default function MainInfoProfile({
               aria-label="Editar perfil"
             >
               <Settings className="h-6 w-6" />
+            </Button>
+          )}
+          {isOwnProfile && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleShareProfile}
+              className="absolute top-12 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
+              aria-label="Compartir perfil"
+            >
+              <Share2 className="h-5 w-5" />
             </Button>
           )}
 

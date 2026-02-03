@@ -4,9 +4,15 @@ import { Users, TrendingUp, Award, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { formatPoints } from "@/shared/utils/formatPoints";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import FullRankingModal from "./FullRankingModal";
+import { useState } from "react";
+import { getAvatarPublicUrl } from "@/features/auth/api/profile.api";
 
 export default function CommunitySection({ ranking }) {
   const navigate = useNavigate();
+
+  const ranking5Players = ranking.slice(0, 5);
+  const [isFullRankingModalOpen, setIsFullRankingModalOpen] = useState(false);
 
   return (
     <section id="ranking" className="py-24 relative">
@@ -79,24 +85,36 @@ export default function CommunitySection({ ranking }) {
               </div>
 
               <div className="space-y-3">
-                {ranking.map((player) => (
+                {ranking5Players.map((player) => (
                   <div
+                    onClick={() => navigate(`/profile/${player.username}`)}
                     key={player.rank}
-                    className="flex items-center gap-4 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+                    className="flex items-center gap-4 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer"
                   >
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 ${
                         player.rank === 1
-                          ? "bg-primary text-primary-foreground"
+                          ? "bg-yellow-500/20 text-yellow-400 border-2 border-yellow-500/50"
                           : player.rank === 2
-                            ? "bg-accent text-accent-foreground"
+                            ? "bg-slate-400/20 text-slate-300 border-2 border-slate-400/50"
                             : player.rank === 3
-                              ? "bg-chart-3 text-foreground"
-                              : "bg-muted text-muted-foreground"
+                              ? "bg-amber-600/20 text-amber-500 border-2 border-amber-600/50"
+                              : "bg-white/10 text-slate-300"
                       }`}
                     >
                       {player.rank}
                     </div>
+
+                    {/* Avatar */}
+                    <Avatar className="h-10 w-10 flex-shrink-0 ring-2 ring-white/10">
+                      <AvatarImage
+                        src={getAvatarPublicUrl(player.avatar_url)}
+                        alt={player.username}
+                      />
+                      <AvatarFallback className="bg-primary/20 text-primary text-sm">
+                        {player.username.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
 
                     <div className="flex-1">
                       <div className="font-semibold text-sm">
@@ -134,15 +152,22 @@ export default function CommunitySection({ ranking }) {
 
               <Button
                 variant="outline"
-                className="w-full bg-transparent"
-                disabled
+                className="w-full bg-transparent cursor-pointer"
+                onClick={() => setIsFullRankingModalOpen(true)}
               >
-                Ranking completo · Próximamente
+                Ranking completo
               </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+
+      {/* Modal de Ranking Completo */}
+      <FullRankingModal
+        isOpen={isFullRankingModalOpen}
+        onClose={() => setIsFullRankingModalOpen(false)}
+        ranking={ranking}
+      />
     </section>
   );
 }
