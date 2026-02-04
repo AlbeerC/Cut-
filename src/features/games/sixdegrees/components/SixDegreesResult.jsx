@@ -160,7 +160,7 @@ export default function SixDegreesResult() {
                       Pasos extra ({chain.length - 1 - config.maxSteps})
                     </span>
                     <span className="font-semibold text-red-400">
-                      -{(chain.length - 1 - config.maxSteps) * 15}
+                      -{(chain.length - 1 - config.maxSteps) * 50}
                     </span>
                   </div>
                 )}
