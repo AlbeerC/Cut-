@@ -1,5 +1,5 @@
 import { Trophy, Gamepad2, Clock, Star, Settings, Share2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { formatPoints } from "@/shared/utils/formatPoints";
@@ -12,6 +12,7 @@ import {
 } from "../api/profile.api";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 export default function MainInfoProfile({
   profile,
@@ -22,7 +23,13 @@ export default function MainInfoProfile({
   isOwnProfile,
 }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [localProfile, setLocalProfile] = useState(profile);
   const { updateProfileInfo } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setLocalProfile(profile);
+  }, [profile]);
 
   const getDate = (date) => {
     const d = new Date(date);
@@ -60,33 +67,25 @@ export default function MainInfoProfile({
   const handleSaveProfile = async (data) => {
     try {
       const oldAvatarPath = profile.avatar_url;
+      const oldUsername = profile.username;
+
       let newAvatarPath = oldAvatarPath;
 
-      // Solo procesar cambios de imagen si imageChanged es true
       if (data.imageChanged) {
-        // CASO 1: Usuario subió una nueva imagen (data.image es base64)
         if (data.image && data.image.startsWith("data:")) {
-          // Subir nueva imagen
           newAvatarPath = await uploadAvatar(data.image);
 
-          // Eliminar imagen anterior si existía
           if (oldAvatarPath) {
             await deleteAvatar(oldAvatarPath);
           }
-        }
-        // CASO 2: Usuario eliminó la imagen (data.image es null)
-        else if (!data.image) {
-          // Eliminar imagen anterior si existía
+        } else if (!data.image) {
           if (oldAvatarPath) {
             await deleteAvatar(oldAvatarPath);
           }
           newAvatarPath = null;
         }
-        // CASO 3: data.image tiene la misma ruta que antes (no cambió)
-        // No hacer nada, mantener newAvatarPath = oldAvatarPath
       }
 
-      // Actualizar perfil en la base de datos
       const { error } = await updateProfile({
         userId: profile.id,
         username: data.name,
@@ -95,13 +94,23 @@ export default function MainInfoProfile({
 
       if (error) throw error;
 
-      // Actualizar contexto de autenticación
       updateProfileInfo({
         username: data.name,
         avatar_url: newAvatarPath,
       });
 
+      setLocalProfile((prev) => ({
+        ...prev,
+        username: data.name,
+        avatar_url: newAvatarPath,
+      }));
+
       toast.success("Perfil actualizado correctamente");
+
+      // 🔁 Redirección si cambió el username
+      if (oldUsername !== data.name) {
+        navigate(`/profile/${data.name}`);
+      }
     } catch (err) {
       console.error("Error al actualizar perfil:", err);
       toast.error("Error al actualizar el perfil. Por favor intenta de nuevo.");
@@ -115,57 +124,81 @@ export default function MainInfoProfile({
   return (
     <>
       <div className="container max-w-4xl mx-auto pt-30 pb-10 px-4">
-        {/* Header */}
-        <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-6 shadow-lg relative">
-          {/* Edit Button - Floating top-right */}
+        <div className="bg-background/70 backdrop-blur-lg border border-border/40 rounded-2xl p-5 md:p-6 shadow-lg relative">
           {isOwnProfile && (
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsEditModalOpen(true)}
-              className="absolute top-4 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
+              className="absolute top-4 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all hidden md:flex"
               aria-label="Editar perfil"
             >
               <Settings className="h-6 w-6" />
             </Button>
           )}
+
           {isOwnProfile && (
             <Button
               variant="ghost"
               size="icon"
               onClick={handleShareProfile}
-              className="absolute top-12 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all"
+              className="absolute top-14 right-4 h-9 w-9 rounded-full hover:bg-primary/10 hover:text-primary transition-all hidden md:flex"
               aria-label="Compartir perfil"
             >
               <Share2 className="h-5 w-5" />
             </Button>
           )}
 
-          <div className="flex items-center gap-6 pr-12">
-            <Avatar className="h-24 w-24 ring-2 ring-primary/20">
+          <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 md:pr-12">
+            <Avatar className="h-20 w-20 md:h-24 md:w-24 ring-2 ring-primary/20 self-center md:self-auto">
               <AvatarImage
-                src={getAvatarPublicUrl(profile?.avatar_url)}
-                alt={`Avatar de ${profile?.username}`}
+                src={`${getAvatarPublicUrl(localProfile?.avatar_url)}`}
+                alt={`Avatar de ${localProfile?.username}`}
               />
-
               <AvatarFallback className="bg-primary text-primary-foreground text-md">
-                {profile.username.slice(0, 2).toUpperCase()}
+                {localProfile.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
 
-            <div className="flex flex-col gap-1">
-              <h1 className="text-3xl font-bold max-md:text-xl">
-                {profile.username}
+            <div className="flex flex-col gap-1 text-center md:text-left items-center md:items-start">
+              <h1 className="text-xl md:text-3xl font-bold max-w-[220px] sm:max-w-none truncate">
+                {localProfile.username}
               </h1>
-              <p className="text-muted-foreground max-md:text-md">
+
+              <p className="text-muted-foreground text-sm md:text-md">
                 Miembro desde el {getDate(profile.created_at)}
               </p>
+
               <div className="flex items-center gap-2 mt-2">
                 <Trophy className="w-5 h-5 text-yellow-500" />
                 <span className="font-semibold">
                   {formatPoints(profileStats?.points)} puntos
                 </span>
               </div>
+
+              {isOwnProfile && (
+                <div className="flex gap-3 mt-3 md:hidden">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Settings className="h-4 w-4" />
+                    Editar
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleShareProfile}
+                    className="flex items-center gap-2"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    Compartir
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

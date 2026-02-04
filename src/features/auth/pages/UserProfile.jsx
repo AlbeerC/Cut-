@@ -25,19 +25,23 @@ export default function UserProfile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!username) return;
+
       setProfileLoading(true);
 
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("username", username)
-        .single();
-
+        .maybeSingle();
+        
       if (error) {
         if (error.code === "PGRST116") {
           setProfileData(null);
+          console.log("error", error);
         } else {
           setProfileError(error);
+          console.log("error", error);
         }
       } else {
         setProfileData(data);
@@ -64,15 +68,16 @@ export default function UserProfile() {
     navigate("/login");
   };
 
-  if (profileLoading || loading || !data || !data.stats) return <ProfileSkeleton />;
+  if (profileLoading) return <ProfileSkeleton />;
 
-  if (profileError || error) {
-    return <div>Error al cargar perfil</div>;
-  }
+  if (profileError) return <div className="pt-30">Error al cargar perfil</div>;
 
-  if (!profileData) {
-    return <ProfileNotFound />;
-  }
+  if (!profileData) return <ProfileNotFound />;
+
+  // recién acá pedimos stats
+  if (loading) return <ProfileSkeleton />;
+
+  if (error) return <div className="pt-30">Error al cargar estadísticas</div>;
 
   return (
     <>

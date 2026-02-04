@@ -127,12 +127,12 @@ export default function CommunitySection({ ranking }) {
 
                     {player.rank <= 3 && (
                       <Award
-                        className={`w-5 h-5 ${
+                        className={`w-5 h-5 flex-shrink-0 ${
                           player.rank === 1
-                            ? "text-primary"
+                            ? "text-yellow-400"
                             : player.rank === 2
-                              ? "text-accent"
-                              : "text-chart-3"
+                              ? "text-slate-300"
+                              : "text-amber-500"
                         }`}
                       />
                     )}
