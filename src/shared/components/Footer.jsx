@@ -106,7 +106,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
-                  to="/contacto"
+                  to="/contact"
                   className="hover:text-foreground transition-colors"
                 >
                   Contacto

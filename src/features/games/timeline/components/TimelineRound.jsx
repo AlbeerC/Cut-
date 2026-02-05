@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import { GripVertical, Award, Flame } from "lucide-react";
 import { useTimelineContext } from "../context/TimelineContext";
 import { useAsyncLock } from "../../hooks/useAsyncLock";
+import { useEffect } from "react";
 
 export default function TimelineRound() {
   const navigate = useNavigate();
@@ -28,6 +29,23 @@ export default function TimelineRound() {
     });
     navigate("/games/timeline/result");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <h1 className="text-4xl font-bold">Cargando...</h1>
+          <p className="text-muted-foreground">
+            Espere mientras se cargan los datos...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!options || options.length === 0) {
+    return null
+  }
 
   return (
     <div className="min-h-screen bg-background pt-30 px-4 pb-6">

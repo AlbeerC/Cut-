@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Trophy, Home, RotateCcw, Flame } from "lucide-react"
 import { Link, useNavigate } from "react-router"
 import { useTimelineContext } from "../context/TimelineContext"
+import NoResultAvaliable from "../../components/NoResultAvaliable";
 
 export default function TimelineFinal() {
   const navigate = useNavigate()
@@ -25,6 +26,8 @@ export default function TimelineFinal() {
   }
 
   const performance = getPerformanceLevel()
+
+  if (!totalPoints) return <NoResultAvaliable />
 
   return (
     <div className="min-h-screen bg-background pt-30 px-4 pb-6">

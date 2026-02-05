@@ -5,7 +5,7 @@ import AboutPage from "./About"
 
 export default [
     {
-        path: "contacto",
+        path: "contact",
         element: <ContactPage />
     },
     {

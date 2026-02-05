@@ -31,12 +31,15 @@ export default function TimelineProvider({ children }) {
   useEffect(() => {
     const initGame = async () => {
       if (moviesPool?.length > 0 && !gameId) {
+        setIsLoading(true);
         const newGameId = await safeStartGame({
           user,
           startGameFn: startTimelineGame,
         });
         setGameId(newGameId);
         generateRound();
+
+        setIsLoading(false);
       }
     };
 
@@ -44,7 +47,6 @@ export default function TimelineProvider({ children }) {
   }, [moviesPool]);
 
   const generateRound = () => {
-    setIsLoading(true);
 
     const selected = pickRandomMovies(moviesPool, 4);
 
@@ -58,7 +60,6 @@ export default function TimelineProvider({ children }) {
     setCorrectOrder(sorted);
     setOptions(shuffled);
     setRoundResult(null);
-    setIsLoading(false);
   };
 
   const confirmRound = async () => {

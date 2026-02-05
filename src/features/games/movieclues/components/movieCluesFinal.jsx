@@ -8,6 +8,7 @@ import { Link, useNavigate } from "react-router"
 import Confetti from "react-confetti"
 import { useEffect, useState } from "react"
 import { useMovieCluesContext } from "../context/MovieCluesContext"
+import NoResultAvaliable from "../../components/NoResultAvaliable"
 
 export default function MovieCluesFinal() {
   const navigate = useNavigate()
@@ -44,6 +45,8 @@ export default function MovieCluesFinal() {
     resetGame()
     navigate("/games/movieclues")
   }
+
+  if (!score) return <NoResultAvaliable />
 
   return (
     <div className="min-h-screen bg-background p-4 pt-25">

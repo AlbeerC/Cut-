@@ -6,6 +6,9 @@ import {
   TrendingUp,
   Home,
   RotateCcw,
+  AlertCircle,
+  Gamepad2,
+  ArrowLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,6 +16,7 @@ import { Link, useNavigate } from "react-router";
 import Confetti from "react-confetti";
 import { useEffect, useState } from "react";
 import { useDirectorContext } from "../context/DirectorContext";
+import NoResultAvaliable from "../../components/NoResultAvaliable";
 
 export default function DirectorFinal() {
   const navigate = useNavigate();
@@ -54,6 +58,8 @@ export default function DirectorFinal() {
     resetGame();
     navigate("/games/director");
   };
+
+  if (!score) return <NoResultAvaliable />
 
   return (
     <div className="min-h-screen bg-background p-4 pt-30">

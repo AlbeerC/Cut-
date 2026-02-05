@@ -14,6 +14,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useSixDegrees } from "../context/SixDegreesContext";
+import NoResultAvaliable from "../../components/NoResultAvaliable";
 
 export default function SixDegreesResult() {
   const router = useNavigate();
@@ -38,18 +39,7 @@ export default function SixDegreesResult() {
   };
 
   if (!actorA || !actorB) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="p-8 max-w-md text-center">
-          <p className="text-muted-foreground mb-4">
-            No hay datos de partida disponibles
-          </p>
-          <Button onClick={() => router("/games/sixdegrees")}>
-            Volver al Inicio
-          </Button>
-        </Card>
-      </div>
-    );
+    return <NoResultAvaliable />
   }
 
   const getBaseScore = () => {
