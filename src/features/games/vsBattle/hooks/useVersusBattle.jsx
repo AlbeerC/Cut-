@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/features/auth/context/AuthContext";
-import { startVersusGame, finishVersusGame } from "../db/points.db";
+import { startVersusGame, finishVersusGame, saveVersusWinner } from "../db/points.db";
 import { useConfigContext } from "../context/ConfigContext";
 import { safeStartGame } from "../../utils/gameAuth";
 
@@ -75,6 +75,11 @@ export function useVersusBattle(moviesPool) {
             userId: user.id,
             score: 50 + sizeRef.current * 10,
           });
+
+          saveVersusWinner({
+            gameId: gameIdRef.current,
+            movieId: chosenMovie.id
+          })
         }
 
         return;

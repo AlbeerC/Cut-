@@ -1,16 +1,26 @@
-import { Link, useNavigate } from "react-router"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Trophy, Star, Calendar, Play, Share2, RotateCcw } from "lucide-react"
-import { useFetch } from "@/features/movies/hooks/useFetch"
-import { getMovieByid } from "@/features/movies/api/movies"
+import { Link, useNavigate } from "react-router";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Trophy, Star, Calendar, Play, Share2, RotateCcw } from "lucide-react";
+import { useFetch } from "@/features/movies/hooks/useFetch";
+import { getMovieByid } from "@/features/movies/api/movies";
+import { useState, useEffect } from "react";
+import { getVersusMovieWins } from "../utils/getVersusMovieWins";
 
-export default function VersusWinner({winner}) {
+export default function VersusWinner({ winner }) {
+  const [wins, setWins] = useState(0);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
+  useEffect(() => {
+    if (!winner) return;
 
-  if (!winner) return <p>Loading...</p>
+    getVersusMovieWins(winner.id)
+      .then(setWins)
+      .catch(() => setWins(0));
+  }, [winner]);
+
+  if (!winner) return <p>Loading...</p>;
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-30">
@@ -51,7 +61,9 @@ export default function VersusWinner({winner}) {
               <div className="absolute top-4 right-4">
                 <div className="bg-accent/90 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-1">
                   <Star className="w-4 h-4 fill-accent-foreground text-accent-foreground" />
-                  <span className="font-bold text-accent-foreground">{winner.vote_average.toFixed(1)}</span>
+                  <span className="font-bold text-accent-foreground">
+                    {winner.vote_average.toFixed(1)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -59,7 +71,9 @@ export default function VersusWinner({winner}) {
             {/* Movie Info */}
             <div className="flex flex-col justify-center space-y-6">
               <div className="space-y-3">
-                <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">{winner.title}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground text-balance">
+                  {winner.title}
+                </h2>
 
                 <div className="flex items-center gap-4 text-muted-foreground">
                   <div className="flex items-center gap-1">
@@ -68,20 +82,28 @@ export default function VersusWinner({winner}) {
                   </div>
                 </div>
 
-                {winner.tagline && <p className="text-lg text-accent italic">"{winner.tagline}"</p>}
+                {winner.tagline && (
+                  <p className="text-lg text-accent italic">
+                    "{winner.tagline}"
+                  </p>
+                )}
 
-                <p className="text-muted-foreground leading-relaxed">{winner.overview}</p>
+                <p className="text-muted-foreground leading-relaxed">
+                  {winner.overview}
+                </p>
               </div>
 
               {/* Stats */}
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-primary">8</div>
+                  <div className="text-3xl font-bold text-primary">{wins}</div>
                   <div className="text-sm text-muted-foreground">Victorias</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-accent">32</div>
-                  <div className="text-sm text-muted-foreground">Competidoras</div>
+                  <div className="text-3xl font-bold text-accent">
+                    {winner.vote_average.toFixed(1)}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Votos</div>
                 </div>
               </div>
             </div>
@@ -90,26 +112,30 @@ export default function VersusWinner({winner}) {
 
         {/* Action Buttons */}
         <div className="grid md:grid-cols-3 gap-4">
-          <Button 
-            size="lg" 
+          <Button
+            size="lg"
             className="bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
             onClick={() => navigate(`/movies/${winner.id}`)}
-            >
+          >
             <Play className="w-5 h-5 mr-2" />
             Ver Ficha
           </Button>
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-primary text-primary bg-transparent cursor-pointer"
-              onClick={() => navigate("/games/versus")}
-            >
-              <RotateCcw className="w-5 h-5 mr-2" />
-              Volver a Jugar
-            </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-primary text-primary bg-transparent cursor-pointer"
+            onClick={() => navigate("/games/versus")}
+          >
+            <RotateCcw className="w-5 h-5 mr-2" />
+            Volver a Jugar
+          </Button>
 
-          <Button size="lg" variant="outline" className="border-accent text-accent hover:bg-accent/10 bg-transparent cursor-pointer">
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-accent text-accent hover:bg-accent/10 bg-transparent cursor-pointer"
+          >
             <Share2 className="w-5 h-5 mr-2" />
             Compartir
           </Button>
@@ -117,11 +143,14 @@ export default function VersusWinner({winner}) {
 
         {/* Back Link */}
         <div className="text-center mt-8">
-          <Link to="/games" className="text-muted-foreground hover:text-primary transition-colors duration-300">
+          <Link
+            to="/games"
+            className="text-muted-foreground hover:text-primary transition-colors duration-300"
+          >
             ← Volver a juegos
           </Link>
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -8,7 +8,9 @@ import {
   Shield,
   Landmark,
   BadgeCent,
-} from "lucide-react"
+  Search,
+  Palette,
+} from "lucide-react";
 
 export const GENRES = [
   {
@@ -65,4 +67,16 @@ export const GENRES = [
     value: "war",
     icon: Shield,
   },
-]
+  {
+    id: 9648,
+    label: "Misterio",
+    value: "mystery",
+    icon: Search,
+  },
+  {
+    id: 16,
+    label: "Animación",
+    value: "animation",
+    icon: Palette,
+  },
+];

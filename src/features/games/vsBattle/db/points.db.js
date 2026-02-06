@@ -79,3 +79,28 @@ export const finishVersusGame = async ({ gameId, userId, score = 50 }) => {
     throw profileError;
   }
 };
+
+
+
+// Guardar película ganadora
+export const saveVersusWinner = async ({
+  gameId,
+  movieId,
+}) => {
+
+  if (!gameId || !movieId) {
+    return null;
+  }
+
+  const { error } = await supabase
+    .from("versus_winner")
+    .insert({
+      game_id: gameId,
+      movie_id: movieId,
+    })
+
+  if (error) {
+    console.error("Error saving Versus winner:", error)
+    throw error
+  }
+}
